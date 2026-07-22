@@ -1,0 +1,890 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Muddassir Iqbal, engineering manager for mobile and maps at Grab. Ten years of Android and iOS, team leadership across three hubs, and AI-native engineering.">
+<meta property="og:title" content="Muddassir Iqbal · Engineering Manager, Mobile &amp; Maps">
+<meta property="og:description" content="Engineering manager for mobile and maps at Grab. Ten years of Android and iOS, team leadership across three hubs, and AI-native engineering.">
+<meta property="og:type" content="profile">
+<meta property="og:url" content="https://iqbalmuddassir.github.io/grab-sem-portfolio/">
+<link rel="canonical" href="https://iqbalmuddassir.github.io/grab-sem-portfolio/">
+<meta name="theme-color" content="#e5e9e6">
+<title>Muddassir Iqbal · Engineering Manager, Mobile &amp; Maps</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #e5e9e6;
+    --bg-deep: #d2d8d3;
+    --surface: #eef1ee;
+    --ink: #171a18;
+    --text: #3d453f;
+    --muted: #5c645e;
+    --border: color-mix(in srgb, var(--ink) 18%, transparent);
+    --accent: #8c1f2f;
+    --green: #1f6b4a;
+    --font-display: 'Space Grotesk', sans-serif;
+    --font-body: 'Space Grotesk', sans-serif;
+    --font-mono: 'IBM Plex Mono', ui-monospace, monospace;
+    --max: 1120px;
+  }
+
+  body.light {
+    --bg: #e5e9e6;
+    --bg-deep: #d2d8d3;
+    --surface: #eef1ee;
+    --ink: #171a18;
+    --text: #3d453f;
+    --muted: #5c645e;
+    --accent: #8c1f2f;
+    --green: #1f6b4a;
+    --border: color-mix(in srgb, var(--ink) 18%, transparent);
+  }
+
+  body.dark {
+    --bg: #141816;
+    --bg-deep: #1c211e;
+    --surface: #1c211e;
+    --ink: #e8ece9;
+    --text: #c5cbc6;
+    --muted: #a3aaa5;
+    --accent: #e07a86;
+    --green: #7dbaa8;
+    --border: color-mix(in srgb, var(--ink) 16%, transparent);
+  }
+
+  @media (prefers-color-scheme: dark) {
+    body:not(.light) {
+      --bg: #141816;
+      --bg-deep: #1c211e;
+      --surface: #1c211e;
+      --ink: #e8ece9;
+      --text: #c5cbc6;
+      --muted: #a3aaa5;
+      --accent: #e07a86;
+      --green: #7dbaa8;
+      --border: color-mix(in srgb, var(--ink) 16%, transparent);
+    }
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: var(--font-body);
+    color: var(--text);
+    background:
+      linear-gradient(105deg, var(--bg) 0%, var(--bg) 58%, var(--bg-deep) 58%, var(--bg-deep) 100%);
+    line-height: 1.55;
+    min-height: 100vh;
+    -webkit-font-smoothing: antialiased;
+    transition: background 0.3s ease, color 0.3s ease;
+  }
+
+  h1, h2, h3, h4 {
+    font-family: var(--font-display);
+    font-weight: 600;
+    color: var(--ink);
+    letter-spacing: -0.03em;
+  }
+
+  a { color: inherit; }
+  strong { color: var(--ink); font-weight: 600; }
+  .mono { font-family: var(--font-mono); }
+
+  #themeToggle {
+    position: fixed;
+    top: 1.25rem;
+    right: 1.25rem;
+    z-index: 2000;
+    width: 2.5rem;
+    height: 2.5rem;
+    border: 1.5px solid var(--ink);
+    border-radius: 0;
+    background: var(--surface);
+    color: var(--ink);
+    cursor: pointer;
+    display: grid;
+    place-items: center;
+    transition: background 0.2s ease, color 0.2s ease;
+  }
+  #themeToggle:hover { background: var(--ink); color: var(--bg); }
+  #themeToggle svg { width: 1rem; height: 1rem; }
+  #themeToggle .icon-moon { display: none; }
+  body.dark #themeToggle .icon-sun { display: none; }
+  body.dark #themeToggle .icon-moon { display: block; }
+
+  @media (prefers-color-scheme: dark) {
+    body:not(.light) #themeToggle .icon-sun { display: none; }
+    body:not(.light) #themeToggle .icon-moon { display: block; }
+    body.light #themeToggle .icon-sun { display: block; }
+    body.light #themeToggle .icon-moon { display: none; }
+  }
+
+  .back-link {
+    position: fixed;
+    top: 1.25rem;
+    left: 1.25rem;
+    z-index: 2000;
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--ink);
+    text-decoration: none;
+    border-bottom: 2px solid var(--accent);
+    padding-bottom: 0.15rem;
+  }
+  .back-link:hover { color: var(--accent); }
+
+  .wrap {
+    width: min(100% - 3rem, var(--max));
+    margin: 0 auto;
+  }
+
+  /* ---------- HERO ---------- */
+  .hero {
+    padding: 5rem 0 3.5rem;
+    border-bottom: 2px solid var(--ink);
+  }
+  .eyebrow {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--accent);
+    margin-bottom: 1rem;
+    opacity: 0;
+    animation: rise 0.7s ease forwards 0.05s;
+  }
+  h1.name {
+    font-size: clamp(2.75rem, 8vw, 5.5rem);
+    font-weight: 700;
+    line-height: 0.92;
+    letter-spacing: -0.05em;
+    max-width: 12ch;
+    margin-bottom: 1.1rem;
+    opacity: 0;
+    animation: rise 0.8s ease forwards 0.12s;
+  }
+  .role {
+    font-size: clamp(1.05rem, 2vw, 1.25rem);
+    color: var(--muted);
+    max-width: 40rem;
+    margin-bottom: 0.55rem;
+    opacity: 0;
+    animation: rise 0.8s ease forwards 0.22s;
+  }
+  .loc-line {
+    font-family: var(--font-mono);
+    font-size: 0.82rem;
+    color: var(--muted);
+    margin-bottom: 1.75rem;
+    opacity: 0;
+    animation: rise 0.8s ease forwards 0.3s;
+  }
+  .summary {
+    max-width: 42rem;
+    font-size: 1.02rem;
+    color: var(--text);
+    margin-bottom: 1.5rem;
+    opacity: 0;
+    animation: rise 0.8s ease forwards 0.38s;
+  }
+
+  .contact-line {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.35rem 1.25rem;
+    margin: -0.85rem 0 1.5rem;
+    font-family: var(--font-mono);
+    font-size: 0.82rem;
+    color: var(--muted);
+    opacity: 0;
+    animation: rise 0.8s ease forwards 0.34s;
+  }
+  .contact-line a {
+    color: var(--ink);
+    text-decoration: none;
+    border-bottom: 1px solid var(--border);
+  }
+  .contact-line a:hover {
+    color: var(--accent);
+    border-bottom-color: var(--accent);
+  }
+
+  .stat-strip {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    border-top: 1.5px solid var(--ink);
+    border-bottom: 1.5px solid var(--ink);
+    opacity: 0;
+    animation: rise 0.8s ease forwards 0.58s;
+  }
+  .stat-chip {
+    padding: 1.1rem 0.9rem;
+    border-right: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+  }
+  .stat-chip:nth-child(4n) { border-right: 0; }
+  .stat-strip .stat-chip { border-bottom: 0; }
+  .stat-chip .num {
+    display: block;
+    font-size: 1.45rem;
+    font-weight: 700;
+    letter-spacing: -0.03em;
+    color: var(--ink);
+    line-height: 1.15;
+  }
+  .stat-chip .lbl {
+    display: block;
+    margin-top: 0.25rem;
+    font-size: 0.75rem;
+    color: var(--muted);
+  }
+
+  /* ---------- SECTIONS ---------- */
+  .section {
+    padding: 4rem 0 1rem;
+  }
+  .section-head {
+    margin-bottom: 2rem;
+    padding-bottom: 0.85rem;
+    border-bottom: 2px solid var(--ink);
+  }
+  .section-head .tag {
+    display: block;
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--accent);
+    margin-bottom: 0.45rem;
+  }
+  .section-head h2 {
+    font-size: clamp(1.6rem, 3.5vw, 2.25rem);
+    font-weight: 700;
+    letter-spacing: -0.04em;
+    margin-bottom: 0.55rem;
+  }
+  .section-head p {
+    max-width: 38rem;
+    color: var(--muted);
+    font-size: 0.98rem;
+  }
+
+  .reveal {
+    opacity: 0;
+    transform: translateY(14px);
+    transition: opacity 0.55s ease, transform 0.55s ease;
+  }
+  .reveal.in-view {
+    opacity: 1;
+    transform: none;
+  }
+
+  /* ---------- JOURNEY ---------- */
+  .journey-intro {
+    max-width: 36rem;
+    margin: 0 0 2.5rem;
+    color: var(--muted);
+    font-size: 0.98rem;
+  }
+  .journey-intro .tag {
+    display: block;
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--accent);
+    margin-bottom: 0.45rem;
+  }
+
+  .route-rail {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+  }
+  .leg {
+    display: grid;
+    grid-template-columns: 3.5rem minmax(0, 1fr);
+    gap: 1.25rem;
+    padding: 1.75rem 0;
+    border-bottom: 1px solid var(--border);
+    opacity: 0;
+    transform: translateY(12px);
+    transition: opacity 0.5s ease, transform 0.5s ease;
+  }
+  .leg.in-view {
+    opacity: 1;
+    transform: none;
+  }
+  .pin {
+    font-family: var(--font-mono);
+    font-size: 0.85rem;
+    font-weight: 500;
+    color: var(--muted);
+    padding-top: 0.3rem;
+  }
+  .leg-eyebrow {
+    font-size: 0.82rem;
+    font-weight: 600;
+    color: var(--accent);
+    margin-bottom: 0.35rem;
+  }
+  .leg-body h3 {
+    font-size: clamp(1.2rem, 2.4vw, 1.55rem);
+    font-weight: 600;
+    letter-spacing: -0.03em;
+    margin-bottom: 0.7rem;
+    line-height: 1.2;
+  }
+  .leg-body p {
+    max-width: 44rem;
+    margin-bottom: 0.75rem;
+    color: var(--text);
+    font-size: 0.98rem;
+  }
+  .metrics {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem 1.25rem;
+    margin-top: 0.85rem;
+    font-size: 0.85rem;
+    color: var(--muted);
+  }
+  .metrics b {
+    color: var(--ink);
+    font-weight: 600;
+  }
+
+  /* ---------- ACHIEVEMENTS ---------- */
+  .ach-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    border-top: 1.5px solid var(--ink);
+  }
+  .ach-card {
+    padding: 1.35rem 1.1rem;
+    border-right: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+  }
+  .ach-card:nth-child(4n) { border-right: 0; }
+  .ach-card .big {
+    font-size: 1.35rem;
+    font-weight: 700;
+    letter-spacing: -0.03em;
+    color: var(--ink);
+    margin-bottom: 0.4rem;
+    line-height: 1.15;
+  }
+  .ach-card .cap {
+    font-size: 0.88rem;
+    color: var(--muted);
+    line-height: 1.45;
+  }
+
+  /* ---------- AI ---------- */
+  .ai-cols {
+    display: grid;
+    grid-template-columns: 1.1fr 0.9fr;
+    gap: 2.5rem;
+    align-items: start;
+  }
+  .ai-stats {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    border-top: 1.5px solid var(--ink);
+    border-bottom: 1.5px solid var(--ink);
+    margin-bottom: 1.75rem;
+  }
+  .ai-stats .stat-chip:nth-child(odd) {
+    border-right: 1px solid var(--border);
+  }
+  .ai-stats .stat-chip:nth-child(-n+2) {
+    border-bottom: 1px solid var(--border);
+  }
+  .list-block h4 {
+    font-size: 1rem;
+    margin-bottom: 0.75rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid var(--border);
+  }
+  .list-block ul {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 0.85rem;
+  }
+  .list-block li {
+    font-size: 0.95rem;
+    color: var(--text);
+    padding-left: 0.9rem;
+    border-left: 2px solid var(--accent);
+  }
+
+  /* ---------- TECH ---------- */
+  .tech-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0;
+    border-top: 1.5px solid var(--ink);
+  }
+  .tech-card {
+    padding: 1.5rem 1.25rem;
+    border-bottom: 1px solid var(--border);
+    border-right: 1px solid var(--border);
+  }
+  .tech-card:nth-child(2n) { border-right: 0; }
+  .tech-card h4 {
+    font-size: 1.05rem;
+    margin-bottom: 0.45rem;
+  }
+  .tech-card p {
+    font-size: 0.95rem;
+    color: var(--muted);
+    max-width: 34rem;
+  }
+
+  /* ---------- QUOTES ---------- */
+  .quotes {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 0;
+    border-top: 1.5px solid var(--ink);
+  }
+  .quote-card {
+    padding: 1.5rem 0;
+    border-bottom: 1px solid var(--border);
+  }
+  .quote-card p {
+    font-size: 1.05rem;
+    color: var(--ink);
+    max-width: 44rem;
+    margin-bottom: 0.7rem;
+    line-height: 1.5;
+  }
+  .quote-card .attrib {
+    font-family: var(--font-mono);
+    font-size: 0.78rem;
+    color: var(--muted);
+  }
+
+  /* ---------- CAREER ---------- */
+  .career-list {
+    border-top: 1.5px solid var(--ink);
+  }
+  .career-item {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: 0.75rem 1.5rem;
+    padding: 1.35rem 0;
+    border-bottom: 1px solid var(--border);
+  }
+  .career-item h3 {
+    font-size: 1.05rem;
+    margin-bottom: 0.2rem;
+  }
+  .career-item .org {
+    font-size: 0.92rem;
+    color: var(--muted);
+    margin-bottom: 0.55rem;
+  }
+  .career-item p {
+    font-size: 0.95rem;
+    color: var(--text);
+    max-width: 44rem;
+  }
+  .career-item .when {
+    font-family: var(--font-mono);
+    font-size: 0.78rem;
+    color: var(--muted);
+    white-space: nowrap;
+  }
+  .skills-line {
+    margin-top: 1.75rem;
+    padding-top: 1.25rem;
+    border-top: 1px solid var(--border);
+    font-size: 0.92rem;
+    color: var(--muted);
+    max-width: 52rem;
+  }
+  .skills-line strong { color: var(--ink); }
+
+  .inline-quote {
+    margin-top: 1rem;
+    padding: 0.85rem 0 0.85rem 1rem;
+    border-left: 3px solid var(--accent);
+    font-size: 0.95rem;
+    color: var(--ink);
+    max-width: 40rem;
+  }
+  .inline-quote .attrib {
+    display: block;
+    margin-top: 0.45rem;
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    color: var(--muted);
+  }
+
+  /* ---------- FOOTER ---------- */
+  footer {
+    margin-top: 3rem;
+    padding: 1.75rem 0 3rem;
+    border-top: 2px solid var(--ink);
+  }
+  .foot-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2rem;
+    margin-bottom: 1.5rem;
+  }
+  .foot-grid h4 {
+    font-size: 0.95rem;
+    margin-bottom: 0.4rem;
+  }
+  .foot-grid p {
+    font-size: 0.92rem;
+    color: var(--muted);
+  }
+  .compiled {
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    color: var(--muted);
+  }
+
+  @keyframes rise {
+    from { opacity: 0; transform: translateY(12px); }
+    to { opacity: 1; transform: none; }
+  }
+
+  @media (max-width: 900px) {
+    .stat-strip { grid-template-columns: repeat(2, 1fr); }
+    .stat-chip:nth-child(4n) { border-right: 1px solid var(--border); }
+    .stat-chip:nth-child(2n) { border-right: 0; }
+    .stat-chip:nth-child(n+5) { border-bottom: 1px solid var(--border); }
+    .stat-strip .stat-chip:nth-child(-n+2) { border-bottom: 1px solid var(--border); }
+    .stat-strip .stat-chip:nth-child(2n) { border-right: 0; }
+    .ach-grid { grid-template-columns: 1fr 1fr; }
+    .ach-card:nth-child(4n) { border-right: 1px solid var(--border); }
+    .ach-card:nth-child(2n) { border-right: 0; }
+    .ai-cols, .tech-grid, .foot-grid { grid-template-columns: 1fr; }
+    .tech-card { border-right: 0; }
+    .career-item { grid-template-columns: 1fr; gap: 0.35rem; }
+  }
+
+  @media (max-width: 640px) {
+    .wrap { width: min(100% - 2rem, var(--max)); }
+    body {
+      background: var(--bg);
+    }
+    .leg { grid-template-columns: 2.5rem 1fr; gap: 0.85rem; }
+    .ach-grid { grid-template-columns: 1fr; }
+    .ach-card { border-right: 0; }
+    .ai-stats { grid-template-columns: 1fr; }
+    .ai-stats .stat-chip { border-right: 0; }
+    .back-link { left: 1rem; top: 1rem; }
+    #themeToggle { right: 1rem; top: 1rem; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+      animation: none !important;
+      transition: none !important;
+    }
+    .eyebrow, h1.name, .role, .loc-line, .summary, .stat-strip,
+    .leg, .reveal {
+      opacity: 1 !important;
+      transform: none !important;
+    }
+  }
+
+  @media print {
+    #themeToggle, .back-link { display: none !important; }
+    body { background: white; color: black; }
+  }
+</style>
+</head>
+<body>
+
+<button id="themeToggle" aria-label="Toggle theme" type="button">
+  <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
+    <circle cx="12" cy="12" r="4"></circle>
+    <path d="M12 2v2.2M12 19.8V22M4.93 4.93l1.56 1.56M17.51 17.51l1.56 1.56M2 12h2.2M19.8 12H22M4.93 19.07l1.56-1.56M17.51 6.49l1.56-1.56"></path>
+  </svg>
+  <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
+    <path d="M20.5 14.3A8.2 8.2 0 1 1 9.7 3.5a6.6 6.6 0 1 0 10.8 10.8z"></path>
+  </svg>
+</button>
+<a class="back-link" href="../index.html">← Hub</a>
+
+<section class="hero wrap">
+  <div class="eyebrow">Portfolio · Engineering Manager, Mobile &amp; Maps</div>
+  <h1 class="name">Muddassir Iqbal</h1>
+  <p class="role">Engineering Manager at <strong>Grab</strong>, leading consumer maps engineering across three hubs.</p>
+  <div class="loc-line">Based in Singapore · teams in Singapore, Beijing &amp; Jakarta</div>
+  <div class="contact-line">
+    <a href="mailto:cropper.2-runtime@icloud.com">cropper.2-runtime@icloud.com</a>
+    <a href="https://www.linkedin.com/in/iqbalmuddassir" target="_blank" rel="noopener">linkedin.com/in/iqbalmuddassir</a>
+  </div>
+  <p class="summary">Mobile engineer turned engineering manager, with more than ten years of shipping Android and iOS apps used by millions. At Grab I lead the teams behind the consumer map experience: the in-app map, wayfinding, and place discovery. I own release stability for the shared map SDKs used across the passenger, driver, and merchant apps. I still write code, take on the hardest platform migrations myself, and have made AI coding agents an everyday part of how my team works.</p>
+  <div class="stat-strip">
+    <div class="stat-chip"><span class="num">10+ yrs</span><span class="lbl">Building mobile apps, since 2015</span></div>
+    <div class="stat-chip"><span class="num">12</span><span class="lbl">Engineers on my team today</span></div>
+    <div class="stat-chip"><span class="num">3</span><span class="lbl">Engineering hubs, one team</span></div>
+    <div class="stat-chip"><span class="num">10M+</span><span class="lbl">Downloads on apps I've shipped for</span></div>
+  </div>
+</section>
+
+<section class="section wrap">
+  <div class="journey-intro">
+    <span class="tag">How I work</span>
+    <p>Five areas I focus on as an engineering manager, with examples from my time leading maps engineering at Grab.</p>
+  </div>
+  <div class="route-rail">
+    <div class="leg" data-leg="1">
+      <div class="pin">01</div>
+      <div class="leg-body">
+        <div class="leg-eyebrow">Technical Strategy</div>
+        <h3>Turning long technical bets into shipped work</h3>
+        <p>I own the platform roadmap for consumer maps: large migrations such as <strong>Kotlin 2.1 and Android 16 (API 36)</strong>, a <strong>navigation re-architecture on MapLibre</strong>, and cleanup of experimentation infrastructure. My job is to break multi-quarter technical work into pieces that ship without stalling product work.</p>
+        <p>The surfaces under my teams include the home-screen map, trip planning, and place search and discovery in one of Southeast Asia's largest consumer apps.</p>
+        <div class="metrics">
+          <span>Platform roadmap owner</span>
+          <span>Map, trip planning, search &amp; discovery</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="leg" data-leg="2">
+      <div class="pin">02</div>
+      <div class="leg-body">
+        <div class="leg-eyebrow">Growing Leaders</div>
+        <h3>Building a team that can run without me</h3>
+        <p>I lead a team of 12 engineers across Singapore, Beijing, and Jakarta, and have grown it through hiring. I've coached four engineers into leads who fully own their product areas.</p>
+        <p>I set up a navigation team in Jakarta from scratch and wrote the onboarding guides that get new hires shipping production code in their first week or two.</p>
+        <blockquote class="inline-quote">
+          Your leadership taught me more than just technical or execution skills. It shaped how I think about responsibility, clarity, and growth as an engineer.
+          <span class="attrib">A former team member</span>
+        </blockquote>
+        <div class="metrics">
+          <span><b>12</b> engineers · <b>4</b> leads grown</span>
+          <span>New team stood up in Jakarta</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="leg" data-leg="3">
+      <div class="pin">03</div>
+      <div class="leg-body">
+        <div class="leg-eyebrow">Engineering Excellence</div>
+        <h3>Taking on the hard migrations myself</h3>
+        <p>As a first-time manager in late 2022, I took over a crowdsourced map-contribution platform that was struggling, and later helped build Grab's in-house navigation stack, which now runs in the driver app. I personally shipped the <strong>Kotlin 2 (K2 compiler) and Android 16 migration</strong> on a core map SDK: KAPT to KSP, edge-to-edge UI, and several dependency upgrades with the full test suite passing.</p>
+        <p>I designed the unified feature-flag approach for consumer maps and led a multi-year, cross-platform build of a map-contribution SDK for Android and iOS. I review for release safety on both the passenger and driver release trains, and I dig into the hardest native crashes, including memory-corruption bugs in the C++ map renderer.</p>
+        <div class="metrics">
+          <span>Kotlin 2 · KSP · edge-to-edge</span>
+          <span>Android + iOS SDKs</span>
+          <span>Native C++ crash debugging</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="leg" data-leg="4">
+      <div class="pin">04</div>
+      <div class="leg-body">
+        <div class="leg-eyebrow">Cross-Team Partnership</div>
+        <h3>A bridge between maps and the rest of the app</h3>
+        <p>Maps sit underneath almost every product in a super app, so a lot of my work is coordination. I work with transport, food, payments, driver, and customer-support teams to get map features into their flows.</p>
+        <p>One example: a collaboration that surfaces restaurant deals on the map during a ride, built with the food and transport teams, which we then wrote up as a reusable model for future cross-team projects.</p>
+        <div class="metrics">
+          <span>Transport · Food · Payments · Driver</span>
+          <span>Reusable collaboration blueprint</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="leg" data-leg="5">
+      <div class="pin">05</div>
+      <div class="leg-body">
+        <div class="leg-eyebrow">Operational Rigor</div>
+        <h3>Calm incident response and honest retros</h3>
+        <p>When production issues hit navigation or the driver app, I coordinate the response: reproduction with QA, feature-flag rollback, recovery, and clear communication to leadership.</p>
+        <p>Afterwards I run blameless retros and turn them into process fixes, such as better severity classification and faster on-call escalation.</p>
+        <div class="metrics">
+          <span>Incident command</span>
+          <span>Blameless retros</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section wrap reveal">
+  <div class="section-head">
+    <span class="tag">AI-native engineering</span>
+    <h2>Agentic tooling as a team habit</h2>
+    <p>I treat AI coding agents as part of the team's toolkit and build the tooling that makes them useful on a large mobile codebase.</p>
+  </div>
+  <div class="ai-cols">
+    <div class="list-block">
+      <h4>Tools I've built</h4>
+      <ul>
+        <li>An <strong>AI coding orchestrator</strong> for Android, iOS, and backend work, now used by the whole team.</li>
+        <li><strong>Claude Skills</strong> that automate the Kotlin 2 and Android 16 migrations, reused by other teams for their own upgrades.</li>
+        <li>A <strong>mobile development kit</strong> and AI plugin, co-built with a peer engineer.</li>
+        <li>An <strong>MCP server</strong> for generating QR codes and deep links, so operations teams can create campaign links without waiting on engineers.</li>
+        <li>A team <strong>Gen AI workshop guide</strong> for setting up Claude Code, Cursor, and MCP.</li>
+      </ul>
+    </div>
+    <div class="list-block">
+      <h4>Talks I've given</h4>
+      <ul>
+        <li><strong>"Road to Super Engineering"</strong>, presented in Singapore, Beijing, and Romania, on engineers shifting from writing every line to directing AI agents.</li>
+        <li><strong>"Vibe Coding"</strong>, a brown-bag session on side projects as a source of engineering ideas.</li>
+        <li>A session on <strong>productivity with sub-agents</strong> at a department all-hands.</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<section class="section wrap reveal">
+  <div class="section-head">
+    <span class="tag">Technical breadth</span>
+    <h2>Where I sit in the stack</h2>
+  </div>
+  <div class="tech-grid">
+    <div class="tech-card">
+      <h4>Mobile Platform Engineering</h4>
+      <p>Map, navigation, and map-contribution SDKs on Android and iOS, plus code review on a native C++/JNI map-matching engine.</p>
+    </div>
+    <div class="tech-card">
+      <h4>Backend &amp; Experimentation</h4>
+      <p>Backend services for map contributions, and moving legacy feature flags onto a shared experimentation platform.</p>
+    </div>
+    <div class="tech-card">
+      <h4>On-device ML &amp; Discovery</h4>
+      <p>Review of on-device computer-vision models, and engineering ownership of recommendation-driven search and trip-planning surfaces.</p>
+    </div>
+    <div class="tech-card">
+      <h4>LLM &amp; Agentic Workflows</h4>
+      <p>Coding orchestrators, Claude Skills, and MCP servers, plus coaching engineers and managers on working with AI agents.</p>
+    </div>
+  </div>
+  <p class="skills-line"><strong>Hands-on stack:</strong> Kotlin, Java, Jetpack Compose, Swift, SwiftUI, NDK/JNI, TensorFlow Lite, Room, RxJava, Coroutines, MVVM, VIPER, JUnit, Mockito, Claude Code, Cursor, Copilot. Plus people management, planning, and cross-team delivery.</p>
+</section>
+
+<section class="section wrap reveal">
+  <div class="section-head">
+    <span class="tag">Career path</span>
+    <h2>From Android developer to engineering manager</h2>
+  </div>
+  <div class="career-list">
+    <div class="career-item">
+      <div>
+        <h3>Engineering Manager</h3>
+        <div class="org">Grab · Geo Engineering / Consumer Maps</div>
+        <p>Leading a team of 12 engineers across Singapore, Beijing, and Jakarta on cross-platform map SDKs covering on-device ML, map matching, and Compose UI kits. Driving adoption of AI coding tools across the team. Before that, as Lead Software Engineer on GrabDriver maps and navigation: MVVM and RxJava migration, Kotlin conversion, localisation, and better test coverage for an app with 10M+ downloads.</p>
+      </div>
+      <div class="when">Oct 2022 – Present<br>Lead SWE Aug 2019 – Sep 2022</div>
+    </div>
+    <div class="career-item">
+      <div>
+        <h3>Senior Software Engineer</h3>
+        <div class="org">OYO Rooms · Consumer app</div>
+        <p>Re-architected the app to VIPER, owned the release lifecycle and API contracts, redesigned search filters and the homepage widgets, shipped the Wizard loyalty feature, reduced latency, and migrated the codebase to Kotlin for an app with 10M+ downloads.</p>
+      </div>
+      <div class="when">Jun 2018 – Aug 2019</div>
+    </div>
+    <div class="career-item">
+      <div>
+        <h3>Android Developer</h3>
+        <div class="org">Roposo · Fashion social / commerce</div>
+        <p>Owned the full development lifecycle for the feed and story creation: OkHttp, ExoPlayer, custom gestures and animations, caching, and APK size and memory optimisation for an app with 5M+ downloads.</p>
+      </div>
+      <div class="when">Dec 2015 – May 2018</div>
+    </div>
+    <div class="career-item">
+      <div>
+        <h3>Android Developer</h3>
+        <div class="org">Click Labs / Freelance · Vyomo, XBowling, Frugal, KeyToMe</div>
+        <p>Shipped Material Design apps with maps, push notifications, Retrofit, Picasso, the Facebook SDK, and AWS uploads, including Vyomo (salon booking, later Naturals@Home) and other on-demand products.</p>
+      </div>
+      <div class="when">Jun 2015 – Nov 2015</div>
+    </div>
+    <div class="career-item">
+      <div>
+        <h3>B.E. Computer Science &amp; Engineering</h3>
+        <div class="org">Chandigarh College of Engineering &amp; Technology, Panjab University</div>
+      </div>
+      <div class="when">Aug 2011 – Jun 2015</div>
+    </div>
+  </div>
+</section>
+
+<section class="section wrap reveal">
+  <div class="section-head">
+    <span class="tag">What colleagues say</span>
+    <h2>In their words</h2>
+  </div>
+  <div class="quotes">
+    <div class="quote-card">
+      <p>Allowed the Geo team to fulfill all commitments… one full week ahead of schedule.</p>
+      <div class="attrib">A peer engineer, after a cross-team migration</div>
+    </div>
+    <div class="quote-card">
+      <p>Your leadership taught me more than just technical or execution skills. It shaped how I think about responsibility, clarity, and growth as an engineer.</p>
+      <div class="attrib">A former team member</div>
+    </div>
+  </div>
+</section>
+
+<footer class="wrap reveal">
+  <div class="foot-grid">
+    <div>
+      <h4>Recognition</h4>
+      <p>Grab CEO Award, Q1 2025.</p>
+    </div>
+    <div>
+      <h4>Get in touch</h4>
+      <p><a href="https://www.linkedin.com/in/iqbalmuddassir" target="_blank" rel="noopener">LinkedIn</a> · <a href="mailto:cropper.2-runtime@icloud.com">Email</a></p>
+    </div>
+  </div>
+  <div class="compiled">&copy; <span class="curr-year">2026</span> Muddassir Iqbal</div>
+</footer>
+
+<script>
+  const body = document.body;
+  const themeToggle = document.getElementById('themeToggle');
+  const savedTheme = localStorage.getItem('portfolio-theme');
+  if (savedTheme === 'light' || savedTheme === 'dark') {
+    body.classList.add(savedTheme);
+  }
+
+  themeToggle.addEventListener('click', () => {
+    if (body.classList.contains('light')) {
+      body.classList.remove('light');
+      body.classList.add('dark');
+      localStorage.setItem('portfolio-theme', 'dark');
+    } else if (body.classList.contains('dark')) {
+      body.classList.remove('dark');
+      body.classList.add('light');
+      localStorage.setItem('portfolio-theme', 'light');
+    } else {
+      const isDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+      body.classList.add(isDark ? 'light' : 'dark');
+      localStorage.setItem('portfolio-theme', isDark ? 'light' : 'dark');
+    }
+  });
+
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach((e) => {
+      if (e.isIntersecting) e.target.classList.add('in-view');
+    });
+  }, { threshold: 0.2 });
+  document.querySelectorAll('.leg').forEach((el) => io.observe(el));
+
+  const revealIo = new IntersectionObserver((entries) => {
+    entries.forEach((e) => {
+      if (e.isIntersecting) e.target.classList.add('in-view');
+    });
+  }, { threshold: 0.12 });
+  document.querySelectorAll('.reveal').forEach((el) => revealIo.observe(el));
+</script>
+
+</body>
+</html>
