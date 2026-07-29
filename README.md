@@ -2,7 +2,7 @@
 
 Static portfolio and documentation site by [Muddassir Iqbal](https://github.com/iqbalmuddassir). A hub linking to featured projects—digital marketing guides, Islamic app documentation, business courses, and internal concept work—built with vanilla HTML, CSS, and JavaScript.
 
-**Live site:** [https://iqbalmuddassir.github.io/bookish-pancake/](https://iqbalmuddassir.github.io/bookish-pancake/)
+**Live site:** [https://iqbalmuddassir.github.io/](https://iqbalmuddassir.github.io/)
 
 ## Projects
 
@@ -10,19 +10,19 @@ Static portfolio and documentation site by [Muddassir Iqbal](https://github.com/
 
 | Project | Description |
 |---------|-------------|
-| [Digital Marketing AI](https://iqbalmuddassir.github.io/bookish-pancake/digital-marketing-ai/) | 3-month freelancer roadmap for AI-assisted digital marketing |
-| [Al-Quran Education](https://iqbalmuddassir.github.io/bookish-pancake/quran-education-app/) | App documentation: recitations, translations, AI Halal checking, prayer tools (Android live — iOS soon) |
-| [Local Lead Gen Agency](https://iqbalmuddassir.github.io/bookish-pancake/local-lead-gen-agency/) | 14-module self-study course for building a local lead gen agency in India |
+| [Digital Marketing AI](https://iqbalmuddassir.github.io/digital-marketing-ai/) | 3-month freelancer roadmap for AI-assisted digital marketing |
+| [Al-Quran Education](https://iqbalmuddassir.github.io/quran-education-app/) | App documentation: recitations, translations, AI Halal checking, prayer tools (Android live — iOS soon) |
+| [Local Lead Gen Agency](https://iqbalmuddassir.github.io/local-lead-gen-agency/) | 14-module self-study course for building a local lead gen agency in India |
 
 ### Internal (private hub)
 
-These pages are deployed but hidden from the default hub. Open the hub with `?mode=private` to reveal them (for example: `…/bookish-pancake/?mode=private`).
+These pages are deployed but hidden from the default hub. Open the hub with `?mode=private` to reveal them (for example: `https://iqbalmuddassir.github.io/?mode=private`).
 
 | Project | Description |
 |---------|-------------|
-| [Minimal Family House](https://iqbalmuddassir.github.io/bookish-pancake/minimal-family-house/) | Trapezoid-plot concept plans — garden, patio, parking, rooftop BBQ, two-storey family home |
-| [Amanah India](https://iqbalmuddassir.github.io/bookish-pancake/amanah-india/) | Internal summary for an Islamic e-commerce marketplace |
-| [Grab SEM Portfolio](https://iqbalmuddassir.github.io/bookish-pancake/grab-sem-portfolio/) | Internal promotion portfolio — Consumer Maps leadership (Singapore, Beijing, Jakarta) |
+| [Minimal Family House](https://iqbalmuddassir.github.io/minimal-family-house/) | Trapezoid-plot concept plans — garden, patio, parking, rooftop BBQ, two-storey family home |
+| [Amanah India](https://iqbalmuddassir.github.io/amanah-india/) | Internal summary for an Islamic e-commerce marketplace |
+| [Grab SEM Portfolio](https://iqbalmuddassir.github.io/grab-sem-portfolio/) | Internal promotion portfolio — Consumer Maps leadership (Singapore, Beijing, Jakarta) |
 
 ## Repository structure
 
