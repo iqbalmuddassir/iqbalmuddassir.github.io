@@ -14,9 +14,9 @@ Static portfolio and documentation site by [Muddassir Iqbal](https://github.com/
 | [Al-Quran Education](https://iqbalmuddassir.github.io/quran-education-app/) | App documentation: recitations, translations, AI Halal checking, prayer tools (Android live — iOS soon) |
 | [Local Lead Gen Agency](https://iqbalmuddassir.github.io/local-lead-gen-agency/) | 14-module self-study course for building a local lead gen agency in India |
 
-### Internal (private hub)
+### Internal
 
-These pages are deployed but hidden from the default hub. Open the hub with `?mode=private` to reveal them (for example: `https://iqbalmuddassir.github.io/?mode=private`).
+These pages are deployed but hidden from the default hub.
 
 | Project | Description |
 |---------|-------------|
@@ -40,11 +40,11 @@ docs/
 │       ├── islamic-swiftui-redesign.html
 │       └── assets/
 ├── local-lead-gen-agency/index.html
-├── minimal-family-house/               # Internal (?mode=private)
+├── minimal-family-house/               # Internal
 │   ├── index.html
 │   └── assets/
-├── amanah-india/index.html             # Internal (?mode=private)
-└── grab-sem-portfolio/index.html       # Internal (?mode=private)
+├── amanah-india/index.html             # Internal
+└── grab-sem-portfolio/index.html       # Internal
 ```
 
 ## Local development
@@ -55,7 +55,7 @@ No build step or package manager is required. Open any HTML file in a browser, o
 cd docs && python3 -m http.server 8000
 ```
 
-Then visit [http://localhost:8000](http://localhost:8000). Use [http://localhost:8000/?mode=private](http://localhost:8000/?mode=private) to preview internal hub links.
+Then visit [http://localhost:8000](http://localhost:8000).
 
 ## Deployment
 
@@ -67,10 +67,9 @@ This repository keeps a **linear** history on `main`. Integrate with rebase or s
 
 ## Tech stack
 
-- **HTML, CSS, JavaScript** — no frameworks or bundlers
+- **HTML, CSS, and JavaScript** — no frameworks or bundlers
 - **Theming** — dark/light mode via CSS custom properties; preference stored in `localStorage`
 - **Typography** — Space Grotesk on the hub and most studio pages; Al-Quran Education uses Outfit + Cormorant Garamond
-- **Private hub** — cards with `card-private` appear only when `?mode=private` is set on the landing page
 
 Each page is self-contained with inline styles and scripts.
 
