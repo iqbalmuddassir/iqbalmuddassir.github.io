@@ -67,7 +67,7 @@ This repository keeps a **linear** history on `main`. Integrate with rebase or s
 
 ## Tech stack
 
-- **HTML, CSS, and JavaScript** — no frameworks or bundlers
+- **HTML, CSS, JavaScript** — no frameworks or bundlers
 - **Theming** — dark/light mode via CSS custom properties; preference stored in `localStorage`
 - **Typography** — Space Grotesk on the hub and most studio pages; Al-Quran Education uses Outfit + Cormorant Garamond
 
