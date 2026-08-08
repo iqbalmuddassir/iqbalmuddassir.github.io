@@ -13,6 +13,7 @@ Static portfolio and documentation site by [Muddassir Iqbal](https://github.com/
 | [Digital Marketing AI](https://iqbalmuddassir.github.io/digital-marketing-ai/) | 3-month freelancer roadmap for AI-assisted digital marketing |
 | [Al-Quran Education](https://iqbalmuddassir.github.io/quran-education-app/) | App documentation: recitations, translations, AI Halal checking, prayer tools (Android live — iOS soon) |
 | [Local Lead Gen Agency](https://iqbalmuddassir.github.io/local-lead-gen-agency/) | 14-module self-study course for building a local lead gen agency in India |
+| [SpaceBar](https://iqbalmuddassir.github.io/spacebar/) | macOS menu bar companion for JetBrains Space — issues, reviews, todos |
 
 ### Internal
 
@@ -23,7 +24,6 @@ These pages are deployed but hidden from the default hub.
 | [Minimal Family House](https://iqbalmuddassir.github.io/minimal-family-house/) | Trapezoid-plot concept plans — garden, patio, parking, rooftop BBQ, two-storey family home |
 | [Amanah India](https://iqbalmuddassir.github.io/amanah-india/) | Internal summary for an Islamic e-commerce marketplace |
 | [Grab SEM Portfolio](https://iqbalmuddassir.github.io/grab-sem-portfolio/) | Internal promotion portfolio — Consumer Maps leadership (Singapore, Beijing, Jakarta) |
-| [SpaceBar](https://iqbalmuddassir.github.io/spacebar/) | macOS menu bar companion for JetBrains Space — issues, reviews, todos |
 
 ## Repository structure
 
@@ -46,7 +46,7 @@ docs/
 │   └── assets/
 ├── amanah-india/index.html             # Internal
 ├── grab-sem-portfolio/index.html       # Internal
-└── spacebar/                           # Internal
+└── spacebar/
     ├── index.html
     └── assets/
 ```

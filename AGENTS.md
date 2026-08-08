@@ -6,9 +6,9 @@ Guidance for coding agents working in this repository.
 
 Static portfolio/documentation site ("Bridge to Purpose") for GitHub Pages. All content lives under `docs/`. There is no build system, package manager, or test framework — pages are self-contained HTML, CSS, and JavaScript.
 
-Public hub projects: Digital Marketing AI, Al-Quran Education (plus Android/iOS subpages), Local Lead Gen Agency.
+Public hub projects: Digital Marketing AI, Al-Quran Education (plus Android/iOS subpages), Local Lead Gen Agency, SpaceBar.
 
-Internal pages (Minimal Family House, Amanah India, Grab SEM Portfolio, SpaceBar) are deployed under `docs/` but only listed on the hub when opened with `?mode=private`.
+Internal pages (Minimal Family House, Amanah India, Grab SEM Portfolio) are deployed under `docs/` but only listed on the hub when opened with `?mode=private`.
 
 ## Cursor Cloud specific instructions
 
