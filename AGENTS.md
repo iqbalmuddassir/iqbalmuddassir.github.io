@@ -8,7 +8,7 @@ Static portfolio/documentation site ("Bridge to Purpose") for GitHub Pages. All 
 
 Public hub projects: Digital Marketing AI, Al-Quran Education (plus Android/iOS subpages), Local Lead Gen Agency.
 
-Internal pages (Minimal Family House, Amanah India, Grab SEM Portfolio) are deployed under `docs/` but only listed on the hub when opened with `?mode=private`.
+Internal pages (Minimal Family House, Amanah India, Grab SEM Portfolio, SpaceBar) are deployed under `docs/` but only listed on the hub when opened with `?mode=private`.
 
 ## Cursor Cloud specific instructions
 

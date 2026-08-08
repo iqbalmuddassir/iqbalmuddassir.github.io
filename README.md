@@ -23,6 +23,7 @@ These pages are deployed but hidden from the default hub.
 | [Minimal Family House](https://iqbalmuddassir.github.io/minimal-family-house/) | Trapezoid-plot concept plans — garden, patio, parking, rooftop BBQ, two-storey family home |
 | [Amanah India](https://iqbalmuddassir.github.io/amanah-india/) | Internal summary for an Islamic e-commerce marketplace |
 | [Grab SEM Portfolio](https://iqbalmuddassir.github.io/grab-sem-portfolio/) | Internal promotion portfolio — Consumer Maps leadership (Singapore, Beijing, Jakarta) |
+| [SpaceBar](https://iqbalmuddassir.github.io/spacebar/) | macOS menu bar companion for JetBrains Space — issues, reviews, todos |
 
 ## Repository structure
 
@@ -44,7 +45,11 @@ docs/
 │   ├── index.html
 │   └── assets/
 ├── amanah-india/index.html             # Internal
-└── grab-sem-portfolio/index.html       # Internal
+├── grab-sem-portfolio/index.html       # Internal
+└── spacebar/                           # Internal
+    ├── index.html
+    ├── capture-page-screenshots.sh
+    └── assets/
 ```
 
 ## Local development

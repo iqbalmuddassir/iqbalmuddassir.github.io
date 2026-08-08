@@ -39,6 +39,7 @@ All deliverables live under `docs/`:
 - `docs/minimal-family-house/index.html` — Trapezoid-plot family house concept plans
 - `docs/amanah-india/index.html` — Islamic e-commerce marketplace project summary
 - `docs/grab-sem-portfolio/index.html` — Grab SEM / Consumer Maps leadership promotion portfolio
+- `docs/spacebar/index.html` — SpaceBar macOS menu bar companion for JetBrains Space (issues, reviews, todos)
 
 ## Architecture & Conventions
 
