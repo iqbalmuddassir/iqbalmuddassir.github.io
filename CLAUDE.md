@@ -33,6 +33,7 @@ All deliverables live under `docs/`:
 - `docs/quran-education-app/android/index.html` — Android / Google Play marketing page
 - `docs/quran-education-app/ios/index.html` — iOS coming-soon page; `ios/islamic-swiftui-redesign.html` redesign gallery
 - `docs/local-lead-gen-agency/index.html` — 14-module self-study course: building a local lead gen agency in India (GBP, Meta Ads, automation, sales scripts)
+- `docs/spacebar/index.html` — SpaceBar macOS menu bar disk cleaner product page (hi-res panel/media screenshots)
 
 **Internal** (deployed, but hub cards use `card-private` and only show when the hub is opened with `?mode=private`)
 
