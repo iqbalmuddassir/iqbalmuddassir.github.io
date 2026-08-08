@@ -1,0 +1,685 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SpaceBar — Win back your disk from AI-era developer junk</title>
+  <meta name="description" content="AI coding fills your Mac with caches, builds, and junk overnight. SpaceBar shows free space in the menu bar and helps you reclaim gigabytes in seconds." />
+  <meta name="theme-color" content="#e5e9e6" />
+
+  <meta property="og:title" content="SpaceBar — Win back your disk from AI-era developer junk" />
+  <meta property="og:description" content="Your Mac is choking on DerivedData, Docker, npm, and screenshots. SpaceBar puts free space in the menu bar — clean it before Storage warnings hit." />
+  <meta property="og:type" content="website" />
+  <meta property="og:image" content="assets/spacebar-panel-good.png" />
+
+  <link rel="icon" href="assets/favicon.ico" sizes="any" />
+  <link rel="icon" type="image/png" sizes="32x32" href="assets/favicon-32.png" />
+  <link rel="icon" type="image/png" sizes="16x16" href="assets/favicon-16.png" />
+  <link rel="apple-touch-icon" href="assets/apple-touch-icon.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet" />
+
+  <style>
+    :root {
+      --bg: #e5e9e6;
+      --bg-deep: #d2d8d3;
+      --ink: #171a18;
+      --muted: #5c645e;
+      --line: #171a18;
+      --line-soft: color-mix(in srgb, var(--ink) 22%, transparent);
+      --accent: #8c1f2f;
+      --surface: #eef1ee;
+      --panel-2: color-mix(in srgb, var(--ink) 4%, transparent);
+      --good: #1f6b4a;
+      --warn: #8a5a12;
+      --crit: #8c1f2f;
+      --toggle-bg: #eef1ee;
+      --max: 1120px;
+      --shot-shadow: 0 28px 64px color-mix(in srgb, var(--ink) 18%, transparent);
+    }
+
+    body.dark {
+      --bg: #141816;
+      --bg-deep: #1c211e;
+      --ink: #e8ece9;
+      --muted: #a3aaa5;
+      --line: #e8ece9;
+      --accent: #e07a86;
+      --surface: #1c211e;
+      --panel-2: color-mix(in srgb, var(--ink) 6%, transparent);
+      --good: #7dbaa8;
+      --warn: #d4a574;
+      --crit: #e07a86;
+      --toggle-bg: #1c211e;
+      --shot-shadow: 0 28px 64px rgba(0, 0, 0, 0.45);
+    }
+
+    @media (prefers-color-scheme: dark) {
+      body:not(.light) {
+        --bg: #141816;
+        --bg-deep: #1c211e;
+        --ink: #e8ece9;
+        --muted: #a3aaa5;
+        --line: #e8ece9;
+        --accent: #e07a86;
+        --surface: #1c211e;
+        --panel-2: color-mix(in srgb, var(--ink) 6%, transparent);
+        --good: #7dbaa8;
+        --warn: #d4a574;
+        --crit: #e07a86;
+        --toggle-bg: #1c211e;
+        --shot-shadow: 0 28px 64px rgba(0, 0, 0, 0.45);
+      }
+    }
+
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+
+    body {
+      margin: 0;
+      font-family: "Space Grotesk", sans-serif;
+      color: var(--ink);
+      background:
+        linear-gradient(105deg, var(--bg) 0%, var(--bg) 58%, var(--bg-deep) 58%, var(--bg-deep) 100%);
+      line-height: 1.55;
+      transition: background 0.3s ease, color 0.3s ease;
+    }
+
+    a { color: var(--accent); text-decoration: none; }
+    a:hover { text-decoration: underline; text-underline-offset: 3px; }
+
+    #themeToggle {
+      position: fixed;
+      top: 1.25rem;
+      right: 1.25rem;
+      z-index: 2000;
+      width: 2.5rem;
+      height: 2.5rem;
+      border: 1.5px solid var(--ink);
+      border-radius: 0;
+      background: var(--toggle-bg);
+      color: var(--ink);
+      cursor: pointer;
+      display: grid;
+      place-items: center;
+      transition: background 0.2s ease, color 0.2s ease;
+    }
+
+    #themeToggle:hover {
+      background: var(--ink);
+      color: var(--bg);
+    }
+
+    #themeToggle svg { width: 1rem; height: 1rem; }
+    #themeToggle .icon-moon { display: none; }
+    body.dark #themeToggle .icon-sun { display: none; }
+    body.dark #themeToggle .icon-moon { display: block; }
+
+    @media (prefers-color-scheme: dark) {
+      body:not(.light) #themeToggle .icon-sun { display: none; }
+      body:not(.light) #themeToggle .icon-moon { display: block; }
+      body.light #themeToggle .icon-sun { display: block; }
+      body.light #themeToggle .icon-moon { display: none; }
+    }
+
+    .page {
+      width: min(var(--max), calc(100% - 3rem));
+      margin: 0 auto;
+      padding: 1.5rem 0 4rem;
+    }
+
+    .top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      padding: 0.25rem 0 1.5rem;
+    }
+
+    .hub-link {
+      color: var(--ink);
+      font-weight: 600;
+      font-size: 0.92rem;
+      letter-spacing: -0.02em;
+    }
+
+    .hub-link:hover { color: var(--accent); text-decoration: none; }
+
+    .platform {
+      font-size: 0.78rem;
+      font-weight: 600;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+
+    .hero {
+      display: grid;
+      grid-template-columns: minmax(0, 1.05fr) minmax(0, 0.95fr);
+      gap: clamp(2rem, 5vw, 3.5rem);
+      align-items: end;
+      min-height: min(78vh, 720px);
+      padding: 1rem 0 3.5rem;
+      border-bottom: 1.5px solid var(--line);
+    }
+
+    .brand-row {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      margin-bottom: 1.25rem;
+      animation: rise 0.7s ease both;
+    }
+
+    .brand-icon {
+      width: 4.5rem;
+      height: 4.5rem;
+      border-radius: 1rem;
+      box-shadow: 0 12px 28px color-mix(in srgb, var(--ink) 12%, transparent);
+    }
+
+    .brand-name {
+      margin: 0;
+      font-size: clamp(2.8rem, 6vw, 4.4rem);
+      font-weight: 700;
+      letter-spacing: -0.05em;
+      line-height: 0.95;
+    }
+
+    .hero h1 {
+      margin: 0 0 1rem;
+      max-width: 14ch;
+      font-size: clamp(1.55rem, 3.2vw, 2.25rem);
+      font-weight: 600;
+      letter-spacing: -0.035em;
+      line-height: 1.15;
+      animation: rise 0.7s ease 0.08s both;
+    }
+
+    .hero-copy {
+      margin: 0 0 1.75rem;
+      max-width: 38ch;
+      color: var(--muted);
+      font-size: 1.05rem;
+      animation: rise 0.7s ease 0.16s both;
+    }
+
+    .cta-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.75rem;
+      animation: rise 0.7s ease 0.24s both;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.45rem;
+      padding: 0.85rem 1.15rem;
+      border: 1.5px solid var(--ink);
+      font-weight: 600;
+      font-size: 0.95rem;
+      letter-spacing: -0.02em;
+      text-decoration: none;
+      color: var(--ink);
+      transition: background 0.2s ease, color 0.2s ease, transform 0.2s ease;
+    }
+
+    .btn:hover {
+      text-decoration: none;
+      transform: translateY(-1px);
+    }
+
+    .btn-primary {
+      background: var(--ink);
+      color: var(--bg);
+    }
+
+    .btn-primary:hover {
+      background: var(--accent);
+      border-color: var(--accent);
+      color: #fff;
+    }
+
+    .btn-ghost:hover {
+      background: var(--panel-2);
+    }
+
+    .hero-visual {
+      position: relative;
+      animation: floatIn 0.9s ease 0.12s both;
+    }
+
+    .hero-shot {
+      display: block;
+      width: min(100%, 420px);
+      height: auto;
+      aspect-ratio: 3 / 4;
+      margin-left: auto;
+      border-radius: 14px;
+      box-shadow: var(--shot-shadow);
+      background: #1c1c1e;
+      object-fit: contain;
+    }
+
+    .pill-strip {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.85rem 1.25rem;
+      align-items: center;
+      margin-top: 1.25rem;
+      animation: rise 0.7s ease 0.3s both;
+    }
+
+    .pill-item {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.55rem;
+      color: var(--muted);
+      font-size: 0.85rem;
+      font-weight: 500;
+    }
+
+    .pill-item img {
+      height: 22px;
+      width: auto;
+      image-rendering: auto;
+    }
+
+    .pill-item.good { color: var(--good); }
+    .pill-item.low { color: var(--warn); }
+    .pill-item.critical { color: var(--crit); }
+
+    section {
+      padding: 3.5rem 0;
+      border-bottom: 1.5px solid var(--line-soft);
+    }
+
+    section:last-of-type { border-bottom: none; }
+
+    .section-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: end;
+      gap: 1rem;
+      margin-bottom: 1.75rem;
+    }
+
+    .section-head h2 {
+      margin: 0;
+      font-size: clamp(1.45rem, 2.8vw, 1.9rem);
+      letter-spacing: -0.035em;
+    }
+
+    .section-head p {
+      margin: 0.35rem 0 0;
+      color: var(--muted);
+      max-width: 46ch;
+    }
+
+    .gallery {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 1rem;
+    }
+
+    .gallery figure {
+      margin: 0;
+    }
+
+    .gallery img {
+      display: block;
+      width: 100%;
+      height: auto;
+      aspect-ratio: 3 / 4;
+      object-fit: contain;
+      border-radius: 12px;
+      box-shadow: var(--shot-shadow);
+      background: #1c1c1e;
+      transition: transform 0.35s ease;
+    }
+
+    .gallery figure:hover img {
+      transform: translateY(-4px);
+    }
+
+    .gallery figcaption {
+      margin-top: 0.7rem;
+      font-size: 0.85rem;
+      font-weight: 600;
+      letter-spacing: -0.02em;
+    }
+
+    .gallery figcaption span {
+      display: block;
+      margin-top: 0.15rem;
+      font-weight: 400;
+      color: var(--muted);
+    }
+
+    .features {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 1.25rem;
+    }
+
+    .feature {
+      padding: 1.25rem 0;
+      border-top: 1.5px solid var(--line);
+    }
+
+    .feature h3 {
+      margin: 0 0 0.45rem;
+      font-size: 1.05rem;
+      letter-spacing: -0.02em;
+    }
+
+    .feature p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 0.95rem;
+    }
+
+    .targets {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 0.75rem 2rem;
+      margin: 0;
+      padding: 0;
+      list-style: none;
+    }
+
+    .targets li {
+      display: grid;
+      grid-template-columns: 7.5rem 1fr;
+      gap: 0.75rem;
+      padding: 0.85rem 0;
+      border-bottom: 1px solid var(--line-soft);
+      font-size: 0.95rem;
+    }
+
+    .targets strong {
+      letter-spacing: -0.02em;
+    }
+
+    .targets span { color: var(--muted); }
+
+    .stack {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+    }
+
+    .stack span {
+      padding: 0.4rem 0.65rem;
+      border: 1px solid var(--line-soft);
+      font-size: 0.82rem;
+      font-weight: 600;
+      letter-spacing: -0.01em;
+      color: var(--muted);
+    }
+
+    footer {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      gap: 0.75rem;
+      padding-top: 2rem;
+      color: var(--muted);
+      font-size: 0.85rem;
+    }
+
+    @keyframes rise {
+      from { opacity: 0; transform: translateY(14px); }
+      to { opacity: 1; transform: none; }
+    }
+
+    @keyframes floatIn {
+      from { opacity: 0; transform: translateY(24px) scale(0.98); }
+      to { opacity: 1; transform: none; }
+    }
+
+    @media (max-width: 960px) {
+      .hero {
+        grid-template-columns: 1fr;
+        min-height: auto;
+        align-items: start;
+      }
+
+      .hero-shot {
+        margin: 0 auto;
+      }
+
+      .gallery {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .features {
+        grid-template-columns: 1fr;
+      }
+
+      .targets {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 640px) {
+      .page { width: min(100% - 1.5rem, var(--max)); }
+
+      .gallery {
+        grid-template-columns: 1fr;
+        max-width: 360px;
+      }
+
+      .targets li {
+        grid-template-columns: 1fr;
+        gap: 0.2rem;
+      }
+
+      #themeToggle {
+        top: 0.85rem;
+        right: 0.85rem;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation: none !important;
+        transition: none !important;
+      }
+    }
+  </style>
+</head>
+<body>
+  <button id="themeToggle" aria-label="Toggle theme" type="button">
+    <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
+      <circle cx="12" cy="12" r="4"></circle>
+      <path d="M12 2v2.2M12 19.8V22M4.93 4.93l1.56 1.56M17.51 17.51l1.56 1.56M2 12h2.2M19.8 12H22M4.93 19.07l1.56-1.56M17.51 6.49l1.56-1.56"></path>
+    </svg>
+    <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
+      <path d="M20.5 14.3A8.2 8.2 0 1 1 9.7 3.5a6.6 6.6 0 1 0 10.8 10.8z"></path>
+    </svg>
+  </button>
+
+  <main class="page">
+    <div class="top">
+      <a class="hub-link" href="../index.html">← Bridge to Purpose</a>
+      <span class="platform">macOS 14+</span>
+    </div>
+
+    <header class="hero">
+      <div>
+        <div class="brand-row">
+          <img class="brand-icon" src="assets/app-icon.png" width="72" height="72" alt="SpaceBar app icon" />
+          <p class="brand-name">SpaceBar</p>
+        </div>
+        <h1>Your Mac is drowning in AI-era junk. Take the gigabytes back.</h1>
+        <p class="hero-copy">
+          Agents, copilots, and nonstop builds leave DerivedData, Docker layers, package caches, and
+          screenshot piles everywhere. SpaceBar sits in your menu bar, shows how bad it is, and lets
+          you wipe regenerable junk in one click — before “Storage Almost Full” ruins your flow.
+        </p>
+        <div class="cta-row">
+          <a class="btn btn-primary" href="https://github.com/iqbalmuddassir/spaceBar" target="_blank" rel="noopener noreferrer">
+            Get SpaceBar on GitHub
+          </a>
+          <a class="btn btn-ghost" href="#gallery">See it reclaim space</a>
+        </div>
+        <div class="pill-strip" aria-label="Menu bar free-space states">
+          <span class="pill-item good">
+            <img src="assets/spacebar-pill-good.png" alt="" height="22" />
+            Plenty free
+          </span>
+          <span class="pill-item low">
+            <img src="assets/spacebar-pill-low.png" alt="" height="22" />
+            Running low
+          </span>
+          <span class="pill-item critical">
+            <img src="assets/spacebar-pill-critical.png" alt="" height="22" />
+            Critical
+          </span>
+        </div>
+      </div>
+      <div class="hero-visual">
+        <img
+          class="hero-shot"
+          src="assets/spacebar-panel-good.png"
+          width="420"
+          height="560"
+          alt="SpaceBar panel showing free space and gigabytes ready to reclaim from developer caches"
+        />
+      </div>
+    </header>
+
+    <section id="gallery">
+      <div class="section-head">
+        <div>
+          <h2>Watch the pressure drop</h2>
+          <p>Green when you’re fine. Orange when AI week is catching up. Red when it’s time to clean — now.</p>
+        </div>
+      </div>
+      <div class="gallery">
+        <figure>
+          <img src="assets/spacebar-panel-good.png" width="420" height="560" alt="SpaceBar panel with plenty of free space" loading="lazy" />
+          <figcaption>Breathing room<span>Green · ~62% free</span></figcaption>
+        </figure>
+        <figure>
+          <img src="assets/spacebar-panel-low.png" width="420" height="560" alt="SpaceBar panel when free space is low" loading="lazy" />
+          <figcaption>Getting tight<span>Orange · 25% free</span></figcaption>
+        </figure>
+        <figure>
+          <img src="assets/spacebar-panel-critical.png" width="420" height="560" alt="SpaceBar panel when free space is critical" loading="lazy" />
+          <figcaption>Act now<span>Red · 5% free</span></figcaption>
+        </figure>
+        <figure>
+          <img src="assets/spacebar-media-browser.png" width="420" height="560" alt="SpaceBar screenshots and recordings browser" loading="lazy" />
+          <figcaption>Screenshot graveyard<span>Keep what matters, delete the rest</span></figcaption>
+        </figure>
+      </div>
+    </section>
+
+    <section id="features">
+      <div class="section-head">
+        <div>
+          <h2>Built for how we ship now</h2>
+          <p>More AI, more builds, more caches — SpaceBar turns that invisible pile into gigabytes you can get back today.</p>
+        </div>
+      </div>
+      <div class="features">
+        <article class="feature">
+          <h3>Always-on free-space radar</h3>
+          <p>A colored pill in the menu bar so you notice the crunch before Xcode, Docker, or the next agent run stalls.</p>
+        </article>
+        <article class="feature">
+          <h3>Nuke regenerable caches</h3>
+          <p>DerivedData, Gradle, npm, Docker build cache, Homebrew, and more — confirm once, free space immediately.</p>
+        </article>
+        <article class="feature">
+          <h3>Tame screenshot chaos</h3>
+          <p>Review Desktop, Pictures, Movies, and Downloads captures. Age filters help clear the AI-debugging collage.</p>
+        </article>
+        <article class="feature">
+          <h3>Empty Trash for real</h3>
+          <p>Deleted ≠ free. Empty Trash from SpaceBar so those “reclaimed” gigabytes actually show up again.</p>
+        </article>
+        <article class="feature">
+          <h3>Safe by design</h3>
+          <p>Deletes stay on a path allowlist. Riskier targets ask harder. You’re cleaning junk — not guessing in Finder.</p>
+        </article>
+        <article class="feature">
+          <h3>Numbers you trust</h3>
+          <p>Decimal GB like System Settings → Storage. Same language as the warning you’re trying to escape.</p>
+        </article>
+      </div>
+    </section>
+
+    <section id="targets">
+      <div class="section-head">
+        <div>
+          <h2>Where the gigabytes hide</h2>
+          <p>If a tool isn’t on your machine, SpaceBar skips it. Everything else is fair game for reclaim.</p>
+        </div>
+      </div>
+      <ul class="targets">
+        <li><strong>General</strong><span>User temp files, app caches</span></li>
+        <li><strong>Xcode</strong><span>DerivedData, Archives, DeviceSupport, unavailable sims</span></li>
+        <li><strong>Android / Java</strong><span>AVDs, Gradle caches</span></li>
+        <li><strong>Packages</strong><span>CocoaPods, SwiftPM, npm, pnpm</span></li>
+        <li><strong>Tools</strong><span>Homebrew, uv, pip, Docker build cache</span></li>
+        <li><strong>Media</strong><span>Screenshots and screen recordings (review first)</span></li>
+      </ul>
+    </section>
+
+    <section id="stack">
+      <div class="section-head">
+        <div>
+          <h2>Native. Fast. Open source.</h2>
+          <p>Swift + SwiftUI on macOS 14+ — no Electron bloat stealing the space you just freed.</p>
+        </div>
+      </div>
+      <div class="stack">
+        <span>Swift 5</span>
+        <span>SwiftUI</span>
+        <span>AppKit</span>
+        <span>XcodeGen</span>
+        <span>swift-snapshot-testing</span>
+        <span>macOS 14+</span>
+        <span>MIT License</span>
+      </div>
+    </section>
+
+    <footer>
+      <span>© 2026 Muddassir Iqbal</span>
+      <a href="https://github.com/iqbalmuddassir/spaceBar" target="_blank" rel="noopener noreferrer">github.com/iqbalmuddassir/spaceBar</a>
+    </footer>
+  </main>
+
+  <script>
+    const themeToggle = document.getElementById('themeToggle');
+    const body = document.body;
+    const saved = localStorage.getItem('hub-theme');
+    if (saved === 'dark-mode') body.classList.add('dark');
+    if (saved === 'light-mode') body.classList.add('light');
+
+    themeToggle.addEventListener('click', () => {
+      const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+      if (body.classList.contains('dark')) {
+        body.classList.remove('dark');
+        body.classList.add('light');
+        localStorage.setItem('hub-theme', 'light-mode');
+      } else if (body.classList.contains('light')) {
+        body.classList.remove('light');
+        body.classList.add('dark');
+        localStorage.setItem('hub-theme', 'dark-mode');
+      } else if (prefersDark) {
+        body.classList.add('light');
+        localStorage.setItem('hub-theme', 'light-mode');
+      } else {
+        body.classList.add('dark');
+        localStorage.setItem('hub-theme', 'dark-mode');
+      }
+    });
+  </script>
+</body>
+</html>
