@@ -1,40 +1,40 @@
 #!/usr/bin/env bash
-# Capture light/dark marketing screenshots of the SpaceBar portfolio page via headless Chrome.
-# Relies on the oneshot wrapper installed by .cursor/environment.json (temp Chrome profile).
+# Capture high-DPI SpaceBar UI screenshots from the local HTML mockup, plus
+# light/dark shots of the portfolio page. Uses the Chrome oneshot wrapper from
+# .cursor/environment.json (temp profile, --force-device-scale-factor=2).
 #
-# Usage (docs server must be serving docs/ on :8000):
+# Usage (docs server must serve docs/ on :8000):
 #   python3 -m http.server 8000 --directory docs &
 #   bash docs/spacebar/capture-page-screenshots.sh
-#
-# App UI snapshots from the local SpaceBar checkout (Swift SnapshotTesting / manual
-# captures) can be dropped into docs/spacebar/assets/ and wired into index.html —
-# same pattern as docs/quran-education-app/android/capture-device-screenshots.sh.
 set -euo pipefail
 
 ROOT="$(cd "$(dirname "$0")" && pwd)"
 OUT="$ROOT/assets"
 mkdir -p "$OUT"
 
-BASE_URL="${SPACEBAR_PAGE_URL:-http://127.0.0.1:8000/spacebar/}"
-WIDTH="${SHOT_WIDTH:-1440}"
-HEIGHT="${SHOT_HEIGHT:-1800}"
+BASE="${SPACEBAR_BASE_URL:-http://127.0.0.1:8000/spacebar}"
+WIDTH="${SHOT_WIDTH:-1260}"
+HEIGHT="${SHOT_HEIGHT:-900}"
 
-if ! curl -fsS "$BASE_URL" >/dev/null; then
-  echo "Docs server not reachable at $BASE_URL"
+if ! curl -fsS "$BASE/" >/dev/null; then
+  echo "Docs server not reachable at $BASE/"
   echo "Start it with: python3 -m http.server 8000 --directory docs"
   exit 1
 fi
 
 capture() {
   local name="$1"
-  local theme="$2"
-  local url="${BASE_URL}?theme=${theme}"
+  local url="$2"
+  local w="${3:-$WIDTH}"
+  local h="${4:-$HEIGHT}"
+  local scale="${5:-2}"
   google-chrome \
     --headless=new \
-    --screenshot="$OUT/${name}.png" \
-    --window-size="${WIDTH},${HEIGHT}" \
     --hide-scrollbars \
-    --virtual-time-budget=8000 \
+    --force-device-scale-factor="$scale" \
+    --window-size="${w},${h}" \
+    --virtual-time-budget=12000 \
+    --screenshot="$OUT/${name}.png" \
     "$url"
   if [[ ! -s "$OUT/${name}.png" ]]; then
     echo "Failed to write $OUT/${name}.png"
@@ -43,7 +43,14 @@ capture() {
   echo "  captured ${name}.png ($(wc -c < "$OUT/${name}.png") bytes)"
 }
 
-echo "Capturing SpaceBar page shots → $OUT"
-capture "page-light" "light"
-capture "page-dark" "dark"
+echo "Capturing SpaceBar UI mockups (2x) → $OUT"
+capture "issues"   "$BASE/mockup.html?view=issues"
+capture "settings" "$BASE/mockup.html?view=settings"
+
+PROOF="${SPACEBAR_PROOF_DIR:-/tmp/spacebar-page-proofs}"
+mkdir -p "$PROOF"
+echo "Capturing portfolio page light/dark proofs → $PROOF"
+OUT="$PROOF" capture "page-light" "$BASE/?theme=light" 1440 1800 1
+OUT="$PROOF" capture "page-dark"  "$BASE/?theme=dark"  1440 1800 1
+
 echo "Done."
