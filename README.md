@@ -48,7 +48,6 @@ docs/
 ├── grab-sem-portfolio/index.html       # Internal
 └── spacebar/                           # Internal
     ├── index.html
-    ├── capture-page-screenshots.sh
     └── assets/
 ```
 
