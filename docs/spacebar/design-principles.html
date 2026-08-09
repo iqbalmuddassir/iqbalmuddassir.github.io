@@ -1,0 +1,928 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Design principles — lessons from building SpaceBar</title>
+  <meta name="description" content="Thirteen design principles drawn from the SpaceBar panel redesign: lead with the number people came for, let age govern the checkbox, and make settings restate themselves in real units." />
+  <meta name="theme-color" content="#e5e9e6" />
+
+  <meta property="og:title" content="Design principles — lessons from building SpaceBar" />
+  <meta property="og:description" content="What a menu bar disk cleaner taught us about hierarchy, defaults, and settings that show their own effect." />
+  <meta property="og:type" content="article" />
+  <meta property="og:image" content="assets/spacebar-panel-good.png" />
+
+  <link rel="icon" href="assets/favicon.ico" sizes="any" />
+  <link rel="icon" type="image/png" sizes="32x32" href="assets/favicon-32.png" />
+  <link rel="icon" type="image/png" sizes="16x16" href="assets/favicon-16.png" />
+  <link rel="apple-touch-icon" href="assets/apple-touch-icon.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet" />
+
+  <style>
+    :root {
+      --bg: #e5e9e6;
+      --bg-deep: #d2d8d3;
+      --ink: #171a18;
+      --muted: #5c645e;
+      --line: #171a18;
+      --line-soft: color-mix(in srgb, var(--ink) 22%, transparent);
+      --accent: #8c1f2f;
+      --surface: #eef1ee;
+      --panel-2: color-mix(in srgb, var(--ink) 4%, transparent);
+      --toggle-bg: #eef1ee;
+      --max: 1120px;
+      --shot-shadow: 0 28px 64px color-mix(in srgb, var(--ink) 18%, transparent);
+    }
+
+    body.dark {
+      --bg: #141816;
+      --bg-deep: #1c211e;
+      --ink: #e8ece9;
+      --muted: #a3aaa5;
+      --line: #e8ece9;
+      --accent: #e07a86;
+      --surface: #1c211e;
+      --panel-2: color-mix(in srgb, var(--ink) 6%, transparent);
+      --toggle-bg: #1c211e;
+      --shot-shadow: 0 28px 64px rgba(0, 0, 0, 0.45);
+    }
+
+    @media (prefers-color-scheme: dark) {
+      body:not(.light) {
+        --bg: #141816;
+        --bg-deep: #1c211e;
+        --ink: #e8ece9;
+        --muted: #a3aaa5;
+        --line: #e8ece9;
+        --accent: #e07a86;
+        --surface: #1c211e;
+        --panel-2: color-mix(in srgb, var(--ink) 6%, transparent);
+        --toggle-bg: #1c211e;
+        --shot-shadow: 0 28px 64px rgba(0, 0, 0, 0.45);
+      }
+    }
+
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+
+    body {
+      margin: 0;
+      font-family: "Space Grotesk", sans-serif;
+      color: var(--ink);
+      background:
+        linear-gradient(105deg, var(--bg) 0%, var(--bg) 58%, var(--bg-deep) 58%, var(--bg-deep) 100%);
+      line-height: 1.55;
+      transition: background 0.3s ease, color 0.3s ease;
+    }
+
+    a { color: var(--accent); text-decoration: none; }
+    a:hover { text-decoration: underline; text-underline-offset: 3px; }
+
+    #themeToggle {
+      position: fixed;
+      top: 1.25rem;
+      right: 1.25rem;
+      z-index: 2000;
+      width: 2.5rem;
+      height: 2.5rem;
+      border: 1.5px solid var(--ink);
+      border-radius: 0;
+      background: var(--toggle-bg);
+      color: var(--ink);
+      cursor: pointer;
+      display: grid;
+      place-items: center;
+      transition: background 0.2s ease, color 0.2s ease;
+    }
+
+    #themeToggle:hover {
+      background: var(--ink);
+      color: var(--bg);
+    }
+
+    #themeToggle svg { width: 1rem; height: 1rem; }
+    #themeToggle .icon-moon { display: none; }
+    body.dark #themeToggle .icon-sun { display: none; }
+    body.dark #themeToggle .icon-moon { display: block; }
+
+    @media (prefers-color-scheme: dark) {
+      body:not(.light) #themeToggle .icon-sun { display: none; }
+      body:not(.light) #themeToggle .icon-moon { display: block; }
+      body.light #themeToggle .icon-sun { display: block; }
+      body.light #themeToggle .icon-moon { display: none; }
+    }
+
+    .page {
+      width: min(var(--max), calc(100% - 3rem));
+      margin: 0 auto;
+      padding: 1.5rem 0 4rem;
+    }
+
+    .top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      padding: 0.25rem 0 1.5rem;
+    }
+
+    .hub-link {
+      color: var(--ink);
+      font-weight: 600;
+      font-size: 0.92rem;
+      letter-spacing: -0.02em;
+    }
+
+    .hub-link:hover { color: var(--accent); text-decoration: none; }
+
+    .kicker {
+      font-size: 0.78rem;
+      font-weight: 600;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+
+    .masthead {
+      padding: 2rem 0 3rem;
+      border-bottom: 1.5px solid var(--line);
+      animation: rise 0.7s ease both;
+    }
+
+    .masthead h1 {
+      margin: 0 0 1rem;
+      max-width: 18ch;
+      font-size: clamp(2.1rem, 5.4vw, 3.6rem);
+      font-weight: 700;
+      letter-spacing: -0.05em;
+      line-height: 1.02;
+    }
+
+    .standfirst {
+      margin: 0;
+      max-width: 60ch;
+      color: var(--muted);
+      font-size: 1.05rem;
+    }
+
+    section {
+      padding: 3.25rem 0;
+      border-bottom: 1.5px solid var(--line-soft);
+    }
+
+    section:last-of-type { border-bottom: none; }
+
+    .section-head h2 {
+      margin: 0;
+      font-size: clamp(1.45rem, 2.8vw, 1.9rem);
+      letter-spacing: -0.035em;
+    }
+
+    .section-head p {
+      margin: 0.35rem 0 0;
+      color: var(--muted);
+      max-width: 52ch;
+    }
+
+    .section-head { margin-bottom: 1.75rem; }
+
+    .issues {
+      margin: 0;
+      padding: 0;
+      list-style: none;
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 0 2.5rem;
+    }
+
+    .issues li {
+      display: grid;
+      grid-template-columns: 2rem 1fr;
+      gap: 0.5rem;
+      padding: 0.9rem 0;
+      border-bottom: 1px solid var(--line-soft);
+    }
+
+    .issues .n {
+      color: var(--muted);
+      font-size: 0.8rem;
+      font-weight: 600;
+      padding-top: 0.15rem;
+    }
+
+    .issues b {
+      display: block;
+      font-size: 0.98rem;
+      letter-spacing: -0.02em;
+    }
+
+    .issues span.det {
+      display: block;
+      margin-top: 0.15rem;
+      color: var(--muted);
+      font-size: 0.92rem;
+    }
+
+    .principles {
+      display: grid;
+      gap: 0;
+      counter-reset: principle;
+    }
+
+    .principle {
+      display: grid;
+      grid-template-columns: 4rem minmax(0, 1fr) minmax(0, 0.85fr);
+      gap: 1.5rem;
+      padding: 1.9rem 0;
+      border-top: 1.5px solid var(--line);
+    }
+
+    .principle .num {
+      counter-increment: principle;
+      font-size: 1.1rem;
+      font-weight: 700;
+      letter-spacing: -0.03em;
+      color: var(--muted);
+    }
+
+    .principle .num::before {
+      content: counter(principle, decimal-leading-zero);
+    }
+
+    .principle h3 {
+      margin: 0 0 0.5rem;
+      font-size: clamp(1.1rem, 2vw, 1.35rem);
+      letter-spacing: -0.03em;
+      line-height: 1.2;
+    }
+
+    .principle p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 0.97rem;
+    }
+
+    .principle p + p { margin-top: 0.7rem; }
+
+    .shipped {
+      align-self: start;
+      padding: 0.9rem 1rem;
+      background: var(--panel-2);
+      border-left: 2px solid var(--accent);
+      font-size: 0.9rem;
+      color: var(--muted);
+    }
+
+    .shipped strong {
+      display: block;
+      margin-bottom: 0.25rem;
+      color: var(--ink);
+      font-size: 0.78rem;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+
+    .steps {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 1.25rem;
+      margin: 0;
+      padding: 0;
+      list-style: none;
+      counter-reset: step;
+    }
+
+    .steps li {
+      padding: 1.1rem 0 0;
+      border-top: 1.5px solid var(--line);
+    }
+
+    .steps b {
+      display: block;
+      font-size: 1rem;
+      letter-spacing: -0.02em;
+      margin-bottom: 0.3rem;
+    }
+
+    .steps span {
+      color: var(--muted);
+      font-size: 0.93rem;
+    }
+
+    .steps .idx {
+      counter-increment: step;
+      display: block;
+      font-size: 0.78rem;
+      font-weight: 600;
+      color: var(--muted);
+      letter-spacing: 0.06em;
+    }
+
+    .steps .idx::before { content: "STEP " counter(step); }
+
+    .tscroll { overflow-x: auto; }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.94rem;
+      min-width: 620px;
+    }
+
+    th, td {
+      text-align: left;
+      padding: 0.85rem 1rem 0.85rem 0;
+      border-bottom: 1px solid var(--line-soft);
+      vertical-align: top;
+    }
+
+    th {
+      font-size: 0.76rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--muted);
+      font-weight: 600;
+    }
+
+    td:first-child { font-weight: 600; letter-spacing: -0.02em; white-space: nowrap; }
+    td:not(:first-child) { color: var(--muted); }
+
+    .figures {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 1.25rem;
+      max-width: 760px;
+      margin-top: 1.75rem;
+    }
+
+    .figures figure { margin: 0; }
+
+    .figures img {
+      display: block;
+      width: 100%;
+      height: auto;
+      border-radius: 12px;
+      box-shadow: var(--shot-shadow);
+      background: #1c1c1e;
+    }
+
+    .figures figcaption {
+      margin-top: 0.7rem;
+      font-size: 0.85rem;
+      color: var(--muted);
+    }
+
+    .closing {
+      max-width: 60ch;
+      font-size: 1.02rem;
+      color: var(--muted);
+    }
+
+    .closing strong { color: var(--ink); }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.45rem;
+      padding: 0.85rem 1.15rem;
+      border: 1.5px solid var(--ink);
+      font-weight: 600;
+      font-size: 0.95rem;
+      letter-spacing: -0.02em;
+      text-decoration: none;
+      color: var(--ink);
+      background: var(--ink);
+      transition: background 0.2s ease, color 0.2s ease, transform 0.2s ease;
+    }
+
+    .btn { color: var(--bg); }
+
+    .btn:hover {
+      text-decoration: none;
+      transform: translateY(-1px);
+      background: var(--accent);
+      border-color: var(--accent);
+      color: #fff;
+    }
+
+    footer {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      gap: 0.75rem;
+      padding-top: 2rem;
+      color: var(--muted);
+      font-size: 0.85rem;
+    }
+
+    @keyframes rise {
+      from { opacity: 0; transform: translateY(14px); }
+      to { opacity: 1; transform: none; }
+    }
+
+    @media (max-width: 960px) {
+      .principle {
+        grid-template-columns: 2.5rem minmax(0, 1fr);
+      }
+
+      .shipped { grid-column: 2; }
+
+      .issues,
+      .steps {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 640px) {
+      .page { width: min(100% - 1.5rem, var(--max)); }
+
+      .figures { grid-template-columns: 1fr; max-width: 360px; }
+
+      #themeToggle {
+        top: 0.85rem;
+        right: 0.85rem;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation: none !important;
+        transition: none !important;
+      }
+    }
+  </style>
+</head>
+<body>
+  <button id="themeToggle" aria-label="Toggle theme" type="button">
+    <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
+      <circle cx="12" cy="12" r="4"></circle>
+      <path d="M12 2v2.2M12 19.8V22M4.93 4.93l1.56 1.56M17.51 17.51l1.56 1.56M2 12h2.2M19.8 12H22M4.93 19.07l1.56-1.56M17.51 6.49l1.56-1.56"></path>
+    </svg>
+    <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
+      <path d="M20.5 14.3A8.2 8.2 0 1 1 9.7 3.5a6.6 6.6 0 1 0 10.8 10.8z"></path>
+    </svg>
+  </button>
+
+  <main class="page">
+    <div class="top">
+      <a class="hub-link" href="index.html">← SpaceBar</a>
+      <span class="kicker">Design review · macOS utility</span>
+    </div>
+
+    <header class="masthead">
+      <h1>Thirteen things a disk cleaner taught us about design.</h1>
+      <p class="standfirst">
+        SpaceBar’s first panel worked: it found the junk and measured it. What it could not do was tell
+        you, in one glance, how much you could get back and what to press. Fixing that turned into a
+        set of principles that outlived the app — written down here because most of them apply to
+        anything that shows a person a number and asks them to act on it.
+      </p>
+    </header>
+
+    <section id="diagnosis">
+      <div class="section-head">
+        <h2>What the first panel got wrong</h2>
+        <p>Nothing was broken. These were hierarchy problems — the panel gave equal weight to things that did not deserve it.</p>
+      </div>
+      <ul class="issues">
+        <li>
+          <span class="n">01</span>
+          <span>
+            <b>Three stacked headers before any content.</b>
+            <span class="det">Title bar, disk card, and a “Can reclaim” chip took the top third of the panel — and the chip repeated a number the disk card already showed.</span>
+          </span>
+        </li>
+        <li>
+          <span class="n">02</span>
+          <span>
+            <b>The same number printed twice.</b>
+            <span class="det">“Can free up to 189.2 MB” sat 200px from “189.2 MB reclaimable”. One of them was noise.</span>
+          </span>
+        </li>
+        <li>
+          <span class="n">03</span>
+          <span>
+            <b>14.2 GB and 189 MB looked identical.</b>
+            <span class="det">Rows were typographically flat, so a 75× difference in payoff read as no difference. Scanning was done by reading, not by looking.</span>
+          </span>
+        </li>
+        <li>
+          <span class="n">04</span>
+          <span>
+            <b>A wall of blue buttons.</b>
+            <span class="det">Every row shouted equally, so nothing was primary — and the buttons out-shouted the sizes, which are the reason anyone opens the panel.</span>
+          </span>
+        </li>
+        <li>
+          <span class="n">05</span>
+          <span>
+            <b>No way to clean more than one thing.</b>
+            <span class="det">Reclaiming 21.5 GB meant five separate Clean presses and five confirmations.</span>
+          </span>
+        </li>
+        <li>
+          <span class="n">06</span>
+          <span>
+            <b>Sections named after the code.</b>
+            <span class="det">FILES / CLEANUP / TRASH describes how the scanner is built. A person is sorting by “safe to wipe” versus “let me look first”.</span>
+          </span>
+        </li>
+      </ul>
+    </section>
+
+    <section id="principles">
+      <div class="section-head">
+        <h2>The principles that came out of it</h2>
+        <p>Each one is stated generally, then pinned to the thing that actually shipped.</p>
+      </div>
+
+      <div class="principles">
+        <article class="principle">
+          <div class="num"></div>
+          <div>
+            <h3>Lead with the number they came for</h3>
+            <p>
+              A monitor reports state; a tool reports what you can change. Free space was already in the
+              menu bar all day, so spending the panel’s biggest type on it repeated a number the user
+              had just read on the way in.
+            </p>
+            <p>
+              “320 GB free” is a monitor. “Recover up to 22.82 GB” is a tool. Both can’t be the hero —
+              pick the one that describes an action.
+            </p>
+          </div>
+          <div class="shipped">
+            <strong>Shipped</strong>
+            The gauge header keeps free space as a quiet line and gives the headline to recoverable
+            space.
+          </div>
+        </article>
+
+        <article class="principle">
+          <div class="num"></div>
+          <div>
+            <h3>One loud thing per screen</h3>
+            <p>
+              When every row carries a filled button, nothing is primary and the controls out-shout the
+              data. Demote row actions to outlined chips, promote one filled button, and let it carry
+              the number.
+            </p>
+          </div>
+          <div class="shipped">
+            <strong>Shipped</strong>
+            Row buttons became quiet <em>Review</em> chips; a single footer button reads “Clean selected
+            · 17.6 GB”.
+          </div>
+        </article>
+
+        <article class="principle">
+          <div class="num"></div>
+          <div>
+            <h3>Encode magnitude visually, not just numerically</h3>
+            <p>
+              People compare shapes faster than they parse digits. A hairline bar scaled to the largest
+              item makes 14.2 GB visibly seventy-five times 189 MB, so the big win is found by looking
+              rather than reading.
+            </p>
+            <p>
+              Where proportion <em>is</em> the question, go further: area is the only encoding that makes
+              “DerivedData is two-thirds of your problem” land without a number at all.
+            </p>
+          </div>
+          <div class="shipped">
+            <strong>Shipped</strong>
+            Weight bars under every size, plus a Map layout where tile area is bytes.
+          </div>
+        </article>
+
+        <article class="principle">
+          <div class="num"></div>
+          <div>
+            <h3>Find the second number</h3>
+            <p>
+              Size answered “what is worth cleaning” and stopped there. The question underneath — “what
+              is safe to clean” — was already computed and then thrown away into a grey subtitle.
+            </p>
+            <p>
+              A 14 GB cache touched an hour ago costs you a rebuild this afternoon; the same cache
+              untouched since March is free money. Same bytes, opposite decision.
+            </p>
+          </div>
+          <div class="shipped">
+            <strong>Shipped</strong>
+            Recency became load-bearing: a dot, an age phrase, and the default selection.
+          </div>
+        </article>
+
+        <article class="principle">
+          <div class="num"></div>
+          <div>
+            <h3>Speak the domain’s verbs, not the filesystem’s</h3>
+            <p>
+              “Last modified” is the API’s word. A cache is <em>used</em>, a download is
+              <em>downloaded</em>, Trash is <em>emptied</em>, a recording is <em>recorded</em>, a
+              simulator is <em>booted</em>. Same timestamp, but the sentence now says what happened —
+              and the right verb often changes the decision.
+            </p>
+          </div>
+          <div class="shipped">
+            <strong>Shipped</strong>
+            Nine per-kind verbs, each with its own caution: “Built 20 minutes ago — forces a full
+            rebuild.”
+          </div>
+        </article>
+
+        <article class="principle">
+          <div class="num"></div>
+          <div>
+            <h3>Invert the convention when the domain inverts</h3>
+            <p>
+              Most dashboards paint stale things red. In a cleanup tool the mapping flips: cold and
+              forgotten is the safe green thing to delete, freshly touched is the amber one to leave
+              alone. Inherit conventions, but check the meaning first.
+            </p>
+          </div>
+          <div class="shipped">
+            <strong>Shipped</strong>
+            One cold-to-warm scale shared by the age dots and the Map tiles, so list and header tell one
+            story.
+          </div>
+        </article>
+
+        <article class="principle">
+          <div class="num"></div>
+          <div>
+            <h3>If a fact is on screen, it has to govern the control</h3>
+            <p>
+              An early mock showed “Used 2 days ago” on a row that arrived pre-ticked. Two days is
+              recent — that was the one row that should have been left alone. Once an age string is
+              visible, it either drives the checkbox or it reads as a warning the app itself ignores.
+            </p>
+          </div>
+          <div class="shipped">
+            <strong>Shipped</strong>
+            Anything older than your stale setting arrives ticked; anything newer does not, and the
+            footer says why.
+          </div>
+        </article>
+
+        <article class="principle">
+          <div class="num"></div>
+          <div>
+            <h3>Make the zero-thought path the safe path</h3>
+            <p>
+              Batch actions are only frightening when the default selection is careless. Let the safety
+              signal choose the defaults, then state the omission in plain words — the user is told what
+              was held back without having to audit anything.
+            </p>
+          </div>
+          <div class="shipped">
+            <strong>Shipped</strong>
+            “1 item left unticked because it was touched recently.” Trash is never pre-selected — it is
+            the one irreversible target.
+          </div>
+        </article>
+
+        <article class="principle">
+          <div class="num"></div>
+          <div>
+            <h3>Name sections after the decision, not the code</h3>
+            <p>
+              FILES / CLEANUP / TRASH describes the scanner’s architecture. “Safe to wipe” and “Look
+              before deleting” describe the choice being made — and a section named after a decision
+              still tells you what is inside when it is collapsed.
+            </p>
+          </div>
+          <div class="shipped">
+            <strong>Shipped</strong>
+            The scanner split became a small <em>cache</em> / <em>review</em> / <em>trash</em> badge, and
+            everything sorts by payoff.
+          </div>
+        </article>
+
+        <article class="principle">
+          <div class="num"></div>
+          <div>
+            <h3>Vary the header, share the substrate</h3>
+            <p>
+              Three layouts sound like three apps to maintain. They are not, if the split runs
+              horizontally: one row component, one selection store, three headers above them. Then the
+              choice is a single honest question — how much room should the overview get? — and nobody
+              loses a capability by answering it.
+            </p>
+          </div>
+          <div class="shipped">
+            <strong>Shipped</strong>
+            Ledger, Gauge and Map. Same list, same ticks, same one-press cleanup underneath.
+          </div>
+        </article>
+
+        <article class="principle">
+          <div class="num"></div>
+          <div>
+            <h3>Settings should restate themselves in real units</h3>
+            <p>
+              A percentage is meaningless without its denominator — 10% is 51 GB on one disk and 400 GB
+              on another. Every control should show its effect in the user’s own units, immediately,
+              against their actual data. A measurement tool’s settings should measure something too.
+            </p>
+          </div>
+          <div class="shipped">
+            <strong>Shipped</strong>
+            “On your 512 GB disk: orange below 102 GB, red below 51.2 GB. You have 320 GB free right
+            now.”
+          </div>
+        </article>
+
+        <article class="principle">
+          <div class="num"></div>
+          <div>
+            <h3>Ship the bug fix inside the preference</h3>
+            <p>
+              The warning colour used to fire below 50% free, so a half-empty 512 GB disk with 256 GB to
+              spare was labelled “Running low”. That trains people to ignore the colour entirely, which
+              costs you the one moment the app needs to be believed.
+            </p>
+            <p>
+              A settings pane is where frozen constants go to be corrected — new defaults first, then
+              the ability to disagree with them.
+            </p>
+          </div>
+          <div class="shipped">
+            <strong>Shipped</strong>
+            20% orange, 10% red, 30 days stale — all now stored values, all movable.
+          </div>
+        </article>
+
+        <article class="principle">
+          <div class="num"></div>
+          <div>
+            <h3>Degrade honestly</h3>
+            <p>
+              Two tiles look sillier than a bar does, so the treemap needs a floor. The fix is not to
+              hide the option or silently ignore it: fall back to the simpler header and say why. The
+              same instinct explains greying out “Docker — not installed” instead of just showing four
+              rows where twelve were expected.
+            </p>
+          </div>
+          <div class="shipped">
+            <strong>Shipped</strong>
+            Map falls back to Gauge below three items with a printed reason; tiny targets fold into one
+            “Everything else” tile.
+          </div>
+        </article>
+      </div>
+
+      <div class="figures">
+        <figure>
+          <img src="assets/spacebar-panel-good.png" width="420" height="560" alt="SpaceBar Gauge layout with recoverable space as the headline" loading="lazy" />
+          <figcaption>Principles 1, 2, 4, 7 and 8 in one screen: recoverable is the headline, one filled button, age governs the ticks, and the footer states the omission.</figcaption>
+        </figure>
+        <figure>
+          <img src="assets/spacebar-settings-thresholds.png" width="840" height="463" alt="SpaceBar threshold settings restating percentages in gigabytes" loading="lazy" />
+          <figcaption>Principles 11 and 12: two stops on one track that cannot cross, restated in GB against the real disk — and the 50% warning bug fixed on the way.</figcaption>
+        </figure>
+      </div>
+    </section>
+
+    <section id="order">
+      <div class="section-head">
+        <h2>The order mattered as much as the ideas</h2>
+        <p>Building the picker first would have locked in three copies of whatever was still wrong. Substrate first, variants last.</p>
+      </div>
+      <ol class="steps">
+        <li>
+          <span class="idx"></span>
+          <b>Substrate</b>
+          <span>One row component, sorted by size. Delete the duplicated chip, rename sections to the decision.</span>
+        </li>
+        <li>
+          <span class="idx"></span>
+          <b>Recency</b>
+          <span>Per-kind verbs and the age dot. Small, self-contained, and it makes everything after it safer.</span>
+        </li>
+        <li>
+          <span class="idx"></span>
+          <b>Selection</b>
+          <span>Tick rows, live footer total, one batch confirm — with recency choosing the defaults and saying why.</span>
+        </li>
+        <li>
+          <span class="idx"></span>
+          <b>Gauge header</b>
+          <span>Meter plus totals. A complete, better app on its own — shippable before anything else exists.</span>
+        </li>
+        <li>
+          <span class="idx"></span>
+          <b>Settings</b>
+          <span>Thresholds first, since they carry the bug fix; then stale duration, then per-target toggles.</span>
+        </li>
+        <li>
+          <span class="idx"></span>
+          <b>Ledger and Map</b>
+          <span>The other two headers, then the picker and pill style — cheap, because the substrate was already right.</span>
+        </li>
+      </ol>
+    </section>
+
+    <section id="cost">
+      <div class="section-head">
+        <h2>What each move actually cost</h2>
+        <p>Worth being honest about: options multiply the test matrix faster than they multiply the code.</p>
+      </div>
+      <div class="tscroll">
+        <table>
+          <thead>
+            <tr><th>Move</th><th>Fixes</th><th>Cost</th><th>Risk</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Gauge</td>
+              <td>Hierarchy, redundancy, scanning</td>
+              <td>View layer only</td>
+              <td>Low — re-record snapshots and you are done</td>
+            </tr>
+            <tr>
+              <td>Ledger</td>
+              <td>All of the above, plus the five-transaction problem</td>
+              <td>Selection state and batch confirm</td>
+              <td>Medium — one button deleting several things needs a careful confirmation</td>
+            </tr>
+            <tr>
+              <td>Map</td>
+              <td>Comprehension of proportion</td>
+              <td>New view and a squarified-treemap pass</td>
+              <td>Medium — degrades badly with few items, so it needs a fallback</td>
+            </tr>
+            <tr>
+              <td>Recency</td>
+              <td>“Is this safe to delete”, and the default ticks</td>
+              <td>Per-target verb plus dates from a walk already being done</td>
+              <td>Low — additive, and it makes the batch button safer</td>
+            </tr>
+            <tr>
+              <td>Settings</td>
+              <td>Frozen thresholds, the 30-day magic number, layout taste</td>
+              <td>First stored-preferences layer, plus a window for a menu-bar-only app</td>
+              <td>Medium — every setting multiplies the snapshot matrix</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="closing" style="margin-top:1.75rem;">
+        The mitigation for that last row is worth stealing: pin snapshot fixtures to default settings and
+        test alternate headers on their own, rather than re-shooting the whole panel for every
+        combination. Otherwise a padding change means re-recording nine images.
+      </p>
+    </section>
+
+    <section id="closing">
+      <div class="section-head">
+        <h2>The shortest version</h2>
+      </div>
+      <p class="closing">
+        <strong>Show the number someone came for, show it once, and make everything else on screen
+        either explain it or act on it.</strong> Most of the work above was subtraction — a repeated
+        chip deleted, buttons quietened, sections renamed. The only genuine addition was the second
+        number, and it was already being computed.
+      </p>
+      <p style="margin-top:1.75rem;">
+        <a class="btn" href="index.html">Back to SpaceBar</a>
+      </p>
+    </section>
+
+    <footer>
+      <span>© 2026 Muddassir Iqbal</span>
+      <a href="https://github.com/iqbalmuddassir/spaceBar" target="_blank" rel="noopener noreferrer">github.com/iqbalmuddassir/spaceBar</a>
+    </footer>
+  </main>
+
+  <script>
+    const themeToggle = document.getElementById('themeToggle');
+    const body = document.body;
+    const saved = localStorage.getItem('hub-theme');
+    if (saved === 'dark-mode') body.classList.add('dark');
+    if (saved === 'light-mode') body.classList.add('light');
+
+    themeToggle.addEventListener('click', () => {
+      const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+      if (body.classList.contains('dark')) {
+        body.classList.remove('dark');
+        body.classList.add('light');
+        localStorage.setItem('hub-theme', 'light-mode');
+      } else if (body.classList.contains('light')) {
+        body.classList.remove('light');
+        body.classList.add('dark');
+        localStorage.setItem('hub-theme', 'dark-mode');
+      } else if (prefersDark) {
+        body.classList.add('light');
+        localStorage.setItem('hub-theme', 'light-mode');
+      } else {
+        body.classList.add('dark');
+        localStorage.setItem('hub-theme', 'dark-mode');
+      }
+    });
+  </script>
+</body>
+</html>
