@@ -695,10 +695,14 @@
           <p>Pick how much of the panel the overview gets. The list, the ticks and the one-press cleanup underneath are identical in all three.</p>
         </div>
       </div>
-      <div class="gallery pair">
+      <div class="gallery triple">
         <figure>
           <img src="assets/spacebar-panel-ledger.png" width="420" height="560" alt="SpaceBar Ledger layout with a thin capacity bar above the list" loading="lazy" />
           <figcaption>Ledger<span>A single thin bar — most rows on screen</span></figcaption>
+        </figure>
+        <figure>
+          <img src="assets/spacebar-panel-good.png" width="420" height="560" alt="SpaceBar Gauge layout with a capacity meter and recoverable space as the headline" loading="lazy" />
+          <figcaption>Gauge · default<span>Capacity meter, recoverable up top</span></figcaption>
         </figure>
         <figure>
           <img src="assets/spacebar-panel-map.png" width="420" height="560" alt="SpaceBar Map layout showing a treemap where area is bytes" loading="lazy" />
@@ -706,10 +710,12 @@
         </figure>
       </div>
       <p class="note">
-        <strong>Gauge</strong> is the default: a capacity meter with recoverable space as the headline.
-        Map needs at least three items to be worth drawing — below that it falls back to Gauge and says
-        why, instead of silently ignoring your choice. Small targets fold into one “Everything else”
-        tile rather than becoming unreadable slivers.
+        Look below the header in all three: the same rows, the same ticks, the same
+        <em>Clean selected · 17.6 GB</em>. The header is the whole difference — roughly 40pt of panel
+        for Ledger, 90pt for Gauge, 150pt for Map. <strong>Gauge is the default</strong>, and Map needs
+        at least three items to be worth drawing: below that it falls back to Gauge and says why,
+        instead of silently ignoring your choice. Small targets fold into one “Everything else” tile
+        rather than becoming unreadable slivers.
       </p>
     </section>
 

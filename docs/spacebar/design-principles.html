@@ -357,6 +357,16 @@
       margin-top: 1.75rem;
     }
 
+    .figures.triple {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      max-width: none;
+    }
+
+    .figures.single {
+      grid-template-columns: minmax(0, 1fr);
+      max-width: 620px;
+    }
+
     .figures figure { margin: 0; }
 
     .figures img {
@@ -372,6 +382,11 @@
       margin-top: 0.7rem;
       font-size: 0.85rem;
       color: var(--muted);
+    }
+
+    .figures figcaption b {
+      color: var(--ink);
+      letter-spacing: -0.02em;
     }
 
     .closing {
@@ -433,12 +448,17 @@
       .steps {
         grid-template-columns: 1fr;
       }
+
+      .figures.triple {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
     }
 
     @media (max-width: 640px) {
       .page { width: min(100% - 1.5rem, var(--max)); }
 
-      .figures { grid-template-columns: 1fr; max-width: 360px; }
+      .figures,
+      .figures.triple { grid-template-columns: 1fr; max-width: 360px; }
 
       #themeToggle {
         top: 0.85rem;
@@ -775,11 +795,28 @@
         </article>
       </div>
 
-      <div class="figures">
+      <div class="figures triple">
         <figure>
-          <img src="assets/spacebar-panel-good.png" width="420" height="560" alt="SpaceBar Gauge layout with recoverable space as the headline" loading="lazy" />
-          <figcaption>Principles 1, 2, 4, 7 and 8 in one screen: recoverable is the headline, one filled button, age governs the ticks, and the footer states the omission.</figcaption>
+          <img src="assets/spacebar-panel-ledger.png" width="420" height="560" alt="SpaceBar Ledger layout — a thin capacity bar above the list" loading="lazy" />
+          <figcaption><b>Ledger</b> — about 40pt of header. A single thin bar, then straight into the rows.</figcaption>
         </figure>
+        <figure>
+          <img src="assets/spacebar-panel-good.png" width="420" height="560" alt="SpaceBar Gauge layout — a capacity meter with recoverable space as the headline" loading="lazy" />
+          <figcaption><b>Gauge · default</b> — about 90pt. Principles 1, 2, 4, 7 and 8 in one screen: recoverable is the headline, one filled button, age governs the ticks, the footer states the omission.</figcaption>
+        </figure>
+        <figure>
+          <img src="assets/spacebar-panel-map.png" width="420" height="560" alt="SpaceBar Map layout — a treemap where tile area is bytes" loading="lazy" />
+          <figcaption><b>Map</b> — about 150pt. Area is bytes, colour is the same recency scale as the dots below it.</figcaption>
+        </figure>
+      </div>
+      <p class="closing" style="margin-top:1.5rem;">
+        The three directions side by side, and the point of principle 10: below the header they are the
+        same screen. Same rows, same ticks, same <em>Clean selected · 17.6 GB</em>. Choosing a layout
+        answers one question — how much of a 600pt panel the overview deserves — and costs the user no
+        capability, which is exactly why it was safe to ship all three.
+      </p>
+
+      <div class="figures single">
         <figure>
           <img src="assets/spacebar-settings-thresholds.png" width="840" height="463" alt="SpaceBar threshold settings restating percentages in gigabytes" loading="lazy" />
           <figcaption>Principles 11 and 12: two stops on one track that cannot cross, restated in GB against the real disk — and the 50% warning bug fixed on the way.</figcaption>
