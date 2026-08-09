@@ -358,10 +358,108 @@
       color: var(--muted);
     }
 
+    .gallery.triple {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
+    .gallery.pair {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      max-width: 760px;
+    }
+
+    .shots-wide {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 1.25rem;
+    }
+
+    .shots-wide figure { margin: 0; }
+
+    .shots-wide img {
+      display: block;
+      width: 100%;
+      height: auto;
+      border-radius: 12px;
+      box-shadow: var(--shot-shadow);
+      background: #1c1c1e;
+    }
+
+    .shots-wide figcaption {
+      margin-top: 0.7rem;
+      font-size: 0.85rem;
+      font-weight: 600;
+      letter-spacing: -0.02em;
+    }
+
+    .shots-wide figcaption span {
+      display: block;
+      margin-top: 0.15rem;
+      font-weight: 400;
+      color: var(--muted);
+    }
+
     .features {
       display: grid;
       grid-template-columns: repeat(3, minmax(0, 1fr));
       gap: 1.25rem;
+    }
+
+    .verbs {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 0 2rem;
+      margin: 1.5rem 0 0;
+      padding: 0;
+      list-style: none;
+    }
+
+    .verbs li {
+      display: grid;
+      grid-template-columns: 8.5rem 1fr;
+      gap: 0.75rem;
+      padding: 0.7rem 0;
+      border-bottom: 1px solid var(--line-soft);
+      font-size: 0.95rem;
+    }
+
+    .verbs code {
+      font-family: inherit;
+      font-weight: 600;
+      letter-spacing: -0.02em;
+    }
+
+    .verbs span { color: var(--muted); }
+
+    .note {
+      margin: 1.5rem 0 0;
+      padding-left: 1rem;
+      border-left: 2px solid var(--accent);
+      color: var(--muted);
+      max-width: 60ch;
+      font-size: 0.95rem;
+    }
+
+    .callout {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1.25rem;
+      padding: 1.75rem;
+      border: 1.5px solid var(--line);
+      background: var(--panel-2);
+    }
+
+    .callout h2 {
+      margin: 0 0 0.35rem;
+      font-size: clamp(1.3rem, 2.4vw, 1.7rem);
+      letter-spacing: -0.035em;
+    }
+
+    .callout p {
+      margin: 0;
+      color: var(--muted);
+      max-width: 52ch;
     }
 
     .feature {
@@ -451,15 +549,22 @@
         margin: 0 auto;
       }
 
-      .gallery {
+      .gallery,
+      .gallery.triple {
         grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .shots-wide {
+        grid-template-columns: 1fr;
+        max-width: 520px;
       }
 
       .features {
         grid-template-columns: 1fr;
       }
 
-      .targets {
+      .targets,
+      .verbs {
         grid-template-columns: 1fr;
       }
     }
@@ -467,12 +572,15 @@
     @media (max-width: 640px) {
       .page { width: min(100% - 1.5rem, var(--max)); }
 
-      .gallery {
+      .gallery,
+      .gallery.triple,
+      .gallery.pair {
         grid-template-columns: 1fr;
         max-width: 360px;
       }
 
-      .targets li {
+      .targets li,
+      .verbs li {
         grid-template-columns: 1fr;
         gap: 0.2rem;
       }
@@ -524,7 +632,7 @@
           <a class="btn btn-primary" href="https://github.com/iqbalmuddassir/spaceBar" target="_blank" rel="noopener noreferrer">
             Get SpaceBar on GitHub
           </a>
-          <a class="btn btn-ghost" href="#gallery">See it reclaim space</a>
+          <a class="btn btn-ghost" href="design-principles.html">Design principles →</a>
         </div>
         <div class="pill-strip" aria-label="Menu bar free-space states">
           <span class="pill-item good">
@@ -559,24 +667,121 @@
           <p>Green when you’re fine. Orange when AI week is catching up. Red when it’s time to clean — now.</p>
         </div>
       </div>
-      <div class="gallery">
+      <div class="gallery triple">
         <figure>
           <img src="assets/spacebar-panel-good.png" width="420" height="560" alt="SpaceBar panel with plenty of free space" loading="lazy" />
-          <figcaption>Breathing room<span>Green · ~62% free</span></figcaption>
+          <figcaption>Breathing room<span>Green · 62% free</span></figcaption>
         </figure>
         <figure>
           <img src="assets/spacebar-panel-low.png" width="420" height="560" alt="SpaceBar panel when free space is low" loading="lazy" />
-          <figcaption>Getting tight<span>Orange · 25% free</span></figcaption>
+          <figcaption>Getting tight<span>Orange · 15% free</span></figcaption>
         </figure>
         <figure>
           <img src="assets/spacebar-panel-critical.png" width="420" height="560" alt="SpaceBar panel when free space is critical" loading="lazy" />
           <figcaption>Act now<span>Red · 5% free</span></figcaption>
         </figure>
+      </div>
+      <p class="note">
+        The headline is what you can recover, not what is left. Free space is already in the menu bar
+        all day — repeating it as the panel’s biggest number spends the largest type on something you
+        just read on the way in.
+      </p>
+    </section>
+
+    <section id="layouts">
+      <div class="section-head">
+        <div>
+          <h2>Three headers, one list</h2>
+          <p>Pick how much of the panel the overview gets. The list, the ticks and the one-press cleanup underneath are identical in all three.</p>
+        </div>
+      </div>
+      <div class="gallery pair">
         <figure>
-          <img src="assets/spacebar-media-browser.png" width="420" height="560" alt="SpaceBar screenshots and recordings browser" loading="lazy" />
-          <figcaption>Screenshot graveyard<span>Keep what matters, delete the rest</span></figcaption>
+          <img src="assets/spacebar-panel-ledger.png" width="420" height="560" alt="SpaceBar Ledger layout with a thin capacity bar above the list" loading="lazy" />
+          <figcaption>Ledger<span>A single thin bar — most rows on screen</span></figcaption>
+        </figure>
+        <figure>
+          <img src="assets/spacebar-panel-map.png" width="420" height="560" alt="SpaceBar Map layout showing a treemap where area is bytes" loading="lazy" />
+          <figcaption>Map<span>Area is bytes, color is recency</span></figcaption>
         </figure>
       </div>
+      <p class="note">
+        <strong>Gauge</strong> is the default: a capacity meter with recoverable space as the headline.
+        Map needs at least three items to be worth drawing — below that it falls back to Gauge and says
+        why, instead of silently ignoring your choice. Small targets fold into one “Everything else”
+        tile rather than becoming unreadable slivers.
+      </p>
+    </section>
+
+    <section id="recency">
+      <div class="section-head">
+        <div>
+          <h2>Age is the second number</h2>
+          <p>Size tells you what is worth cleaning. Age tells you what is safe to clean — and each kind of junk says it in its own words.</p>
+        </div>
+      </div>
+      <ul class="verbs">
+        <li><code>Last used</code><span>Caches you have not touched</span></li>
+        <li><code>Built</code><span>DerivedData, Gradle — cleaning forces a rebuild</span></li>
+        <li><code>Downloaded</code><span>Package caches, installers — will re-download</span></li>
+        <li><code>Emptied</code><span>Trash, since you last emptied it</span></li>
+        <li><code>Captured</code><span>Screenshots — you may still need these</span></li>
+        <li><code>Booted</code><span>Simulators you last ran months ago</span></li>
+      </ul>
+      <p class="note">
+        Old is the safe thing here, so the usual heat map is inverted: cold and forgotten is green,
+        freshly touched is amber. Anything older than your stale setting arrives pre-ticked, anything
+        newer arrives untouched — and the footer says so: <em>“1 item left unticked because it was
+        touched recently.”</em>
+      </p>
+    </section>
+
+    <section id="review">
+      <div class="section-head">
+        <div>
+          <h2>Look before you delete</h2>
+          <p>Screenshots, recordings, and downloaded installers are review lists, not one-shot deletes. Sort, filter, tick, keep the rest.</p>
+        </div>
+      </div>
+      <div class="gallery pair">
+        <figure>
+          <img src="assets/spacebar-media-browser.png" width="420" height="560" alt="SpaceBar screenshots and recordings browser" loading="lazy" />
+          <figcaption>Screenshot graveyard<span>Thumbnails, ages, “Older than 30d” filter</span></figcaption>
+        </figure>
+        <figure>
+          <img src="assets/spacebar-installer-browser.png" width="420" height="560" alt="SpaceBar installer packages browser" loading="lazy" />
+          <figcaption>Installer packages<span>.dmg, .pkg, .iso still sitting in Downloads</span></figcaption>
+        </figure>
+      </div>
+    </section>
+
+    <section id="settings">
+      <div class="section-head">
+        <div>
+          <h2>Settings that show their effect</h2>
+          <p>Every control restates itself in your units, against your actual disk — a measurement tool’s settings should measure something too.</p>
+        </div>
+      </div>
+      <div class="shots-wide">
+        <figure>
+          <img src="assets/spacebar-settings-appearance.png" width="840" height="797" alt="SpaceBar appearance settings with layout picker, pill style, and row density" loading="lazy" />
+          <figcaption>Look<span>Layout, pill style, row density</span></figcaption>
+        </figure>
+        <figure>
+          <img src="assets/spacebar-settings-thresholds.png" width="840" height="463" alt="SpaceBar threshold settings showing warning and critical levels in GB" loading="lazy" />
+          <figcaption>Limits<span>“Orange below 102 GB, red below 51.2 GB”</span></figcaption>
+        </figure>
+        <figure>
+          <img src="assets/spacebar-settings-scanning.png" width="840" height="779" alt="SpaceBar scanning settings with stale duration and per-target toggles" loading="lazy" />
+          <figcaption>Scanning<span>Stale age, which targets to scan, rescan on open</span></figcaption>
+        </figure>
+      </div>
+      <p class="note">
+        “Stale” is one number driving three things: when an age turns amber, what the review filter chip
+        says, and what arrives pre-selected. Defaults are 20% orange, 10% red, 30 days stale — and the
+        target list doubles as an explanation, greying out “Docker — not installed” so you know why the
+        scan found four things instead of twelve.
+      </p>
     </section>
 
     <section id="features">
@@ -592,20 +797,20 @@
           <p>A colored pill in the menu bar so you notice the crunch before Xcode, Docker, or the next agent run stalls.</p>
         </article>
         <article class="feature">
-          <h3>Nuke regenerable caches</h3>
-          <p>DerivedData, Gradle, npm, Docker build cache, Homebrew, and more — confirm once, free space immediately.</p>
+          <h3>Clean once, not five times</h3>
+          <p>Tick what you want across every kind of junk. The button carries the live total; one confirmation lists exactly what goes.</p>
         </article>
         <article class="feature">
           <h3>Tame screenshot chaos</h3>
-          <p>Review Desktop, Pictures, Movies, and Downloads captures. Age filters help clear the AI-debugging collage.</p>
+          <p>Review Desktop, Pictures, Movies, and Downloads captures. Sort, filter by age, keep what still matters.</p>
         </article>
         <article class="feature">
           <h3>Empty Trash for real</h3>
-          <p>Deleted ≠ free. Empty Trash from SpaceBar so those “reclaimed” gigabytes actually show up again.</p>
+          <p>Deleted ≠ free. Empty Trash from SpaceBar — never pre-selected, since it is the one irreversible target.</p>
         </article>
         <article class="feature">
           <h3>Safe by design</h3>
-          <p>Deletes stay on a path allowlist. Riskier targets ask harder. You’re cleaning junk — not guessing in Finder.</p>
+          <p>Deletes stay on a path allowlist under your home folder. Archives, AVDs, and Trash ask harder before they go.</p>
         </article>
         <article class="feature">
           <h3>Numbers you trust</h3>
@@ -627,8 +832,23 @@
         <li><strong>Android / Java</strong><span>AVDs, Gradle caches</span></li>
         <li><strong>Packages</strong><span>CocoaPods, SwiftPM, npm, pnpm</span></li>
         <li><strong>Tools</strong><span>Homebrew, uv, pip, Docker build cache</span></li>
+        <li><strong>Trash</strong><span>Emptied via Finder — never pre-selected</span></li>
         <li><strong>Media</strong><span>Screenshots and screen recordings (review first)</span></li>
+        <li><strong>Installers</strong><span>Downloaded .dmg, .pkg, .iso (review first)</span></li>
       </ul>
+    </section>
+
+    <section id="principles">
+      <div class="callout">
+        <div>
+          <h2>What building it taught us</h2>
+          <p>
+            Recoverable over free. Age as the second number. One loud thing per screen. The design
+            review behind SpaceBar’s panel, written up as principles you can reuse.
+          </p>
+        </div>
+        <a class="btn btn-primary" href="design-principles.html">Read the design principles</a>
+      </div>
     </section>
 
     <section id="stack">
@@ -644,6 +864,7 @@
         <span>AppKit</span>
         <span>XcodeGen</span>
         <span>swift-snapshot-testing</span>
+        <span>SwiftFormat + SwiftLint</span>
         <span>macOS 14+</span>
         <span>MIT License</span>
       </div>
