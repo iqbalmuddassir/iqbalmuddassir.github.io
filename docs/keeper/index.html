@@ -1,0 +1,914 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Keeper — Clear the duplicates, keep the best shot</title>
+  <meta name="description" content="Keeper finds near-identical photos, screen recordings and dead screenshots in your library, argues for the best frame, and hands back the gigabytes. Everything on device. Coming soon to iPhone, iPad and Mac." />
+  <meta name="theme-color" content="#e5e9e6" />
+
+  <meta property="og:title" content="Keeper — Clear the duplicates, keep the best shot" />
+  <meta property="og:description" content="Forty photos of the same sunset, one worth keeping. Keeper finds the group, picks the frame, and frees the space — without a single pixel leaving your device." />
+  <meta property="og:type" content="website" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet" />
+
+  <style>
+    :root {
+      --bg: #e5e9e6;
+      --bg-deep: #d2d8d3;
+      --ink: #171a18;
+      --muted: #5c645e;
+      --line: #171a18;
+      --line-soft: color-mix(in srgb, var(--ink) 22%, transparent);
+      --accent: #8c1f2f;
+      --surface: #eef1ee;
+      --panel-2: color-mix(in srgb, var(--ink) 4%, transparent);
+      --good: #1f6b4a;
+      --warn: #8a5a12;
+      --toggle-bg: #eef1ee;
+      --max: 1120px;
+      --shot-shadow: 0 28px 64px color-mix(in srgb, var(--ink) 18%, transparent);
+    }
+
+    body.dark {
+      --bg: #141816;
+      --bg-deep: #1c211e;
+      --ink: #e8ece9;
+      --muted: #a3aaa5;
+      --line: #e8ece9;
+      --accent: #e07a86;
+      --surface: #1c211e;
+      --panel-2: color-mix(in srgb, var(--ink) 6%, transparent);
+      --good: #7dbaa8;
+      --warn: #d4a574;
+      --toggle-bg: #1c211e;
+      --shot-shadow: 0 28px 64px rgba(0, 0, 0, 0.45);
+    }
+
+    @media (prefers-color-scheme: dark) {
+      body:not(.light) {
+        --bg: #141816;
+        --bg-deep: #1c211e;
+        --ink: #e8ece9;
+        --muted: #a3aaa5;
+        --line: #e8ece9;
+        --accent: #e07a86;
+        --surface: #1c211e;
+        --panel-2: color-mix(in srgb, var(--ink) 6%, transparent);
+        --good: #7dbaa8;
+        --warn: #d4a574;
+        --toggle-bg: #1c211e;
+        --shot-shadow: 0 28px 64px rgba(0, 0, 0, 0.45);
+      }
+    }
+
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+
+    body {
+      margin: 0;
+      font-family: "Space Grotesk", sans-serif;
+      color: var(--ink);
+      background:
+        linear-gradient(105deg, var(--bg) 0%, var(--bg) 58%, var(--bg-deep) 58%, var(--bg-deep) 100%);
+      line-height: 1.55;
+      transition: background 0.3s ease, color 0.3s ease;
+    }
+
+    a { color: var(--accent); text-decoration: none; }
+    a:hover { text-decoration: underline; text-underline-offset: 3px; }
+
+    #themeToggle {
+      position: fixed;
+      top: 1.25rem;
+      right: 1.25rem;
+      z-index: 2000;
+      width: 2.5rem;
+      height: 2.5rem;
+      border: 1.5px solid var(--ink);
+      border-radius: 0;
+      background: var(--toggle-bg);
+      color: var(--ink);
+      cursor: pointer;
+      display: grid;
+      place-items: center;
+      transition: background 0.2s ease, color 0.2s ease;
+    }
+
+    #themeToggle:hover {
+      background: var(--ink);
+      color: var(--bg);
+    }
+
+    #themeToggle svg { width: 1rem; height: 1rem; }
+    #themeToggle .icon-moon { display: none; }
+    body.dark #themeToggle .icon-sun { display: none; }
+    body.dark #themeToggle .icon-moon { display: block; }
+
+    @media (prefers-color-scheme: dark) {
+      body:not(.light) #themeToggle .icon-sun { display: none; }
+      body:not(.light) #themeToggle .icon-moon { display: block; }
+      body.light #themeToggle .icon-sun { display: block; }
+      body.light #themeToggle .icon-moon { display: none; }
+    }
+
+    .page {
+      width: min(var(--max), calc(100% - 3rem));
+      margin: 0 auto;
+      padding: 1.5rem 0 4rem;
+    }
+
+    .top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      padding: 0.25rem 0 1.5rem;
+    }
+
+    .hub-link {
+      color: var(--ink);
+      font-weight: 600;
+      font-size: 0.92rem;
+      letter-spacing: -0.02em;
+    }
+
+    .hub-link:hover { color: var(--accent); text-decoration: none; }
+
+    .platform {
+      font-size: 0.78rem;
+      font-weight: 600;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+
+    .hero {
+      display: grid;
+      grid-template-columns: minmax(0, 1.05fr) minmax(0, 0.95fr);
+      gap: clamp(2rem, 5vw, 3.5rem);
+      align-items: center;
+      min-height: min(76vh, 700px);
+      padding: 1rem 0 3.5rem;
+      border-bottom: 1.5px solid var(--line);
+    }
+
+    .coming-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      margin: 0 0 1.25rem;
+      padding: 0.4rem 0.75rem;
+      border: 1.5px solid var(--accent);
+      color: var(--accent);
+      font-size: 0.74rem;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      animation: rise 0.7s ease both;
+    }
+
+    .coming-badge .dot {
+      width: 0.45rem;
+      height: 0.45rem;
+      border-radius: 50%;
+      background: var(--accent);
+    }
+
+    .brand-name {
+      margin: 0 0 0.9rem;
+      font-size: clamp(2.8rem, 6vw, 4.4rem);
+      font-weight: 700;
+      letter-spacing: -0.05em;
+      line-height: 0.95;
+      animation: rise 0.7s ease 0.04s both;
+    }
+
+    .hero h1 {
+      margin: 0 0 1rem;
+      max-width: 16ch;
+      font-size: clamp(1.55rem, 3.2vw, 2.25rem);
+      font-weight: 600;
+      letter-spacing: -0.035em;
+      line-height: 1.15;
+      animation: rise 0.7s ease 0.08s both;
+    }
+
+    .hero-copy {
+      margin: 0 0 1.5rem;
+      max-width: 40ch;
+      color: var(--muted);
+      font-size: 1.05rem;
+      animation: rise 0.7s ease 0.16s both;
+    }
+
+    .cta-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.75rem;
+      margin-bottom: 1.5rem;
+      animation: rise 0.7s ease 0.24s both;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.45rem;
+      padding: 0.85rem 1.15rem;
+      border: 1.5px solid var(--ink);
+      font-weight: 600;
+      font-size: 0.95rem;
+      letter-spacing: -0.02em;
+      text-decoration: none;
+      color: var(--ink);
+      transition: background 0.2s ease, color 0.2s ease, transform 0.2s ease;
+    }
+
+    .btn:hover {
+      text-decoration: none;
+      transform: translateY(-1px);
+    }
+
+    .btn-primary {
+      background: var(--ink);
+      color: var(--bg);
+    }
+
+    .btn-primary:hover {
+      background: var(--accent);
+      border-color: var(--accent);
+      color: #fff;
+    }
+
+    .btn-ghost:hover { background: var(--panel-2); }
+
+    .pill-strip {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.85rem 1.5rem;
+      align-items: center;
+      animation: rise 0.7s ease 0.3s both;
+    }
+
+    .pill-item {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      color: var(--muted);
+      font-size: 0.85rem;
+      font-weight: 500;
+    }
+
+    .pill-item::before {
+      content: "";
+      width: 0.6rem;
+      height: 0.6rem;
+      border: 1.5px solid currentColor;
+    }
+
+    .pill-item.good { color: var(--good); }
+    .pill-item.good::before { background: currentColor; }
+
+    /* ---- contact sheet: the product explained without a screenshot ---- */
+    .hero-visual { animation: floatIn 0.9s ease 0.12s both; }
+
+    .sheet {
+      width: min(100%, 440px);
+      margin-left: auto;
+      padding: 0.85rem 0.85rem 0.55rem;
+      background: var(--surface);
+      border: 1.5px solid var(--line);
+      box-shadow: var(--shot-shadow);
+    }
+
+    .sheet-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 0.35rem;
+    }
+
+    .frame {
+      position: relative;
+      aspect-ratio: 4 / 3;
+      overflow: hidden;
+      background: #6f7a80;
+    }
+
+    .frame.out { opacity: 0.34; filter: grayscale(0.5); }
+
+    .frame.out::before,
+    .frame.out::after {
+      content: "";
+      position: absolute;
+      top: 50%;
+      left: 8%;
+      right: 8%;
+      border-top: 2.5px solid var(--accent);
+      transform-origin: center;
+    }
+
+    .frame.out::before { transform: rotate(21deg); }
+    .frame.out::after { transform: rotate(-21deg); }
+
+    .frame.pick { outline: 2.5px solid var(--accent); outline-offset: -2.5px; }
+
+    .pick-tag {
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      padding: 0.1rem 0;
+      background: var(--accent);
+      color: #fff;
+      font-size: 0.52rem;
+      font-weight: 600;
+      letter-spacing: 0.14em;
+      text-align: center;
+    }
+
+    .rebate {
+      display: flex;
+      justify-content: space-between;
+      gap: 0.75rem;
+      padding-top: 0.55rem;
+      font-size: 0.6rem;
+      font-weight: 500;
+      letter-spacing: 0.1em;
+      color: var(--muted);
+    }
+
+    .p1 { background: linear-gradient(160deg, #7c93a6, #3e5566); }
+    .p2 { background: linear-gradient(150deg, #c3a98a, #7a6247); }
+    .p3 { background: linear-gradient(200deg, #8fa98c, #435a45); }
+    .p4 { background: linear-gradient(140deg, #b08c93, #6b4a55); }
+    .p5 { background: linear-gradient(175deg, #9ea7b8, #4b5468); }
+    .p6 { background: linear-gradient(130deg, #d0b99b, #8a6e52); }
+    .p7 { background: linear-gradient(190deg, #7fa3a8, #3b5f66); }
+    .p8 { background: linear-gradient(155deg, #a8968f, #5c4c48); }
+    .p9 { background: linear-gradient(165deg, #6e7f94, #2f3e4e); }
+    .p10 { background: linear-gradient(145deg, #bdb295, #79704f); }
+    .p11 { background: linear-gradient(185deg, #93a0ac, #4a5760); }
+    .p12 { background: linear-gradient(170deg, #a9838b, #5f3e48); }
+
+    section {
+      padding: 3.5rem 0;
+      border-bottom: 1.5px solid var(--line-soft);
+    }
+
+    section:last-of-type { border-bottom: none; }
+
+    .section-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: end;
+      gap: 1rem;
+      margin-bottom: 1.75rem;
+    }
+
+    .section-head h2 {
+      margin: 0;
+      font-size: clamp(1.45rem, 2.8vw, 1.9rem);
+      letter-spacing: -0.035em;
+    }
+
+    .section-head p {
+      margin: 0.35rem 0 0;
+      color: var(--muted);
+      max-width: 52ch;
+    }
+
+    .targets {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 0 2rem;
+      margin: 0;
+      padding: 0;
+      list-style: none;
+    }
+
+    .targets li {
+      display: grid;
+      grid-template-columns: 11rem 1fr auto;
+      gap: 0.75rem;
+      padding: 0.85rem 0;
+      border-bottom: 1px solid var(--line-soft);
+      font-size: 0.95rem;
+    }
+
+    .targets strong { letter-spacing: -0.02em; }
+    .targets span { color: var(--muted); }
+
+    .targets em {
+      font-style: normal;
+      font-weight: 600;
+      font-variant-numeric: tabular-nums;
+      color: var(--accent);
+      white-space: nowrap;
+    }
+
+    .features {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 1.25rem;
+    }
+
+    .feature {
+      padding: 1.25rem 0;
+      border-top: 1.5px solid var(--line);
+    }
+
+    .feature h3 {
+      margin: 0 0 0.45rem;
+      font-size: 1.05rem;
+      letter-spacing: -0.02em;
+    }
+
+    .feature p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 0.95rem;
+    }
+
+    .feature .tier {
+      display: block;
+      margin-bottom: 0.6rem;
+      font-size: 0.72rem;
+      font-weight: 600;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--accent);
+    }
+
+    .note {
+      margin: 1.5rem 0 0;
+      padding-left: 1rem;
+      border-left: 2px solid var(--accent);
+      color: var(--muted);
+      max-width: 62ch;
+      font-size: 0.95rem;
+    }
+
+    .honest {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 1.25rem 2rem;
+      margin: 0;
+    }
+
+    .honest div { padding-top: 1.25rem; border-top: 1.5px solid var(--line); }
+    .honest dt { font-weight: 600; letter-spacing: -0.02em; margin-bottom: 0.4rem; }
+    .honest dd { margin: 0; color: var(--muted); font-size: 0.95rem; }
+
+    .phases {
+      margin: 0;
+      padding: 0;
+      list-style: none;
+    }
+
+    .phase {
+      display: grid;
+      grid-template-columns: 9rem minmax(0, 1fr) auto;
+      gap: 1rem;
+      padding: 1rem 0;
+      border-bottom: 1px solid var(--line-soft);
+      align-items: baseline;
+    }
+
+    .phase-when {
+      font-size: 0.78rem;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--accent);
+    }
+
+    .phase p { margin: 0.2rem 0 0; color: var(--muted); font-size: 0.95rem; }
+    .phase strong { letter-spacing: -0.02em; }
+
+    .phase-state {
+      font-size: 0.78rem;
+      font-weight: 600;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--muted);
+      white-space: nowrap;
+    }
+
+    .callout {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1.25rem;
+      padding: 1.75rem;
+      border: 1.5px solid var(--line);
+      background: var(--panel-2);
+    }
+
+    .callout h2 {
+      margin: 0 0 0.35rem;
+      font-size: clamp(1.3rem, 2.4vw, 1.7rem);
+      letter-spacing: -0.035em;
+    }
+
+    .callout p { margin: 0; color: var(--muted); max-width: 54ch; }
+
+    .stack { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+
+    .stack span {
+      padding: 0.4rem 0.65rem;
+      border: 1px solid var(--line-soft);
+      font-size: 0.82rem;
+      font-weight: 600;
+      letter-spacing: -0.01em;
+      color: var(--muted);
+    }
+
+    footer {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      gap: 0.75rem;
+      padding-top: 2rem;
+      color: var(--muted);
+      font-size: 0.85rem;
+    }
+
+    @keyframes rise {
+      from { opacity: 0; transform: translateY(14px); }
+      to { opacity: 1; transform: none; }
+    }
+
+    @keyframes floatIn {
+      from { opacity: 0; transform: translateY(24px) scale(0.98); }
+      to { opacity: 1; transform: none; }
+    }
+
+    @media (max-width: 960px) {
+      .hero {
+        grid-template-columns: 1fr;
+        min-height: auto;
+        align-items: start;
+      }
+
+      .sheet { margin: 0 auto; }
+
+      .features,
+      .targets,
+      .honest {
+        grid-template-columns: 1fr;
+      }
+
+      .targets li { grid-template-columns: 9rem 1fr auto; }
+    }
+
+    @media (max-width: 640px) {
+      .page { width: min(100% - 1.5rem, var(--max)); }
+
+      .targets li,
+      .phase {
+        grid-template-columns: 1fr;
+        gap: 0.2rem;
+      }
+
+      #themeToggle {
+        top: 0.85rem;
+        right: 0.85rem;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation: none !important;
+        transition: none !important;
+      }
+    }
+  </style>
+</head>
+<body>
+  <button id="themeToggle" aria-label="Toggle theme" type="button">
+    <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
+      <circle cx="12" cy="12" r="4"></circle>
+      <path d="M12 2v2.2M12 19.8V22M4.93 4.93l1.56 1.56M17.51 17.51l1.56 1.56M2 12h2.2M19.8 12H22M4.93 19.07l1.56-1.56M17.51 6.49l1.56-1.56"></path>
+    </svg>
+    <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
+      <path d="M20.5 14.3A8.2 8.2 0 1 1 9.7 3.5a6.6 6.6 0 1 0 10.8 10.8z"></path>
+    </svg>
+  </button>
+
+  <main class="page">
+    <div class="top">
+      <a class="hub-link" href="../index.html">← Bridge to Purpose</a>
+      <span class="platform">iPhone · iPad · Mac</span>
+    </div>
+
+    <header class="hero">
+      <div>
+        <p class="coming-badge"><span class="dot" aria-hidden="true"></span> Coming soon · in design</p>
+        <p class="brand-name">Keeper</p>
+        <h1>Forty shots of the same sunset. Keep one, get the storage back.</h1>
+        <p class="hero-copy">
+          “iPhone Storage Full” is never the screenshots you meant to keep — it’s the sixteen-frame
+          burst you never culled, the screen recording from two years ago, and 4,000 receipts. Keeper
+          finds all of it, picks the best frame out of every pile, and shows you exactly what it’s
+          about to free before it frees anything.
+        </p>
+        <div class="cta-row">
+          <a class="btn btn-primary" href="proposal.html">Read the full proposal</a>
+          <a class="btn btn-ghost" href="design-principles.html">Design principles →</a>
+        </div>
+        <div class="pill-strip">
+          <span class="pill-item good">Nothing leaves your device</span>
+          <span class="pill-item">No account, no subscription</span>
+          <span class="pill-item">Deletes are always reversible</span>
+        </div>
+      </div>
+      <div class="hero-visual">
+        <div class="sheet" role="img" aria-label="A contact sheet of sixteen near-identical frames. Fifteen are struck through in red; one is outlined and labelled KEEP.">
+          <div class="sheet-grid">
+            <div class="frame p1 out"></div>
+            <div class="frame p2 out"></div>
+            <div class="frame p3 out"></div>
+            <div class="frame p4 out"></div>
+            <div class="frame p5 out"></div>
+            <div class="frame p6 pick"><span class="pick-tag">KEEP</span></div>
+            <div class="frame p7 out"></div>
+            <div class="frame p8 out"></div>
+            <div class="frame p9 out"></div>
+            <div class="frame p10 out"></div>
+            <div class="frame p11 out"></div>
+            <div class="frame p12 out"></div>
+            <div class="frame p5 out"></div>
+            <div class="frame p3 out"></div>
+            <div class="frame p1 out"></div>
+            <div class="frame p8 out"></div>
+          </div>
+          <div class="rebate">
+            <span>SET 041 · BURST</span>
+            <span>16 FRAMES · 1 SELECT · 198 MB</span>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <section id="clutter">
+      <div class="section-head">
+        <div>
+          <h2>Where the gigabytes hide</h2>
+          <p>Biggest win first, always. These are the numbers from a real six-year phone history — 48,000 photos, 214 GB, nothing unusual about it.</p>
+        </div>
+      </div>
+      <ul class="targets">
+        <li><strong>Similar sets</strong><span>Bursts, retries, “one more with everyone looking”</span><em>61 GB</em></li>
+        <li><strong>Screen recordings</strong><span>The worst bytes-per-item in any library</span><em>23 GB</em></li>
+        <li><strong>Long-tail video</strong><span>Never favourited, never edited, never replayed</span><em>18 GB</em></li>
+        <li><strong>Expired screenshots</strong><span>Receipts, codes, maps, boarding passes</span><em>9 GB</em></li>
+        <li><strong>Failed frames</strong><span>Pocket shots, motion blur, lens-cap black</span><em>6 GB</em></li>
+        <li><strong>Recently Deleted</strong><span>Already “deleted”, still on the disk for 30 days</span><em>5 GB</em></li>
+        <li><strong>Forwarded media</strong><span>Memes and forwards saved out of chat apps</span><em>4 GB</em></li>
+        <li><strong>Exact duplicates</strong><span>Re-downloads, AirDrop round-trips, re-saves</span><em>3 GB</em></li>
+      </ul>
+      <p class="note">
+        Nothing is double-counted. A blurred frame inside a burst is claimed by one pile only, so the
+        total at the top is a number you can actually reach — not a sum of overlapping estimates.
+      </p>
+    </section>
+
+    <section id="keeper">
+      <div class="section-head">
+        <div>
+          <h2>What makes one frame the keeper</h2>
+          <p>Spotting the near-identical pile is the easy half. Keeper picks the frame you would have picked — and tells you why in four words, not a score out of a hundred.</p>
+        </div>
+      </div>
+      <div class="features">
+        <article class="feature">
+          <span class="tier">First · your signals</span>
+          <h3>What you already told Photos</h3>
+          <p>Favourited, edited, cropped, filed in an album, shared. These outrank every algorithm in the app. If you touched a frame, it wins its group — and Keeper says that’s why.</p>
+        </article>
+        <article class="feature">
+          <span class="tier">Then · the photograph</span>
+          <h3>Whether it’s any good</h3>
+          <p>Sharpness on the subject rather than the whole frame. Blown highlights and crushed shadows. Resolution and format. Faces in focus, eyes open, expression readable.</p>
+        </article>
+        <article class="feature">
+          <span class="tier">Last · the set</span>
+          <h3>Whether it’s the best of these</h3>
+          <p>Most people present, because the shot with everyone in it is usually why the burst exists. Widest framing when the rest are crops. Latest in the burst — the one you waited for.</p>
+        </article>
+      </div>
+      <p class="note">
+        When it’s a close call, Keeper says so. Two frames neck and neck means neither gets pre-ticked
+        and you get the final word — a confident wrong answer costs more than an honest shrug.
+      </p>
+    </section>
+
+    <section id="privacy">
+      <div class="section-head">
+        <div>
+          <h2>Not “we don’t upload your photos” — it can’t</h2>
+          <p>Every photo app promises this and you have no way to check any of them. Keeper’s version is built into the app, not written in a policy — and you can verify it yourself in about ninety seconds.</p>
+        </div>
+      </div>
+      <div class="features">
+        <article class="feature">
+          <h3>No network entitlement</h3>
+          <p>The app ships without permission to open an outgoing connection. There is no socket. The entitlement list is printed in Settings so you can check it against the shipped binary yourself.</p>
+        </article>
+        <article class="feature">
+          <h3>Nothing third-party inside</h3>
+          <p>No analytics SDK, no crash reporter, no remote config, no A/B framework — the four things that quietly turn a private app into a telemetry pipe.</p>
+        </article>
+        <article class="feature">
+          <h3>Every comparison on your chip</h3>
+          <p>Similarity, quality scoring, face detection and text recognition all run on the Neural Engine in your hand. No model downloads, no server-side inference.</p>
+        </article>
+        <article class="feature">
+          <h3>The index stays in the sandbox</h3>
+          <p>Hashes and thumbnails live in the app’s own container, readable only while the device is unlocked. Never in iCloud, never in a shared folder. One button wipes it.</p>
+        </article>
+        <article class="feature">
+          <h3>Read-only until you press the button</h3>
+          <p>Keeper holds read access for its whole working life. Write access is used exactly once per session — the deletion you confirmed, through the system’s own dialog.</p>
+        </article>
+        <article class="feature">
+          <h3>Nothing to have an account with</h3>
+          <p>No sign-in, no sync, no subscription. All fourteen App Store privacy categories answered “Data Not Collected”, because there is nothing to collect it with.</p>
+        </article>
+      </div>
+    </section>
+
+    <section id="safety">
+      <div class="section-head">
+        <div>
+          <h2>Five rules the app isn’t allowed to break</h2>
+          <p>Deleting the wrong photo isn’t like deleting the wrong file. So the safety net is the product, not the small print underneath it.</p>
+        </div>
+      </div>
+      <ul class="targets">
+        <li><strong>Never destroys</strong><span>Everything routes to Recently Deleted, through the system’s own confirmation</span></li>
+        <li><strong>Never pre-ticks the final step</strong><span>Emptying Recently Deleted always starts unticked</span></li>
+        <li><strong>Your signals are untouchable</strong><span>Favourited, edited, shared or filed is never suggested — and it says which</span></li>
+        <li><strong>Every set keeps a frame</strong><span>Enforced in the model, not the screen. A set can’t reach zero keepers</span></li>
+        <li><strong>Optional escrow</strong><span>Export full-resolution originals to a disk before a big clear-out</span></li>
+        <li><strong>One receipt, one undo</strong><span>Every session is itemised and reversible in a single tap</span></li>
+      </ul>
+    </section>
+
+    <section id="honest">
+      <div class="section-head">
+        <div>
+          <h2>Two things it won’t pretend to know</h2>
+          <p>Two things people always ask a cleanup app for. Neither one can be done honestly as asked — so here’s what Keeper does instead of guessing.</p>
+        </div>
+      </div>
+      <dl class="honest">
+        <div>
+          <dt>“Photos you haven’t opened in three years”</dt>
+          <dd>
+            iOS keeps no record of you looking at a photo — no view count, no last-opened date. Any app
+            claiming otherwise is guessing. Keeper measures something real instead: never favourited,
+            never edited, never filed, never shared. It calls that <em>untouched</em>, and words it that
+            way on screen rather than telling you what you did or didn’t look at.
+          </dd>
+        </div>
+        <div>
+          <dt>“People you haven’t photographed in months”</dt>
+          <dd>
+            That gap is sometimes a friend you’ve drifted from and sometimes a person who died. A
+            cleanup app has no way to know which, and no business guessing. If this ships at all it
+            ships switched off, it never phrases a person as an absence, and its only action is to thin
+            duplicates — fewer copies of the same memory, never fewer memories.
+          </dd>
+        </div>
+      </dl>
+    </section>
+
+    <section id="status">
+      <div class="section-head">
+        <div>
+          <h2>Where it is now</h2>
+          <p>In design, being built in the open. Each stage stands on its own, so there’s a real app in your hands at the end of the second one.</p>
+        </div>
+      </div>
+      <ul class="phases">
+        <li class="phase">
+          <span class="phase-when">Phase 1</span>
+          <div>
+            <strong>Prove the engine</strong>
+            <p>A command-line spike over a real library: group the duplicates, time every stage, check it holds up at 48,000 photos on phone-class silicon.</p>
+          </div>
+          <span class="phase-state">In design</span>
+        </li>
+        <li class="phase">
+          <span class="phase-when">Phase 2</span>
+          <div>
+            <strong>Version 1.0</strong>
+            <p>Similar sets, screen recordings, screenshots, exact duplicates, Recently Deleted. The confirm sheet, the receipt, undo. Mac with full keyboard culling.</p>
+          </div>
+          <span class="phase-state">Planned</span>
+        </li>
+        <li class="phase">
+          <span class="phase-when">Phase 3</span>
+          <div>
+            <strong>Judgement calls</strong>
+            <p>Blurred and dark frames, long-tail video, forwarded media, the escrow export, and Apple Pencil strike-through on iPad.</p>
+          </div>
+          <span class="phase-state">Planned</span>
+        </li>
+        <li class="phase">
+          <span class="phase-when">Phase 4</span>
+          <div>
+            <strong>The risky ones</strong>
+            <p>Near-duplicate video, and learning from the times you overruled the pick — kept on device like everything else.</p>
+          </div>
+          <span class="phase-state">Exploring</span>
+        </li>
+      </ul>
+    </section>
+
+    <section id="deeper">
+      <div class="callout">
+        <div>
+          <h2>The whole thing, written down</h2>
+          <p>
+            Every category, every screen, the scoring model, the on-device pipeline, and an honest list
+            of what might not work. Plus the design principles that came out of drawing it.
+          </p>
+        </div>
+        <div class="cta-row" style="margin: 0;">
+          <a class="btn btn-primary" href="proposal.html">Read the proposal</a>
+          <a class="btn btn-ghost" href="design-principles.html">Design principles</a>
+        </div>
+      </div>
+    </section>
+
+    <section id="notify">
+      <div class="section-head">
+        <div>
+          <h2>No mailing list. Sorry.</h2>
+          <p>
+            Asking for your email would be a strange way to open a page about not collecting your data.
+            Keeper turns up here and on the App Store when it’s ready — that’s the whole plan.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <section id="stack">
+      <div class="section-head">
+        <div>
+          <h2>Native, offline, and quiet about it</h2>
+          <p>One Swift core shared across the three platforms, with the whole photo pipeline running on Apple’s own on-device frameworks.</p>
+        </div>
+      </div>
+      <div class="stack">
+        <span>Swift</span>
+        <span>SwiftUI</span>
+        <span>PhotoKit</span>
+        <span>Vision</span>
+        <span>Core ML</span>
+        <span>SwiftData</span>
+        <span>iOS 18+ · iPadOS 18+ · macOS 15+</span>
+        <span>No runtime dependencies</span>
+      </div>
+    </section>
+
+    <footer>
+      <span>© 2026 Muddassir Iqbal</span>
+      <span>Keeper — coming soon to iPhone, iPad and Mac</span>
+    </footer>
+  </main>
+
+  <script>
+    const themeToggle = document.getElementById('themeToggle');
+    const body = document.body;
+    const saved = localStorage.getItem('hub-theme');
+    if (saved === 'dark-mode') body.classList.add('dark');
+    if (saved === 'light-mode') body.classList.add('light');
+
+    themeToggle.addEventListener('click', () => {
+      const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+      if (body.classList.contains('dark')) {
+        body.classList.remove('dark');
+        body.classList.add('light');
+        localStorage.setItem('hub-theme', 'light-mode');
+      } else if (body.classList.contains('light')) {
+        body.classList.remove('light');
+        body.classList.add('dark');
+        localStorage.setItem('hub-theme', 'dark-mode');
+      } else if (prefersDark) {
+        body.classList.add('light');
+        localStorage.setItem('hub-theme', 'light-mode');
+      } else {
+        body.classList.add('dark');
+        localStorage.setItem('hub-theme', 'dark-mode');
+      }
+    });
+  </script>
+</body>
+</html>
