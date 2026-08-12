@@ -35,6 +35,9 @@ All deliverables live under `docs/`:
 - `docs/local-lead-gen-agency/index.html` — 14-module self-study course: building a local lead gen agency in India (GBP, Meta Ads, automation, sales scripts)
 - `docs/spacebar/index.html` — SpaceBar macOS menu bar disk cleaner product page (hi-res panel/layout/browser/settings screenshots)
 - `docs/spacebar/design-principles.html` — Design principles drawn from the SpaceBar panel redesign; linked from the SpaceBar page
+- `docs/keeper/index.html` — Keeper coming-soon product page (on-device photo culling for iOS/iPadOS/macOS); CSS-only contact-sheet visual, no image assets
+- `docs/keeper/proposal.html` — Full Keeper product proposal: clutter categories, scoring model, CSS device mockups of ten screens, pipeline, risks, roadmap
+- `docs/keeper/design-principles.html` — Twelve design principles from designing Keeper; cross-linked with the proposal
 
 **Internal** (deployed, but hub cards use `card-private` and only show when the hub is opened with `?mode=private`)
 

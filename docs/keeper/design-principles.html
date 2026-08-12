@@ -1,0 +1,668 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Design principles — designing Keeper</title>
+  <meta name="description" content="Twelve design principles from building a cleanup app for something irreplaceable: show the survivor not the casualties, rank the user's own signals above your best model, and make the privacy claim falsifiable." />
+  <meta name="theme-color" content="#e5e9e6" />
+
+  <meta property="og:title" content="Design principles — designing Keeper" />
+  <meta property="og:description" content="What a photo culling app taught us about defaults, confidence, and admitting what the platform won't tell you." />
+  <meta property="og:type" content="article" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet" />
+
+  <style>
+    :root {
+      --bg: #e5e9e6;
+      --bg-deep: #d2d8d3;
+      --ink: #171a18;
+      --muted: #5c645e;
+      --line: #171a18;
+      --line-soft: color-mix(in srgb, var(--ink) 22%, transparent);
+      --accent: #8c1f2f;
+      --surface: #eef1ee;
+      --panel-2: color-mix(in srgb, var(--ink) 4%, transparent);
+      --toggle-bg: #eef1ee;
+      --max: 1120px;
+    }
+
+    body.dark {
+      --bg: #141816;
+      --bg-deep: #1c211e;
+      --ink: #e8ece9;
+      --muted: #a3aaa5;
+      --line: #e8ece9;
+      --accent: #e07a86;
+      --surface: #1c211e;
+      --panel-2: color-mix(in srgb, var(--ink) 6%, transparent);
+      --toggle-bg: #1c211e;
+    }
+
+    @media (prefers-color-scheme: dark) {
+      body:not(.light) {
+        --bg: #141816;
+        --bg-deep: #1c211e;
+        --ink: #e8ece9;
+        --muted: #a3aaa5;
+        --line: #e8ece9;
+        --accent: #e07a86;
+        --surface: #1c211e;
+        --panel-2: color-mix(in srgb, var(--ink) 6%, transparent);
+        --toggle-bg: #1c211e;
+      }
+    }
+
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+
+    body {
+      margin: 0;
+      font-family: "Space Grotesk", sans-serif;
+      color: var(--ink);
+      background:
+        linear-gradient(105deg, var(--bg) 0%, var(--bg) 58%, var(--bg-deep) 58%, var(--bg-deep) 100%);
+      line-height: 1.55;
+      transition: background 0.3s ease, color 0.3s ease;
+    }
+
+    a { color: var(--accent); text-decoration: none; }
+    a:hover { text-decoration: underline; text-underline-offset: 3px; }
+
+    #themeToggle {
+      position: fixed;
+      top: 1.25rem;
+      right: 1.25rem;
+      z-index: 2000;
+      width: 2.5rem;
+      height: 2.5rem;
+      border: 1.5px solid var(--ink);
+      border-radius: 0;
+      background: var(--toggle-bg);
+      color: var(--ink);
+      cursor: pointer;
+      display: grid;
+      place-items: center;
+      transition: background 0.2s ease, color 0.2s ease;
+    }
+
+    #themeToggle:hover { background: var(--ink); color: var(--bg); }
+    #themeToggle svg { width: 1rem; height: 1rem; }
+    #themeToggle .icon-moon { display: none; }
+    body.dark #themeToggle .icon-sun { display: none; }
+    body.dark #themeToggle .icon-moon { display: block; }
+
+    @media (prefers-color-scheme: dark) {
+      body:not(.light) #themeToggle .icon-sun { display: none; }
+      body:not(.light) #themeToggle .icon-moon { display: block; }
+      body.light #themeToggle .icon-sun { display: block; }
+      body.light #themeToggle .icon-moon { display: none; }
+    }
+
+    .page {
+      width: min(var(--max), calc(100% - 3rem));
+      margin: 0 auto;
+      padding: 1.5rem 0 4rem;
+    }
+
+    .top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      padding: 0.25rem 0 1.5rem;
+    }
+
+    .hub-link { color: var(--ink); font-weight: 600; font-size: 0.92rem; letter-spacing: -0.02em; }
+    .hub-link:hover { color: var(--accent); text-decoration: none; }
+
+    .kicker {
+      font-size: 0.78rem;
+      font-weight: 600;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+
+    .masthead {
+      padding: 2rem 0 3rem;
+      border-bottom: 1.5px solid var(--line);
+      animation: rise 0.7s ease both;
+    }
+
+    .masthead h1 {
+      margin: 0 0 1rem;
+      max-width: 18ch;
+      font-size: clamp(2.1rem, 5.4vw, 3.6rem);
+      font-weight: 700;
+      letter-spacing: -0.05em;
+      line-height: 1.02;
+    }
+
+    .standfirst { margin: 0; max-width: 62ch; color: var(--muted); font-size: 1.05rem; }
+
+    section { padding: 3.25rem 0; border-bottom: 1.5px solid var(--line-soft); }
+    section:last-of-type { border-bottom: none; }
+
+    .section-head { margin-bottom: 1.75rem; }
+    .section-head h2 { margin: 0; font-size: clamp(1.45rem, 2.8vw, 1.9rem); letter-spacing: -0.035em; }
+    .section-head p { margin: 0.35rem 0 0; color: var(--muted); max-width: 56ch; }
+
+    .prose { max-width: 64ch; }
+    .prose p { margin: 0 0 1rem; color: var(--muted); }
+    .prose p:last-child { margin-bottom: 0; }
+    .prose strong { color: var(--ink); }
+
+    .issues {
+      margin: 0;
+      padding: 0;
+      list-style: none;
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 0 2.5rem;
+    }
+
+    .issues li {
+      display: grid;
+      grid-template-columns: 2rem 1fr;
+      gap: 0.5rem;
+      padding: 0.9rem 0;
+      border-bottom: 1px solid var(--line-soft);
+    }
+
+    .issues .n { color: var(--muted); font-size: 0.8rem; font-weight: 600; padding-top: 0.15rem; }
+    .issues b { display: block; font-size: 0.98rem; letter-spacing: -0.02em; }
+    .issues span.det { display: block; margin-top: 0.15rem; color: var(--muted); font-size: 0.92rem; }
+
+    .principles { display: grid; gap: 0; counter-reset: principle; }
+
+    .principle {
+      display: grid;
+      grid-template-columns: 4rem minmax(0, 1fr) minmax(0, 0.85fr);
+      gap: 1.5rem;
+      padding: 1.9rem 0;
+      border-top: 1.5px solid var(--line);
+    }
+
+    .principle .num {
+      counter-increment: principle;
+      font-size: 1.1rem;
+      font-weight: 700;
+      letter-spacing: -0.03em;
+      color: var(--muted);
+    }
+
+    .principle .num::before { content: counter(principle, decimal-leading-zero); }
+
+    .principle h3 {
+      margin: 0 0 0.5rem;
+      font-size: clamp(1.1rem, 2vw, 1.35rem);
+      letter-spacing: -0.03em;
+      line-height: 1.2;
+    }
+
+    .principle p { margin: 0; color: var(--muted); font-size: 0.97rem; }
+    .principle p + p { margin-top: 0.7rem; }
+
+    .shipped {
+      align-self: start;
+      padding: 0.9rem 1rem;
+      background: var(--panel-2);
+      border-left: 2px solid var(--accent);
+      font-size: 0.9rem;
+      color: var(--muted);
+    }
+
+    .shipped strong {
+      display: block;
+      margin-bottom: 0.25rem;
+      color: var(--ink);
+      font-size: 0.78rem;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+
+    .tscroll { overflow-x: auto; }
+    table { width: 100%; border-collapse: collapse; font-size: 0.94rem; min-width: 620px; }
+
+    th, td {
+      text-align: left;
+      padding: 0.85rem 1rem 0.85rem 0;
+      border-bottom: 1px solid var(--line-soft);
+      vertical-align: top;
+    }
+
+    th {
+      font-size: 0.76rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--muted);
+      font-weight: 600;
+    }
+
+    td:first-child { font-weight: 600; letter-spacing: -0.02em; }
+    td:not(:first-child) { color: var(--muted); }
+
+    ol.short { margin: 0; padding-left: 1.3rem; color: var(--muted); max-width: 68ch; }
+    ol.short li { padding: 0.4rem 0; font-size: 1rem; }
+    ol.short li::marker { color: var(--accent); font-weight: 700; }
+    ol.short strong { color: var(--ink); }
+
+    .callout {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1.25rem;
+      padding: 1.75rem;
+      border: 1.5px solid var(--line);
+      background: var(--panel-2);
+    }
+
+    .callout h2 { margin: 0 0 0.35rem; font-size: clamp(1.3rem, 2.4vw, 1.7rem); letter-spacing: -0.035em; }
+    .callout p { margin: 0; color: var(--muted); max-width: 54ch; }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.45rem;
+      padding: 0.85rem 1.15rem;
+      border: 1.5px solid var(--ink);
+      font-weight: 600;
+      font-size: 0.95rem;
+      letter-spacing: -0.02em;
+      color: var(--ink);
+      transition: background 0.2s ease, color 0.2s ease, transform 0.2s ease;
+    }
+
+    .btn:hover { text-decoration: none; transform: translateY(-1px); }
+    .btn-primary { background: var(--ink); color: var(--bg); }
+    .btn-primary:hover { background: var(--accent); border-color: var(--accent); color: #fff; }
+
+    footer {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      gap: 0.75rem;
+      padding-top: 2rem;
+      color: var(--muted);
+      font-size: 0.85rem;
+    }
+
+    @keyframes rise {
+      from { opacity: 0; transform: translateY(14px); }
+      to { opacity: 1; transform: none; }
+    }
+
+    @media (max-width: 900px) {
+      .principle { grid-template-columns: 2.5rem minmax(0, 1fr); }
+      .principle .shipped { grid-column: 2; }
+      .issues { grid-template-columns: 1fr; }
+    }
+
+    @media (max-width: 640px) {
+      .page { width: min(100% - 1.5rem, var(--max)); }
+      #themeToggle { top: 0.85rem; right: 0.85rem; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { animation: none !important; transition: none !important; }
+    }
+  </style>
+</head>
+<body>
+  <button id="themeToggle" aria-label="Toggle theme" type="button">
+    <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
+      <circle cx="12" cy="12" r="4"></circle>
+      <path d="M12 2v2.2M12 19.8V22M4.93 4.93l1.56 1.56M17.51 17.51l1.56 1.56M2 12h2.2M19.8 12H22M4.93 19.07l1.56-1.56M17.51 6.49l1.56-1.56"></path>
+    </svg>
+    <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
+      <path d="M20.5 14.3A8.2 8.2 0 1 1 9.7 3.5a6.6 6.6 0 1 0 10.8 10.8z"></path>
+    </svg>
+  </button>
+
+  <main class="page">
+    <div class="top">
+      <a class="hub-link" href="index.html">← Keeper</a>
+      <span class="kicker">Design principles</span>
+    </div>
+
+    <header class="masthead">
+      <h1>Twelve rules for deleting things people can’t get back.</h1>
+      <p class="standfirst">
+        Most cleanup tools are safe because their subject regenerates. Photos don’t. Designing Keeper
+        meant re-deriving every default, every confirmation and every piece of copy from that one fact —
+        and the rules that came out of it turn out to apply to anything with an undo button that doesn’t
+        really undo.
+      </p>
+    </header>
+
+    <section id="problem">
+      <div class="section-head">
+        <h2>What made this hard</h2>
+        <p>Six constraints that were all true at once. Any one of them is manageable; together they rule out almost every pattern a cleanup app would normally reach for.</p>
+      </div>
+      <ul class="issues">
+        <li>
+          <span class="n">01</span>
+          <div>
+            <b>The mistake is permanent</b>
+            <span class="det">A wrongly deleted cache costs a rebuild. A wrongly deleted photo costs the photo.</span>
+          </div>
+        </li>
+        <li>
+          <span class="n">02</span>
+          <div>
+            <b>The volume is absurd</b>
+            <span class="det">1,842 decisions in one library. Any flow costing five seconds per set is a five-hour flow.</span>
+          </div>
+        </li>
+        <li>
+          <span class="n">03</span>
+          <div>
+            <b>“Best” is a matter of taste</b>
+            <span class="det">The app has to make an aesthetic judgement and will sometimes be wrong in public.</span>
+          </div>
+        </li>
+        <li>
+          <span class="n">04</span>
+          <div>
+            <b>The platform withholds the obvious signal</b>
+            <span class="det">There is no “last viewed” for a photo, so the most requested feature can’t be built as asked.</span>
+          </div>
+        </li>
+        <li>
+          <span class="n">05</span>
+          <div>
+            <b>The content is emotionally loaded</b>
+            <span class="det">Some clusters are people who died. The app can’t tell, so it can’t be glib.</span>
+          </div>
+        </li>
+        <li>
+          <span class="n">06</span>
+          <div>
+            <b>Deleting doesn’t free anything</b>
+            <span class="det">Recently Deleted holds the bytes for thirty days, so the headline number is a lie by default.</span>
+          </div>
+        </li>
+      </ul>
+    </section>
+
+    <section id="principles">
+      <div class="section-head">
+        <h2>The principles that came out of it</h2>
+        <p>Each one is a decision we made differently than we would have on a lower-stakes app, and what it turned into on screen.</p>
+      </div>
+
+      <div class="principles">
+        <article class="principle">
+          <span class="num"></span>
+          <div>
+            <h3>Show the survivor, not the casualties</h3>
+            <p>The obvious layout for a duplicate finder is a grid of things to delete with checkboxes. It reads as an accusation and it puts the user’s attention on fifteen photos they don’t care about.</p>
+            <p>Inverting it — one large keeper, the rejects as a small strip underneath — changes the question from “which of these do I sacrifice” to “is this the right one”. The second question takes about a second to answer. The first one takes a minute and produces regret.</p>
+          </div>
+          <div class="shipped">
+            <strong>On screen</strong>
+            The review screen is 60% keeper. The fifteen rejects are thumbnails in a single row.
+          </div>
+        </article>
+
+        <article class="principle">
+          <span class="num"></span>
+          <div>
+            <h3>When the mistake is permanent, pre-select the keep</h3>
+            <p>Pre-selection is a real gift when the stakes are low and a trap when they aren’t. The resolution isn’t to abandon defaults — with 1,842 sets, no defaults means no product — it’s to choose which side of the decision the default sits on.</p>
+            <p>Keeper pre-selects the frame that stays and derives the deletions from it. Same end state, but the thing the user has to actively confirm is the survival, not the destruction.</p>
+          </div>
+          <div class="shipped">
+            <strong>On screen</strong>
+            Two rows: “Keep 1 frame” ticked green, “Delete 15 frames” ticked red beneath it, both visible before you commit.
+          </div>
+        </article>
+
+        <article class="principle">
+          <span class="num"></span>
+          <div>
+            <h3>Never show a score where a sentence will do</h3>
+            <p>The engine produces a sharpness value of 0.84. Putting that on screen looks rigorous and communicates nothing — nobody knows whether 0.84 is good, and it invites arguments about the number instead of the photo.</p>
+            <p>The same information as “Sharpest of 16 · All 4 faces · Eyes open” is instantly checkable against the picture in front of you. The score belongs in the compare view, where you are explicitly asking for the working.</p>
+          </div>
+          <div class="shipped">
+            <strong>On screen</strong>
+            Four word-chips under the keeper. Raw numbers appear only in the side-by-side compare.
+          </div>
+        </article>
+
+        <article class="principle">
+          <span class="num"></span>
+          <div>
+            <h3>Rank the user’s own signals above your cleverest model</h3>
+            <p>A frame the user favourited two years ago beats whatever the aesthetics model thinks today, every time. This is not humility for its own sake — the user’s past action is simply better evidence about the user’s preference than any general-purpose scorer.</p>
+            <p>The corollary is that the app has to say when this happened. “You favourited this one” is a completely different explanation from “this one scored highest”, and conflating them teaches people the model is smarter than it is.</p>
+          </div>
+          <div class="shipped">
+            <strong>On screen</strong>
+            Tier 1 signals win outright and label themselves. Nothing favourited, edited, shared or filed is ever suggested for deletion.
+          </div>
+        </article>
+
+        <article class="principle">
+          <span class="num"></span>
+          <div>
+            <h3>When two answers are close, say so and pick neither</h3>
+            <p>Every ranking system produces near-ties, and the usual behaviour is to return the winner anyway because a UI needs one. That converts a coin flip into a confident-looking recommendation, which is the fastest way to burn trust once the user notices.</p>
+            <p>Declaring the tie costs one screen state and buys the right to be believed on every set where the app <em>is</em> confident.</p>
+          </div>
+          <div class="shipped">
+            <strong>On screen</strong>
+            “These two are close.” Neither is pre-ticked; the set advances only when the user chooses.
+          </div>
+        </article>
+
+        <article class="principle">
+          <span class="num"></span>
+          <div>
+            <h3>Don’t invent the data the platform won’t give you</h3>
+            <p>The single most requested feature for a photo cleaner is “show me what I haven’t looked at in years”. The OS keeps no such record. The tempting move is to approximate it with creation date and keep the appealing label.</p>
+            <p>We measure what is actually knowable — never favourited, never edited, never filed, never shared — and rename the feature to match. <strong>Untouched</strong> is a smaller claim than <em>unopened</em>, and it has the advantage of being true.</p>
+          </div>
+          <div class="shipped">
+            <strong>On screen</strong>
+            The word “untouched”, with the five conditions listed in the row’s subtitle rather than hidden in a help page.
+          </div>
+        </article>
+
+        <article class="principle">
+          <span class="num"></span>
+          <div>
+            <h3>Make the privacy claim falsifiable, not sincere</h3>
+            <p>“We never upload your photos” is unverifiable by the person who most needs to verify it, which makes it worth roughly nothing regardless of whether it’s true. Sincerity is not a security property.</p>
+            <p>Removing the network entitlement converts a promise into a fact anyone can check with one command. Design-wise this is the same move as declaring a tie: give up a little rhetorical room in exchange for being believed.</p>
+          </div>
+          <div class="shipped">
+            <strong>On screen</strong>
+            The first screen states the claim; Settings prints the entitlement list; the docs give the command to verify it.
+          </div>
+        </article>
+
+        <article class="principle">
+          <span class="num"></span>
+          <div>
+            <h3>A feature can be technically excellent and still wrong to ship</h3>
+            <p>“You haven’t photographed this person in four years — clear 3 GB?” is a genuinely strong space-saving feature. It is also, some fraction of the time, addressed to someone about a person who died.</p>
+            <p>The app cannot tell those cases apart, so the design question stops being “how accurate can we make this” and becomes “what is the worst sentence this can produce, and can we live with it”. The answer was to strip the feature down until its worst output was harmless: no absence framing, no pre-selection, and the only action is thinning duplicates.</p>
+          </div>
+          <div class="shipped">
+            <strong>On screen</strong>
+            Off by default. One action — “thin this chapter” — and a permanent “never suggest anything here”.
+          </div>
+        </article>
+
+        <article class="principle">
+          <span class="num"></span>
+          <div>
+            <h3>Tell people where the space actually went</h3>
+            <p>Deleting 84 GB of photos frees 0 GB. The bytes sit in Recently Deleted for thirty days, and the storage screen the user was trying to escape doesn’t move. An app that celebrates at that moment has just lied by omission.</p>
+            <p>The same applies to iCloud: on an optimised library, local and cloud numbers differ, and only one of them is the one the user is upset about.</p>
+          </div>
+          <div class="shipped">
+            <strong>On screen</strong>
+            The confirm sheet states the thirty days and the iCloud effect before you press the button, not after.
+          </div>
+        </article>
+
+        <article class="principle">
+          <span class="num"></span>
+          <div>
+            <h3>The confirmation is the product, so itemise it</h3>
+            <p>“Delete 6,821 items?” is not a confirmation, it’s a formality — nobody can evaluate that number, so everyone taps through. A dialog that can’t be meaningfully refused isn’t protecting anyone.</p>
+            <p>Broken into four named rows with their own sizes, the same total becomes checkable. The user can spot that screenshots are higher than expected and back out of one line rather than all of it.</p>
+          </div>
+          <div class="shipped">
+            <strong>On screen</strong>
+            Four rows, four counts, four sizes, and the keeper count restated: “1,842 keepers kept”.
+          </div>
+        </article>
+
+        <article class="principle">
+          <span class="num"></span>
+          <div>
+            <h3>For volume work, design the keyboard path first</h3>
+            <p>A thousand sets is an evening with a mouse and twenty minutes with the keyboard. That is not an accessibility footnote, it is the difference between a tool people finish and a tool people abandon at set 60.</p>
+            <p>Designing the shortcuts first also forces the interaction model to be simple enough to have shortcuts — if accept-and-advance can’t be one key, the screen is doing too much.</p>
+          </div>
+          <div class="shipped">
+            <strong>On screen</strong>
+            Space accepts and advances, arrows promote a different frame, ⌘Z reverses. The buttons carry their shortcuts as labels.
+          </div>
+        </article>
+
+        <article class="principle">
+          <span class="num"></span>
+          <div>
+            <h3>Let the cheap pass answer first</h3>
+            <p>The expensive analysis takes fifteen minutes. The naive build makes people wait for all of it before showing anything, which means the first impression of the app is a progress bar.</p>
+            <p>Ordering the pipeline cheapest-first isn’t only a performance decision — it’s a UX one. Metadata alone resolves screen recordings, screenshots and Recently Deleted in twelve seconds, so there is something worth doing on screen almost immediately, and the slow part finishes in the background.</p>
+          </div>
+          <div class="shipped">
+            <strong>On screen</strong>
+            “Review what’s ready (12.4 GB)” appears during indexing, with named passes and honest counts above it.
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <section id="cost">
+      <div class="section-head">
+        <h2>What each rule costs</h2>
+        <p>None of these are free. Worth being explicit about the trade, because on a different product several of them would be the wrong call.</p>
+      </div>
+      <div class="tscroll">
+        <table>
+          <thead>
+            <tr><th>Rule</th><th>What it costs</th><th>Why it’s worth it here</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Show the survivor</td>
+              <td>Fewer items visible per screen; more scrolling for power users</td>
+              <td>Turns a minute-long decision into a one-second one</td>
+            </tr>
+            <tr>
+              <td>Declare ties</td>
+              <td>Some sets need manual input that a bolder app would have auto-resolved</td>
+              <td>The confident cases become believable</td>
+            </tr>
+            <tr>
+              <td>Words, not scores</td>
+              <td>Looks less sophisticated in a screenshot</td>
+              <td>Users can actually check the claim against the photo</td>
+            </tr>
+            <tr>
+              <td>“Untouched”, not “unopened”</td>
+              <td>A weaker headline than every competitor’s</td>
+              <td>It survives contact with a sceptical user</td>
+            </tr>
+            <tr>
+              <td>No network entitlement</td>
+              <td>No crash reports, no analytics, no remote kill switch — bugs are found the slow way</td>
+              <td>The core promise stops needing to be believed</td>
+            </tr>
+            <tr>
+              <td>Itemised confirmation</td>
+              <td>One more screen between intent and result</td>
+              <td>It is the only screen standing between a user and a permanent mistake</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section id="short">
+      <div class="section-head">
+        <h2>The shortest version</h2>
+      </div>
+      <ol class="short">
+        <li><strong>Put the keep in the hero</strong> and the rejects in the margin.</li>
+        <li><strong>Default toward what survives</strong>, and derive the deletion from it.</li>
+        <li><strong>Explain in words the user can check</strong> against what’s on screen.</li>
+        <li><strong>Their past actions outrank your model</strong> — and say when that happened.</li>
+        <li><strong>Admit a tie</strong> rather than manufacture a winner.</li>
+        <li><strong>Rename the feature to what you can measure</strong> instead of guessing the rest.</li>
+        <li><strong>Remove the capability</strong> rather than promise restraint.</li>
+        <li><strong>Ask what the worst output is</strong> before asking how accurate it can get.</li>
+        <li><strong>Report the space honestly</strong>, including the part you haven’t freed yet.</li>
+        <li><strong>Make the confirmation refusable</strong> by itemising it.</li>
+        <li><strong>Design the keyboard path first</strong> when the work comes in thousands.</li>
+        <li><strong>Let the cheap pass answer first</strong> so the first screen isn’t a progress bar.</li>
+      </ol>
+    </section>
+
+    <section id="next">
+      <div class="callout">
+        <div>
+          <h2>Where these came from</h2>
+          <p>The full Keeper proposal — the nine clutter categories, the scoring model, ten screens, the on-device pipeline, and an honest list of what might not work.</p>
+        </div>
+        <a class="btn btn-primary" href="proposal.html">Read the proposal</a>
+      </div>
+    </section>
+
+    <footer>
+      <span>© 2026 Muddassir Iqbal</span>
+      <a href="index.html">Keeper — coming soon</a>
+    </footer>
+  </main>
+
+  <script>
+    const themeToggle = document.getElementById('themeToggle');
+    const body = document.body;
+    const saved = localStorage.getItem('hub-theme');
+    if (saved === 'dark-mode') body.classList.add('dark');
+    if (saved === 'light-mode') body.classList.add('light');
+
+    themeToggle.addEventListener('click', () => {
+      const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+      if (body.classList.contains('dark')) {
+        body.classList.remove('dark');
+        body.classList.add('light');
+        localStorage.setItem('hub-theme', 'light-mode');
+      } else if (body.classList.contains('light')) {
+        body.classList.remove('light');
+        body.classList.add('dark');
+        localStorage.setItem('hub-theme', 'dark-mode');
+      } else if (prefersDark) {
+        body.classList.add('light');
+        localStorage.setItem('hub-theme', 'light-mode');
+      } else {
+        body.classList.add('dark');
+        localStorage.setItem('hub-theme', 'dark-mode');
+      }
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,1340 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Keeper — the product proposal</title>
+  <meta name="description" content="The full Keeper proposal: nine kinds of photo clutter, how the app picks the keeper out of a burst, ten screen designs, the five-pass on-device pipeline, and an honest list of what might not work." />
+  <meta name="theme-color" content="#e5e9e6" />
+
+  <meta property="og:title" content="Keeper — the product proposal" />
+  <meta property="og:description" content="What it finds, how it decides, what it looks like, and what could go wrong. A privacy-first photo culling app for iPhone, iPad and Mac." />
+  <meta property="og:type" content="article" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet" />
+
+  <style>
+    :root {
+      --bg: #e5e9e6;
+      --bg-deep: #d2d8d3;
+      --ink: #171a18;
+      --muted: #5c645e;
+      --line: #171a18;
+      --line-soft: color-mix(in srgb, var(--ink) 22%, transparent);
+      --accent: #8c1f2f;
+      --surface: #eef1ee;
+      --sunk: #dde2de;
+      --panel-2: color-mix(in srgb, var(--ink) 4%, transparent);
+      --good: #1f6b4a;
+      --good-soft: #dbe8e1;
+      --warn: #8a5a12;
+      --warn-soft: #efe6d3;
+      --accent-soft: #f0dcdf;
+      --on-accent: #ffffff;
+      --on-good: #ffffff;
+      --toggle-bg: #eef1ee;
+      --max: 1120px;
+      --shot-shadow: 0 28px 64px color-mix(in srgb, var(--ink) 18%, transparent);
+    }
+
+    body.dark {
+      --bg: #141816;
+      --bg-deep: #1c211e;
+      --ink: #e8ece9;
+      --muted: #a3aaa5;
+      --line: #e8ece9;
+      --accent: #e07a86;
+      --surface: #1c211e;
+      --sunk: #10140f;
+      --panel-2: color-mix(in srgb, var(--ink) 6%, transparent);
+      --good: #7dbaa8;
+      --good-soft: #1b2b26;
+      --warn: #d4a574;
+      --warn-soft: #2b2418;
+      --accent-soft: #33191d;
+      --on-accent: #2a0d11;
+      --on-good: #0b1a15;
+      --toggle-bg: #1c211e;
+      --shot-shadow: 0 28px 64px rgba(0, 0, 0, 0.45);
+    }
+
+    @media (prefers-color-scheme: dark) {
+      body:not(.light) {
+        --bg: #141816;
+        --bg-deep: #1c211e;
+        --ink: #e8ece9;
+        --muted: #a3aaa5;
+        --line: #e8ece9;
+        --accent: #e07a86;
+        --surface: #1c211e;
+        --sunk: #10140f;
+        --panel-2: color-mix(in srgb, var(--ink) 6%, transparent);
+        --good: #7dbaa8;
+        --good-soft: #1b2b26;
+        --warn: #d4a574;
+        --warn-soft: #2b2418;
+        --accent-soft: #33191d;
+        --on-accent: #2a0d11;
+        --on-good: #0b1a15;
+        --toggle-bg: #1c211e;
+        --shot-shadow: 0 28px 64px rgba(0, 0, 0, 0.45);
+      }
+    }
+
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+
+    body {
+      margin: 0;
+      font-family: "Space Grotesk", sans-serif;
+      color: var(--ink);
+      background:
+        linear-gradient(105deg, var(--bg) 0%, var(--bg) 58%, var(--bg-deep) 58%, var(--bg-deep) 100%);
+      line-height: 1.55;
+      transition: background 0.3s ease, color 0.3s ease;
+    }
+
+    a { color: var(--accent); text-decoration: none; }
+    a:hover { text-decoration: underline; text-underline-offset: 3px; }
+
+    #themeToggle {
+      position: fixed;
+      top: 1.25rem;
+      right: 1.25rem;
+      z-index: 2000;
+      width: 2.5rem;
+      height: 2.5rem;
+      border: 1.5px solid var(--ink);
+      border-radius: 0;
+      background: var(--toggle-bg);
+      color: var(--ink);
+      cursor: pointer;
+      display: grid;
+      place-items: center;
+      transition: background 0.2s ease, color 0.2s ease;
+    }
+
+    #themeToggle:hover { background: var(--ink); color: var(--bg); }
+    #themeToggle svg { width: 1rem; height: 1rem; }
+    #themeToggle .icon-moon { display: none; }
+    body.dark #themeToggle .icon-sun { display: none; }
+    body.dark #themeToggle .icon-moon { display: block; }
+
+    @media (prefers-color-scheme: dark) {
+      body:not(.light) #themeToggle .icon-sun { display: none; }
+      body:not(.light) #themeToggle .icon-moon { display: block; }
+      body.light #themeToggle .icon-sun { display: block; }
+      body.light #themeToggle .icon-moon { display: none; }
+    }
+
+    .page {
+      width: min(var(--max), calc(100% - 3rem));
+      margin: 0 auto;
+      padding: 1.5rem 0 4rem;
+    }
+
+    .top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      padding: 0.25rem 0 1.5rem;
+    }
+
+    .hub-link { color: var(--ink); font-weight: 600; font-size: 0.92rem; letter-spacing: -0.02em; }
+    .hub-link:hover { color: var(--accent); text-decoration: none; }
+
+    .kicker {
+      font-size: 0.78rem;
+      font-weight: 600;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+
+    .masthead {
+      padding: 2rem 0 3rem;
+      border-bottom: 1.5px solid var(--line);
+      animation: rise 0.7s ease both;
+    }
+
+    .masthead h1 {
+      margin: 0 0 1rem;
+      max-width: 18ch;
+      font-size: clamp(2.1rem, 5.4vw, 3.6rem);
+      font-weight: 700;
+      letter-spacing: -0.05em;
+      line-height: 1.02;
+    }
+
+    .standfirst { margin: 0 0 1.5rem; max-width: 62ch; color: var(--muted); font-size: 1.05rem; }
+
+    .meta-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+    }
+
+    .meta-row span {
+      padding: 0.35rem 0.6rem;
+      border: 1px solid var(--line-soft);
+      font-size: 0.78rem;
+      font-weight: 600;
+      color: var(--muted);
+    }
+
+    .meta-row span.hot { border-color: var(--accent); color: var(--accent); }
+
+    section { padding: 3.25rem 0; border-bottom: 1.5px solid var(--line-soft); }
+    section:last-of-type { border-bottom: none; }
+
+    .section-head { margin-bottom: 1.75rem; }
+
+    .section-head h2 {
+      margin: 0;
+      font-size: clamp(1.45rem, 2.8vw, 1.9rem);
+      letter-spacing: -0.035em;
+    }
+
+    .section-head p { margin: 0.35rem 0 0; color: var(--muted); max-width: 56ch; }
+
+    .prose { max-width: 64ch; }
+    .prose p { margin: 0 0 1rem; }
+    .prose p:last-child { margin-bottom: 0; }
+
+    .note {
+      margin: 1.5rem 0 0;
+      padding-left: 1rem;
+      border-left: 2px solid var(--accent);
+      color: var(--muted);
+      max-width: 62ch;
+      font-size: 0.95rem;
+    }
+
+    .note strong { color: var(--ink); }
+
+    .tscroll { overflow-x: auto; }
+
+    table { width: 100%; border-collapse: collapse; font-size: 0.94rem; min-width: 680px; }
+
+    th, td {
+      text-align: left;
+      padding: 0.85rem 1rem 0.85rem 0;
+      border-bottom: 1px solid var(--line-soft);
+      vertical-align: top;
+    }
+
+    th {
+      font-size: 0.76rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--muted);
+      font-weight: 600;
+    }
+
+    td:first-child { font-weight: 600; letter-spacing: -0.02em; }
+    td:not(:first-child) { color: var(--muted); }
+    td.gb { color: var(--accent); font-weight: 700; font-variant-numeric: tabular-nums; white-space: nowrap; }
+    td .det { display: block; margin-top: 0.15rem; color: var(--muted); font-weight: 400; font-size: 0.9rem; }
+
+    .bar { height: 5px; background: var(--panel-2); margin-top: 0.4rem; min-width: 80px; }
+    .bar i { display: block; height: 100%; background: var(--accent); }
+
+    .features { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1.25rem; }
+    .features.two { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+
+    .feature { padding: 1.25rem 0; border-top: 1.5px solid var(--line); }
+    .feature h3 { margin: 0 0 0.45rem; font-size: 1.05rem; letter-spacing: -0.02em; }
+    .feature p { margin: 0; color: var(--muted); font-size: 0.95rem; }
+    .feature p + p { margin-top: 0.6rem; }
+
+    .feature .tier {
+      display: block;
+      margin-bottom: 0.6rem;
+      font-size: 0.72rem;
+      font-weight: 600;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--accent);
+    }
+
+    .stages { display: grid; gap: 0; counter-reset: stage; }
+
+    .stage {
+      display: grid;
+      grid-template-columns: 3.5rem minmax(0, 1fr) minmax(0, 0.6fr);
+      gap: 1.5rem;
+      padding: 1.6rem 0;
+      border-top: 1.5px solid var(--line);
+      align-items: start;
+    }
+
+    .stage .num {
+      counter-increment: stage;
+      font-size: 1.1rem;
+      font-weight: 700;
+      letter-spacing: -0.03em;
+      color: var(--muted);
+    }
+
+    .stage .num::before { content: counter(stage, decimal-leading-zero); }
+    .stage h3 { margin: 0 0 0.4rem; font-size: 1.1rem; letter-spacing: -0.03em; }
+    .stage p { margin: 0; color: var(--muted); font-size: 0.96rem; }
+
+    .cost {
+      align-self: start;
+      padding: 0.75rem 0.9rem;
+      background: var(--panel-2);
+      border-left: 2px solid var(--accent);
+      font-size: 0.85rem;
+      color: var(--muted);
+    }
+
+    .rules { margin: 0; padding: 0; list-style: none; }
+
+    .rules li {
+      display: grid;
+      grid-template-columns: 14rem 1fr;
+      gap: 0.75rem;
+      padding: 0.9rem 0;
+      border-bottom: 1px solid var(--line-soft);
+      font-size: 0.96rem;
+    }
+
+    .rules strong { letter-spacing: -0.02em; }
+    .rules span { color: var(--muted); }
+
+    dl.holes { margin: 0; display: grid; gap: 0; }
+    dl.holes div { padding: 1.3rem 0; border-top: 1.5px solid var(--line); }
+    dl.holes dt { font-weight: 600; letter-spacing: -0.02em; margin-bottom: 0.4rem; font-size: 1.02rem; }
+    dl.holes dd { margin: 0; color: var(--muted); font-size: 0.96rem; max-width: 72ch; }
+
+    .phases { margin: 0; padding: 0; list-style: none; }
+
+    .phase {
+      display: grid;
+      grid-template-columns: 8rem minmax(0, 1fr);
+      gap: 1.25rem;
+      padding: 1.25rem 0;
+      border-bottom: 1px solid var(--line-soft);
+    }
+
+    .phase-when {
+      font-size: 0.78rem;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--accent);
+      padding-top: 0.15rem;
+    }
+
+    .phase strong { display: block; letter-spacing: -0.02em; margin-bottom: 0.25rem; }
+    .phase p { margin: 0; color: var(--muted); font-size: 0.95rem; }
+
+    ol.decisions { margin: 0; padding-left: 1.25rem; color: var(--muted); }
+    ol.decisions li { padding: 0.5rem 0; font-size: 0.98rem; }
+    ol.decisions strong { color: var(--ink); }
+    ol.decisions::marker, ol.decisions li::marker { color: var(--accent); font-weight: 700; }
+
+    /* ===================== screen mockups ===================== */
+    .screens {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 2rem 1.25rem;
+    }
+
+    figure { margin: 0; display: flex; flex-direction: column; gap: 0.7rem; }
+
+    figcaption { font-size: 0.85rem; color: var(--muted); line-height: 1.45; }
+    figcaption b { display: block; color: var(--ink); font-size: 0.9rem; letter-spacing: -0.02em; margin-bottom: 0.15rem; }
+
+    .phone {
+      width: 100%;
+      aspect-ratio: 9 / 19.2;
+      border-radius: 26px;
+      background: var(--surface);
+      border: 1.5px solid var(--line);
+      box-shadow: var(--shot-shadow);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      font-size: 10px;
+      line-height: 1.3;
+    }
+
+    .statusbar {
+      display: flex;
+      justify-content: space-between;
+      padding: 8px 14px 2px;
+      font-size: 7.5px;
+      font-weight: 600;
+      color: var(--muted);
+      flex: none;
+    }
+
+    .navbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 5px;
+      padding: 5px 12px 7px;
+      border-bottom: 1px solid var(--line-soft);
+      flex: none;
+    }
+
+    .navbar .t { font-size: 12px; font-weight: 700; letter-spacing: -0.03em; }
+    .navbar .act { font-size: 9px; font-weight: 600; color: var(--accent); }
+
+    .scr { flex: 1; overflow: hidden; padding: 10px 12px; display: flex; flex-direction: column; gap: 8px; }
+
+    .tabbar { display: flex; border-top: 1px solid var(--line-soft); background: var(--panel-2); flex: none; padding: 6px 0 10px; }
+    .tabbar div { flex: 1; text-align: center; font-size: 7px; font-weight: 600; letter-spacing: 0.05em; color: var(--muted); }
+    .tabbar div.on { color: var(--accent); }
+    .tabbar b { display: block; font-size: 11px; margin-bottom: 1px; }
+
+    .gauge { border: 1px solid var(--line-soft); background: var(--panel-2); padding: 9px 10px; }
+    .gauge .lbl { font-size: 7px; font-weight: 600; letter-spacing: 0.12em; color: var(--muted); }
+    .gauge .big { font-size: 26px; font-weight: 700; letter-spacing: -0.05em; line-height: 1.05; margin-top: 3px; }
+    .gauge .big em { font-style: normal; font-size: 12px; font-weight: 500; color: var(--muted); }
+
+    .meter { height: 8px; background: var(--line-soft); display: flex; margin-top: 7px; overflow: hidden; }
+    .meter i { display: block; height: 100%; }
+
+    .legend { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 6px; font-size: 7px; font-weight: 600; letter-spacing: 0.06em; color: var(--muted); }
+    .legend span { display: inline-flex; align-items: center; gap: 3px; }
+    .sw { width: 6px; height: 6px; flex: none; }
+
+    .row { display: flex; align-items: center; gap: 8px; padding: 6px 0; border-top: 1px solid var(--line-soft); }
+    .rows { display: flex; flex-direction: column; }
+    .rows .row:first-child { border-top: 0; }
+    .row .ic { width: 22px; height: 22px; flex: none; display: grid; place-items: center; border: 1px solid var(--line-soft); font-size: 10px; }
+    .row .m { flex: 1; min-width: 0; }
+    .row .m b { display: block; font-size: 9.5px; letter-spacing: -0.02em; }
+    .row .m span { display: block; font-size: 8px; color: var(--muted); }
+    .row .v { font-size: 9.5px; font-weight: 700; text-align: right; white-space: nowrap; font-variant-numeric: tabular-nums; }
+    .row .v em { display: block; font-style: normal; font-size: 7.5px; font-weight: 500; color: var(--muted); }
+    .chev { color: var(--muted); font-size: 10px; }
+
+    .tick { width: 14px; height: 14px; border: 1.5px solid var(--line-soft); flex: none; display: grid; place-items: center; font-size: 8px; color: transparent; }
+    .tick.on { background: var(--accent); border-color: var(--accent); color: var(--on-accent); }
+    .tick.keep { background: var(--good); border-color: var(--good); color: var(--on-good); }
+
+    .frame { position: relative; aspect-ratio: 4 / 3; overflow: hidden; background: #6f7a80; }
+    .frame.out { opacity: 0.34; filter: grayscale(0.5); }
+
+    .frame.out::before,
+    .frame.out::after {
+      content: "";
+      position: absolute;
+      top: 50%;
+      left: 8%;
+      right: 8%;
+      border-top: 2px solid var(--accent);
+      transform-origin: center;
+    }
+
+    .frame.out::before { transform: rotate(21deg); }
+    .frame.out::after { transform: rotate(-21deg); }
+    .frame.pick { outline: 2px solid var(--accent); outline-offset: -2px; }
+
+    .pick-tag {
+      position: absolute;
+      left: 0; right: 0; bottom: 0;
+      padding: 1px 0;
+      background: var(--accent);
+      color: var(--on-accent);
+      font-size: 5.5px;
+      font-weight: 700;
+      letter-spacing: 0.14em;
+      text-align: center;
+    }
+
+    .hero-shot { aspect-ratio: 4 / 3; position: relative; overflow: hidden; }
+
+    .badge {
+      position: absolute;
+      top: 6px;
+      left: 6px;
+      padding: 2px 5px;
+      background: var(--good);
+      color: var(--on-good);
+      font-size: 6.5px;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+    }
+
+    .strip { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 3px; }
+    .strip .frame { aspect-ratio: 1; }
+
+    .why { display: flex; flex-wrap: wrap; gap: 3px; }
+    .why span { font-size: 6.5px; font-weight: 700; letter-spacing: 0.04em; padding: 2px 4px; background: var(--good-soft); color: var(--good); }
+    .why span.neg { background: var(--accent-soft); color: var(--accent); }
+
+    .btn-s { padding: 8px; text-align: center; font-size: 9.5px; font-weight: 700; background: var(--accent); color: var(--on-accent); flex: none; letter-spacing: -0.02em; }
+    .btn-s.ghost { background: transparent; color: var(--ink); border: 1.5px solid var(--line-soft); }
+    .btn-s.safe { background: var(--good); color: var(--on-good); }
+
+    .mgrid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 3px; }
+    .mgrid .frame { aspect-ratio: 1; background: var(--sunk); }
+    .mgrid .tick { position: absolute; top: 3px; right: 3px; background: var(--surface); }
+    .mgrid .tick.on { background: var(--accent); }
+
+    .filters { display: flex; gap: 3px; overflow: hidden; flex: none; }
+    .filters span { font-size: 7px; font-weight: 600; letter-spacing: 0.04em; padding: 3px 6px; border: 1px solid var(--line-soft); color: var(--muted); white-space: nowrap; }
+    .filters span.on { background: var(--ink); color: var(--bg); border-color: var(--ink); }
+
+    .inline-note { border-left: 2px solid var(--warn); background: var(--warn-soft); padding: 6px 8px; font-size: 8px; color: var(--ink); }
+    .inline-note.lock { border-color: var(--good); background: var(--good-soft); }
+    .inline-note b { display: block; font-size: 8.5px; margin-bottom: 1px; }
+
+    .progress { height: 3px; background: var(--line-soft); overflow: hidden; }
+    .progress i { display: block; height: 100%; background: var(--accent); }
+
+    .compare2 { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
+    .compare2 .frame { aspect-ratio: 3 / 4; }
+    .cap { display: flex; justify-content: space-between; font-size: 7px; font-weight: 700; letter-spacing: 0.1em; color: var(--muted); }
+
+    .sheetmodal { margin-top: auto; border-top: 1px solid var(--line-soft); background: var(--panel-2); padding: 10px 12px; display: flex; flex-direction: column; gap: 7px; }
+
+    /* mac window */
+    .mac { border: 1.5px solid var(--line); background: var(--surface); box-shadow: var(--shot-shadow); overflow: hidden; font-size: 10px; }
+
+    .titlebar { display: flex; align-items: center; gap: 5px; padding: 7px 11px; border-bottom: 1px solid var(--line-soft); background: var(--panel-2); }
+    .tl { width: 8px; height: 8px; border-radius: 50%; border: 1px solid var(--line-soft); }
+    .titlebar .t { margin-left: 6px; font-size: 8.5px; font-weight: 600; letter-spacing: 0.06em; color: var(--muted); }
+
+    .macbody { display: grid; grid-template-columns: 152px minmax(0, 1fr) 172px; min-height: 330px; }
+
+    .sidebar { border-right: 1px solid var(--line-soft); padding: 10px 8px; display: flex; flex-direction: column; gap: 1px; background: var(--panel-2); }
+    .sidebar .sh { font-size: 7px; font-weight: 700; letter-spacing: 0.12em; color: var(--muted); padding: 8px 6px 3px; }
+    .sitem { display: flex; justify-content: space-between; gap: 6px; padding: 5px 6px; font-size: 9.5px; color: var(--ink); }
+    .sitem.on { background: var(--accent); color: var(--on-accent); }
+    .sitem span { font-size: 8.5px; font-weight: 600; opacity: 0.75; font-variant-numeric: tabular-nums; }
+
+    .canvas { padding: 11px; display: flex; flex-direction: column; gap: 8px; min-width: 0; }
+    .sheet-grid6 { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 4px; }
+
+    .inspector { border-left: 1px solid var(--line-soft); padding: 11px 10px; display: flex; flex-direction: column; gap: 7px; background: var(--panel-2); }
+    .kv { display: flex; justify-content: space-between; gap: 8px; font-size: 9px; padding: 3px 0; border-bottom: 1px solid var(--line-soft); }
+    .kv span { color: var(--muted); }
+    .kv b { font-variant-numeric: tabular-nums; }
+
+    .p1 { background: linear-gradient(160deg, #7c93a6, #3e5566); }
+    .p2 { background: linear-gradient(150deg, #c3a98a, #7a6247); }
+    .p3 { background: linear-gradient(200deg, #8fa98c, #435a45); }
+    .p4 { background: linear-gradient(140deg, #b08c93, #6b4a55); }
+    .p5 { background: linear-gradient(175deg, #9ea7b8, #4b5468); }
+    .p6 { background: linear-gradient(130deg, #d0b99b, #8a6e52); }
+    .p7 { background: linear-gradient(190deg, #7fa3a8, #3b5f66); }
+    .p8 { background: linear-gradient(155deg, #a8968f, #5c4c48); }
+    .p9 { background: linear-gradient(165deg, #6e7f94, #2f3e4e); }
+    .p10 { background: linear-gradient(145deg, #bdb295, #79704f); }
+    .p11 { background: linear-gradient(185deg, #93a0ac, #4a5760); }
+    .p12 { background: linear-gradient(170deg, #a9838b, #5f3e48); }
+
+    .callout {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1.25rem;
+      padding: 1.75rem;
+      border: 1.5px solid var(--line);
+      background: var(--panel-2);
+    }
+
+    .callout h2 { margin: 0 0 0.35rem; font-size: clamp(1.3rem, 2.4vw, 1.7rem); letter-spacing: -0.035em; }
+    .callout p { margin: 0; color: var(--muted); max-width: 54ch; }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.45rem;
+      padding: 0.85rem 1.15rem;
+      border: 1.5px solid var(--ink);
+      font-weight: 600;
+      font-size: 0.95rem;
+      letter-spacing: -0.02em;
+      color: var(--ink);
+      transition: background 0.2s ease, color 0.2s ease, transform 0.2s ease;
+    }
+
+    .btn:hover { text-decoration: none; transform: translateY(-1px); }
+    .btn-primary { background: var(--ink); color: var(--bg); }
+    .btn-primary:hover { background: var(--accent); border-color: var(--accent); color: #fff; }
+
+    footer {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      gap: 0.75rem;
+      padding-top: 2rem;
+      color: var(--muted);
+      font-size: 0.85rem;
+    }
+
+    @keyframes rise {
+      from { opacity: 0; transform: translateY(14px); }
+      to { opacity: 1; transform: none; }
+    }
+
+    @media (max-width: 1000px) {
+      .screens { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .macbody { grid-template-columns: 130px minmax(0, 1fr); }
+      .inspector { display: none; }
+    }
+
+    @media (max-width: 860px) {
+      .features,
+      .features.two { grid-template-columns: 1fr; }
+      .stage { grid-template-columns: 2.5rem minmax(0, 1fr); }
+      .stage .cost { grid-column: 2; }
+      .rules li,
+      .phase { grid-template-columns: 1fr; gap: 0.2rem; }
+    }
+
+    @media (max-width: 620px) {
+      .page { width: min(100% - 1.5rem, var(--max)); }
+      .screens { grid-template-columns: minmax(0, 320px); justify-content: center; }
+      .macbody { grid-template-columns: 1fr; }
+      .sidebar { display: none; }
+      #themeToggle { top: 0.85rem; right: 0.85rem; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { animation: none !important; transition: none !important; }
+    }
+  </style>
+</head>
+<body>
+  <button id="themeToggle" aria-label="Toggle theme" type="button">
+    <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
+      <circle cx="12" cy="12" r="4"></circle>
+      <path d="M12 2v2.2M12 19.8V22M4.93 4.93l1.56 1.56M17.51 17.51l1.56 1.56M2 12h2.2M19.8 12H22M4.93 19.07l1.56-1.56M17.51 6.49l1.56-1.56"></path>
+    </svg>
+    <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
+      <path d="M20.5 14.3A8.2 8.2 0 1 1 9.7 3.5a6.6 6.6 0 1 0 10.8 10.8z"></path>
+    </svg>
+  </button>
+
+  <main class="page">
+    <div class="top">
+      <a class="hub-link" href="index.html">← Keeper</a>
+      <span class="kicker">Product proposal · August 2026</span>
+    </div>
+
+    <header class="masthead">
+      <h1>What Keeper is, and how it gets built.</h1>
+      <p class="standfirst">
+        Nine kinds of photo clutter and what each is worth. How the app decides which frame out of
+        sixteen is the one to keep. Ten screens. The five-pass pipeline that makes a 48,000-photo
+        library tractable on a phone. And a straight list of the parts that might not work.
+      </p>
+      <div class="meta-row">
+        <span>iOS 18</span>
+        <span>iPadOS 18</span>
+        <span>macOS 15</span>
+        <span>SwiftUI · PhotoKit · Vision</span>
+        <span class="hot">No network entitlement</span>
+      </div>
+    </header>
+
+    <section id="premise">
+      <div class="section-head">
+        <h2>Photographs are the one kind of clutter that never regenerates</h2>
+      </div>
+      <div class="prose">
+        <p>
+          Most things that eat a disk are easy to reason about because they come back. A cache refills,
+          a build folder rebuilds, a download can be downloaded again. Photos invert every part of that:
+          they are simultaneously the largest thing on the device and the only thing on it that is
+          genuinely irreplaceable. One wrong tap costs a person something no amount of freed space buys
+          back.
+        </p>
+        <p>
+          So the product cannot be a bulk deleter. It has to be a <strong>culling assistant</strong> —
+          what photographers have always done with a loupe and a grease pencil, done automatically for a
+          library nobody has the evening to sit with. The core move is not “delete these forty photos”.
+          It is “of these forty, this one is the keeper, and here is why”. The space is a consequence of
+          the judgement, not the pitch.
+        </p>
+      </div>
+      <p class="note">
+        <strong>The thesis in one line:</strong> the app never asks you to choose what to lose. It shows
+        you what it would keep, and asks you to disagree.
+      </p>
+    </section>
+
+    <section id="clutter">
+      <div class="section-head">
+        <h2>Nine kinds of clutter, ranked by payoff</h2>
+        <p>Biggest reclaim first — not alphabetically, and not by how clever the detector is. Figures are modelled on a 48,000-asset, 214 GB library: a heavy but ordinary six-year iPhone history.</p>
+      </div>
+      <div class="tscroll">
+        <table>
+          <thead>
+            <tr><th>Category</th><th>How it’s found, on device</th><th>Reclaim</th><th>Confidence</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Near-duplicate sets<span class="det">Bursts, retries, “one more with everyone looking”</span></td>
+              <td>Perceptual hash buckets by time and place, then Vision feature-print distance inside each bucket</td>
+              <td class="gb">61 GB<div class="bar"><i style="width:100%"></i></div></td>
+              <td>High — the maths is unambiguous</td>
+            </tr>
+            <tr>
+              <td>Screen recordings<span class="det">The worst bytes-per-item in any library</span></td>
+              <td>A media subtype flag on the asset, not a guess</td>
+              <td class="gb">23 GB<div class="bar"><i style="width:38%"></i></div></td>
+              <td>Certain</td>
+            </tr>
+            <tr>
+              <td>Long-tail video<span class="det">The 22-minute school concert nobody replays</span></td>
+              <td>Duration × bitrate ranked by bytes, flagged when never favourited, edited or filed</td>
+              <td class="gb">18 GB<div class="bar"><i style="width:29%"></i></div></td>
+              <td>Medium — needs your eyes</td>
+            </tr>
+            <tr>
+              <td>Expired screenshots<span class="det">Receipts, codes, maps, boarding passes, memes</span></td>
+              <td>Screenshot subtype, then Vision’s utility flag plus on-device text recognition to sort receipt from meme from keepsake</td>
+              <td class="gb">9 GB<div class="bar"><i style="width:15%"></i></div></td>
+              <td>High</td>
+            </tr>
+            <tr>
+              <td>Technically failed frames<span class="det">Pocket shots, motion blur, lens-cap black</span></td>
+              <td>Laplacian sharpness variance, luminance clipping, face capture quality when a face is present</td>
+              <td class="gb">6 GB<div class="bar"><i style="width:10%"></i></div></td>
+              <td>High for the extremes only</td>
+            </tr>
+            <tr>
+              <td>Recently Deleted<span class="det">Already “deleted”, still on disk for 30 days</span></td>
+              <td>The system’s own Recently Deleted collection, surfaced on day one</td>
+              <td class="gb">5 GB<div class="bar"><i style="width:8%"></i></div></td>
+              <td>Certain</td>
+            </tr>
+            <tr>
+              <td>Forwarded media<span class="det">Saved out of chat apps</span></td>
+              <td>Non-camera source, absent EXIF camera fields, text-dense with a low aesthetic score</td>
+              <td class="gb">4 GB<div class="bar"><i style="width:7%"></i></div></td>
+              <td>Medium</td>
+            </tr>
+            <tr>
+              <td>Exact duplicates<span class="det">Re-downloads, AirDrop round-trips, re-saves</span></td>
+              <td>Byte length, then a hash of the first and last 64 KB, then a full hash only on collision</td>
+              <td class="gb">3 GB<div class="bar"><i style="width:5%"></i></div></td>
+              <td>Certain</td>
+            </tr>
+            <tr>
+              <td>Motionless Live Photos<span class="det">A still with three wasted seconds welded on</span></td>
+              <td>Frame-to-frame difference across the motion component below a threshold</td>
+              <td class="gb">2 GB<div class="bar"><i style="width:4%"></i></div></td>
+              <td>Medium — offered as “flatten”, not delete</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="note">
+        Reclaim figures overlap slightly — a blurry frame inside a burst is counted once, in the set that
+        claims it first. The app reconciles overlaps before it shows a total, because a headline number
+        you can’t actually reach is the fastest way to lose someone’s trust.
+      </p>
+    </section>
+
+    <section id="scoring">
+      <div class="section-head">
+        <h2>What makes one frame the keeper</h2>
+        <p>Grouping similar photos is solved arithmetic. Picking the best one is a taste judgement, and taste is where the app either earns its place or gets deleted in week two.</p>
+      </div>
+      <div class="features">
+        <article class="feature">
+          <span class="tier">Tier 1 · your signals</span>
+          <h3>What you already told Photos</h3>
+          <p>Favourited. Edited. Cropped. Placed in an album. Set as a Memory key photo. Shared. These outrank every algorithm in the app — if you touched a frame, it wins its group by default, and Keeper says so rather than pretending it scored well.</p>
+        </article>
+        <article class="feature">
+          <span class="tier">Tier 2 · technical</span>
+          <h3>Whether it’s a good photograph</h3>
+          <p>Sharpness by Laplacian variance on the subject region, not the whole frame. Exposure clipping at both ends. Resolution and format, so a ProRAW original beats its shared JPEG. Vision’s aesthetics score. Face capture quality, eyes-open and expression from landmarks, weighted by face size.</p>
+        </article>
+        <article class="feature">
+          <span class="tier">Tier 3 · set context</span>
+          <h3>Whether it’s the best of these</h3>
+          <p>Most faces present, because the group shot with everyone in it is usually the reason the burst exists. Widest framing when the rest are crops of it. Latest in the burst, because the last frame is usually the one you waited for.</p>
+        </article>
+      </div>
+      <p class="note">
+        <strong>Ties do not get resolved silently.</strong> When the top two frames land within a few
+        points of each other, Keeper says “these two are close” and pre-selects neither. A confident
+        wrong answer costs more trust than an honest shrug.
+      </p>
+    </section>
+
+    <section id="screens">
+      <div class="section-head">
+        <h2>The flow, eight screens deep</h2>
+        <p>A capacity headline, rows sorted by payoff, a pre-selection you can argue with, and one confirmation that itemises exactly what leaves.</p>
+      </div>
+
+      <div class="screens">
+        <figure>
+          <div class="phone">
+            <div class="statusbar"><span>9:41</span><span>▮▮▮ ⌁</span></div>
+            <div class="scr" style="justify-content:center;gap:12px;">
+              <div style="font-size:18px;font-weight:700;letter-spacing:-0.04em;line-height:1.15;">Keeper reads your library. It cannot send it anywhere.</div>
+              <div class="inline-note lock"><b>No network entitlement</b>The app has no permission to open a connection. Check it in Settings → Entitlements.</div>
+              <div class="inline-note lock"><b>Nothing leaves the device</b>Every comparison runs on this iPhone’s Neural Engine.</div>
+              <div class="inline-note lock"><b>Deletes are reversible</b>Everything goes to Recently Deleted. You keep 30 days.</div>
+              <div style="flex:1;"></div>
+              <div class="btn-s">Allow full library access</div>
+              <div style="text-align:center;font-size:7.5px;color:var(--muted);">Keeper can’t spot a duplicate it isn’t allowed to see.</div>
+            </div>
+          </div>
+          <figcaption><b>1 · The promise, up front</b>The privacy claim is the first screen and it’s falsifiable. No carousel, no “Get Started”.</figcaption>
+        </figure>
+
+        <figure>
+          <div class="phone">
+            <div class="statusbar"><span>9:41</span><span>▮▮▮ ⌁</span></div>
+            <div class="navbar"><span class="t">Indexing</span><span class="act">Pause</span></div>
+            <div class="scr">
+              <div class="gauge">
+                <div class="lbl">PASS 2 OF 3 · FEATURE PRINTS</div>
+                <div class="big">31,204<em> / 48,116</em></div>
+                <div class="progress" style="margin-top:8px;"><i style="width:65%"></i></div>
+                <div class="legend"><span>~6 MIN LEFT</span><span>ON DEVICE</span></div>
+              </div>
+              <div class="rows">
+                <div class="row"><div class="ic" style="border-color:var(--good);color:var(--good);">✓</div><div class="m"><b>Metadata pass</b><span>48,116 assets read</span></div><div class="v" style="color:var(--good);">Done</div></div>
+                <div class="row"><div class="ic" style="border-color:var(--accent);color:var(--accent);">◐</div><div class="m"><b>Feature prints</b><span>Grouping similar frames</span></div><div class="v">65%</div></div>
+                <div class="row"><div class="ic">·</div><div class="m"><b>Quality scoring</b><span>Only on grouped frames</span></div><div class="v" style="color:var(--muted);">Queued</div></div>
+              </div>
+              <div class="inline-note">Keeps indexing in the background while plugged in. You can close the app.</div>
+              <div style="flex:1;"></div>
+              <div class="btn-s ghost">Review what’s ready (12.4 GB)</div>
+            </div>
+          </div>
+          <figcaption><b>2 · Indexing is honest work</b>Three named passes with real counts, resumable, and results usable before the scan finishes.</figcaption>
+        </figure>
+
+        <figure>
+          <div class="phone">
+            <div class="statusbar"><span>9:41</span><span>▮▮▮ ⌁</span></div>
+            <div class="navbar"><span class="t">Keeper</span><span class="act">⚙</span></div>
+            <div class="scr">
+              <div class="gauge">
+                <div class="lbl">RECOVERABLE FROM 214 GB</div>
+                <div class="big" style="color:var(--accent);">131<em> GB</em></div>
+                <div class="meter">
+                  <i style="width:47%;background:var(--accent);"></i>
+                  <i style="width:18%;background:var(--warn);"></i>
+                  <i style="width:35%;background:var(--line-soft);"></i>
+                </div>
+                <div class="legend">
+                  <span><i class="sw" style="background:var(--accent);"></i>SUGGESTED</span>
+                  <span><i class="sw" style="background:var(--warn);"></i>YOUR CALL</span>
+                  <span><i class="sw" style="background:var(--line-soft);"></i>KEEPING</span>
+                </div>
+              </div>
+              <div class="rows">
+                <div class="row"><div class="ic">▦</div><div class="m"><b>Similar sets</b><span>1,842 sets · 8,904 frames</span></div><div class="v">61.4 GB<em>▸</em></div></div>
+                <div class="row"><div class="ic">▶</div><div class="m"><b>Screen recordings</b><span>Oldest 3 years ago</span></div><div class="v">22.8 GB<em>▸</em></div></div>
+                <div class="row"><div class="ic">◫</div><div class="m"><b>Long videos</b><span>Never favourited</span></div><div class="v">18.2 GB<em>▸</em></div></div>
+                <div class="row"><div class="ic">▤</div><div class="m"><b>Screenshots</b><span>4,106 · mostly receipts</span></div><div class="v">9.1 GB<em>▸</em></div></div>
+                <div class="row"><div class="ic">◌</div><div class="m"><b>Blurred &amp; dark</b><span>High confidence only</span></div><div class="v">6.3 GB<em>▸</em></div></div>
+                <div class="row"><div class="ic" style="border-color:var(--warn);color:var(--warn);">🗑</div><div class="m"><b>Recently Deleted</b><span>On disk for 30 days</span></div><div class="v">5.0 GB<em>▸</em></div></div>
+              </div>
+            </div>
+            <div class="tabbar"><div class="on"><b>▦</b>REVIEW</div><div><b>◷</b>HISTORY</div><div><b>⚙</b>SETTINGS</div></div>
+          </div>
+          <figcaption><b>3 · Home, sorted by payoff</b>The three-part meter separates what Keeper suggests from what it refuses to decide for you.</figcaption>
+        </figure>
+
+        <figure>
+          <div class="phone">
+            <div class="statusbar"><span>9:41</span><span>▮▮▮ ⌁</span></div>
+            <div class="navbar"><span class="t" style="font-size:11px;">Set 41 of 1,842</span><span class="act">Skip</span></div>
+            <div class="scr" style="gap:7px;">
+              <div class="hero-shot p6"><span class="badge">KEEPER</span></div>
+              <div class="why"><span>SHARPEST OF 16</span><span>ALL 4 FACES</span><span>EYES OPEN</span><span>WIDEST FRAMING</span></div>
+              <div class="strip">
+                <div class="frame p1 out"></div><div class="frame p5 out"></div>
+                <div class="frame p6 pick"></div>
+                <div class="frame p3 out"></div><div class="frame p8 out"></div>
+              </div>
+              <div style="font-size:7.5px;color:var(--muted);">Tap any frame to promote it. Long-press to compare.</div>
+              <div style="flex:1;"></div>
+              <div class="row" style="border:0;padding:0;"><div class="tick keep">✓</div><div class="m"><b>Keep 1 frame</b><span>Kaanapali · 14 Jul 2024 · 4:31pm</span></div></div>
+              <div class="row" style="border:0;padding:0;"><div class="tick on">✓</div><div class="m"><b>Delete 15 frames</b><span>Frees 198 MB</span></div></div>
+            </div>
+            <div class="sheetmodal" style="flex-direction:row;gap:6px;">
+              <div class="btn-s ghost" style="flex:1;">Keep all</div>
+              <div class="btn-s" style="flex:2;">Accept &amp; next</div>
+            </div>
+          </div>
+          <figcaption><b>4 · The screen the app lives or dies on</b>The keeper is the hero, the rivals are a strip beneath it, and the reasoning is four readable chips — never a score.</figcaption>
+        </figure>
+
+        <figure>
+          <div class="phone">
+            <div class="statusbar"><span>9:41</span><span>▮▮▮ ⌁</span></div>
+            <div class="navbar"><span class="t" style="font-size:11px;">Compare</span><span class="act">Done</span></div>
+            <div class="scr" style="gap:7px;">
+              <div class="compare2">
+                <div class="frame p6" style="outline:2px solid var(--good);outline-offset:-2px;"></div>
+                <div class="frame p12"></div>
+              </div>
+              <div class="cap"><span>A · KEEPER</span><span>B · RIVAL</span></div>
+              <div class="rows">
+                <div class="row" style="padding:4px 0;"><div class="m"><b>Sharpness</b></div><div class="v" style="color:var(--good);">0.84</div><div class="v" style="width:32px;">0.61</div></div>
+                <div class="row" style="padding:4px 0;"><div class="m"><b>Faces</b></div><div class="v" style="color:var(--good);">4</div><div class="v" style="width:32px;">3</div></div>
+                <div class="row" style="padding:4px 0;"><div class="m"><b>Eyes open</b></div><div class="v" style="color:var(--good);">4 / 4</div><div class="v" style="width:32px;">2 / 3</div></div>
+                <div class="row" style="padding:4px 0;"><div class="m"><b>Resolution</b></div><div class="v">12 MP</div><div class="v" style="width:32px;">12 MP</div></div>
+                <div class="row" style="padding:4px 0;"><div class="m"><b>Your signals</b></div><div class="v" style="color:var(--muted);">—</div><div class="v" style="width:32px;color:var(--muted);">—</div></div>
+              </div>
+              <div style="flex:1;"></div>
+              <div class="btn-s safe">Promote B to keeper</div>
+            </div>
+          </div>
+          <figcaption><b>5 · Show the working</b>Pinch-zoom is synced across both frames, so pixel-peeping two near-identical shots actually settles it.</figcaption>
+        </figure>
+
+        <figure>
+          <div class="phone">
+            <div class="statusbar"><span>9:41</span><span>▮▮▮ ⌁</span></div>
+            <div class="navbar"><span class="t" style="font-size:11px;">Screenshots</span><span class="act">2,940 selected</span></div>
+            <div class="scr" style="gap:7px;">
+              <div class="filters"><span class="on">RECEIPTS 1,204</span><span>CHATS 880</span><span>MAPS 410</span></div>
+              <div class="inline-note">Text recognised on device to sort these. Nothing was read off the device.</div>
+              <div class="mgrid">
+                <div class="frame"><span class="tick on">✓</span></div>
+                <div class="frame"><span class="tick on">✓</span></div>
+                <div class="frame"><span class="tick on">✓</span></div>
+                <div class="frame"><span class="tick"></span></div>
+                <div class="frame"><span class="tick on">✓</span></div>
+                <div class="frame"><span class="tick on">✓</span></div>
+                <div class="frame"><span class="tick on">✓</span></div>
+                <div class="frame"><span class="tick on">✓</span></div>
+                <div class="frame"><span class="tick"></span></div>
+              </div>
+              <div style="font-size:7.5px;color:var(--muted);">Two held back — they’re in an album, so Keeper left them alone.</div>
+              <div style="flex:1;"></div>
+            </div>
+            <div class="sheetmodal"><div class="btn-s">Delete 2,940 · frees 6.8 GB</div></div>
+          </div>
+          <figcaption><b>6 · Sweep mode for the disposable</b>Screenshots need good buckets and a fast grid, not one-by-one judgement. Anything you filed is excluded and says why.</figcaption>
+        </figure>
+
+        <figure>
+          <div class="phone">
+            <div class="statusbar"><span>9:41</span><span>▮▮▮ ⌁</span></div>
+            <div class="navbar"><span class="t" style="font-size:11px;">Confirm</span><span class="act">Cancel</span></div>
+            <div class="scr">
+              <div class="gauge">
+                <div class="lbl">ABOUT TO REMOVE</div>
+                <div class="big">6,821<em> items · 84.2 GB</em></div>
+              </div>
+              <div class="rows">
+                <div class="row"><div class="m"><b>Similar sets</b><span>5,102 frames · 1,842 keepers kept</span></div><div class="v">48.1 GB</div></div>
+                <div class="row"><div class="m"><b>Screen recordings</b><span>61 files</span></div><div class="v">22.8 GB</div></div>
+                <div class="row"><div class="m"><b>Screenshots</b><span>1,658 files</span></div><div class="v">6.8 GB</div></div>
+                <div class="row"><div class="m"><b>Blurred &amp; dark</b><span>Confidence above 0.9</span></div><div class="v">6.5 GB</div></div>
+              </div>
+              <div class="inline-note"><b>Space returns in 30 days, or sooner</b>These move to Recently Deleted. To reclaim 84.2 GB now, empty it there.</div>
+              <div class="inline-note lock"><b>iCloud Photos is on</b>This frees 84.2 GB of your storage plan too.</div>
+              <div style="flex:1;"></div>
+              <div class="btn-s">Move 6,821 items to Recently Deleted</div>
+            </div>
+          </div>
+          <figcaption><b>7 · The one irreversible-ish moment</b>Itemised, never a bare “Delete 6,821 items?”, and it corrects the two things people always get wrong.</figcaption>
+        </figure>
+
+        <figure>
+          <div class="phone">
+            <div class="statusbar"><span>9:41</span><span>▮▮▮ ⌁</span></div>
+            <div class="navbar"><span class="t" style="font-size:11px;">Done</span><span class="act">Share</span></div>
+            <div class="scr">
+              <div class="gauge" style="border-color:var(--good);">
+                <div class="lbl" style="color:var(--good);">RECLAIMED TODAY</div>
+                <div class="big" style="color:var(--good);">84.2<em> GB</em></div>
+                <div class="legend"><span>6,821 REMOVED</span><span>41,295 KEPT</span></div>
+              </div>
+              <div class="inline-note lock"><b>Every keeper is still here</b>1,842 sets kept their best frame. Nothing favourited, edited or filed was touched.</div>
+              <div class="rows">
+                <div class="row"><div class="ic" style="border-color:var(--good);color:var(--good);">↩</div><div class="m"><b>Undo this session</b><span>Restores all 6,821</span></div><div class="chev">▸</div></div>
+                <div class="row"><div class="ic">🗑</div><div class="m"><b>Empty Recently Deleted</b><span>Frees the space now</span></div><div class="chev">▸</div></div>
+                <div class="row"><div class="ic">◷</div><div class="m"><b>Session log</b><span>Every decision, on device</span></div><div class="chev">▸</div></div>
+              </div>
+              <div style="flex:1;"></div>
+              <div class="btn-s ghost">Next: 47 GB still recoverable</div>
+            </div>
+          </div>
+          <figcaption><b>8 · A receipt, and a way back</b>Undo is a first-class row, not a toast that vanishes. Emptying Recently Deleted is offered but never automatic.</figcaption>
+        </figure>
+      </div>
+    </section>
+
+    <section id="mac">
+      <div class="section-head">
+        <h2>The big screen is where culling actually gets done</h2>
+        <p>Phones are for the sweep categories. A 27-inch display is where you can see sixteen frames at once and settle a set in two seconds. Same engine, same index, a genuinely different posture.</p>
+      </div>
+
+      <figure>
+        <div class="mac">
+          <div class="titlebar">
+            <i class="tl"></i><i class="tl"></i><i class="tl"></i>
+            <span class="t">KEEPER — 48,116 ASSETS · 131 GB RECOVERABLE</span>
+          </div>
+          <div class="macbody">
+            <div class="sidebar">
+              <div class="sh">REVIEW</div>
+              <div class="sitem on">Similar sets<span>61.4 GB</span></div>
+              <div class="sitem">Screen recordings<span>22.8 GB</span></div>
+              <div class="sitem">Long videos<span>18.2 GB</span></div>
+              <div class="sitem">Screenshots<span>9.1 GB</span></div>
+              <div class="sitem">Blurred &amp; dark<span>6.3 GB</span></div>
+              <div class="sitem">Exact duplicates<span>3.1 GB</span></div>
+              <div class="sh">LIBRARY</div>
+              <div class="sitem">Recently Deleted<span>5.0 GB</span></div>
+              <div class="sitem">Chapters<span>Off</span></div>
+            </div>
+            <div class="canvas">
+              <div class="cap"><span>SET 41 · KAANAPALI · 14 JUL 2024 · 16 FRAMES</span><span>198 MB RECOVERABLE</span></div>
+              <div class="sheet-grid6">
+                <div class="frame p1 out"></div><div class="frame p2 out"></div><div class="frame p3 out"></div>
+                <div class="frame p6 pick"><span class="pick-tag">KEEP</span></div>
+                <div class="frame p4 out"></div><div class="frame p5 out"></div>
+                <div class="frame p7 out"></div><div class="frame p8 out"></div><div class="frame p9 out"></div>
+                <div class="frame p10 out"></div><div class="frame p11 out"></div><div class="frame p12 out"></div>
+              </div>
+              <div class="why"><span>SHARPEST OF 16</span><span>ALL 4 FACES</span><span>EYES OPEN</span><span>WIDEST FRAMING</span><span class="neg">15 FRAMES STRUCK</span></div>
+              <div style="flex:1;"></div>
+              <div style="display:flex;gap:6px;">
+                <div class="btn-s ghost" style="flex:1;">Keep all (⌘K)</div>
+                <div class="btn-s" style="flex:2;">Accept set &amp; advance (␣)</div>
+              </div>
+            </div>
+            <div class="inspector">
+              <div class="cap"><span>KEEPER</span><span>IMG_4417</span></div>
+              <div class="frame p6"></div>
+              <div class="kv"><span>Sharpness</span><b>0.84</b></div>
+              <div class="kv"><span>Aesthetics</span><b>0.71</b></div>
+              <div class="kv"><span>Faces</span><b>4 · all sharp</b></div>
+              <div class="kv"><span>Resolution</span><b>12 MP HEIC</b></div>
+              <div class="kv"><span>Your signals</span><b>none</b></div>
+              <div class="inline-note" style="font-size:8px;">Second place scores 0.79. Close, but sharper across all four faces.</div>
+            </div>
+          </div>
+        </div>
+        <figcaption style="max-width:74ch;">
+          <b>Mac · the light table</b>Three panes: categories by payoff, the whole set as a contact sheet,
+          and an inspector showing the score breakdown for the current keeper. The space key accepts and
+          advances, arrow keys promote a different frame, ⌘Z reverses. A thousand sets is an evening of
+          work with a mouse and twenty minutes with the keyboard — so the keyboard path gets designed first.
+        </figcaption>
+      </figure>
+
+      <div class="features two" style="margin-top:2rem;">
+        <article class="feature">
+          <h3>iPad: the same window, thumb-first</h3>
+          <p>The sidebar collapses to a popover and the contact sheet gets the room. Apple Pencil strikes through a frame to reject it and circles one to promote it — the grease-pencil gesture the whole interface is built around, and the one input where the metaphor is literal.</p>
+        </article>
+        <article class="feature">
+          <h3>Mac: where the library actually lives</h3>
+          <p>On a Mac the photo library is a single package you can size, back up and copy before touching. That makes the desktop the safest place to run a large first session, and the natural home for the escrow export that writes originals to an external disk.</p>
+        </article>
+      </div>
+    </section>
+
+    <section id="pipeline">
+      <div class="section-head">
+        <h2>Five passes, cheapest first</h2>
+        <p>Numbered because they genuinely are a sequence: each pass is an order of magnitude more expensive than the last and only runs on what survived the one before. That funnel is the entire reason a 48,000-asset library is tractable on a phone.</p>
+      </div>
+      <div class="stages">
+        <div class="stage">
+          <span class="num"></span>
+          <div>
+            <h3>Enumerate and read metadata</h3>
+            <p>One fetch pass reads creation date, modification date, media subtype, burst identifier, favourite flag, location, dimensions and resource byte sizes. No pixels are decoded. This alone resolves screen recordings, screenshots, Recently Deleted, exact-duplicate candidates and everything size-ranked.</p>
+          </div>
+          <div class="cost">≈ 12 seconds for 48,000 assets · no ML</div>
+        </div>
+        <div class="stage">
+          <span class="num"></span>
+          <div>
+            <h3>Bucket into candidate groups</h3>
+            <p>Comparing every photo to every other photo is 1.1 billion comparisons and a non-starter. Instead: a 64-bit difference hash from a 32×32 thumbnail, bucketed by time window and coarse geohash. Two photos only become candidates if they were taken near each other in time or place <em>and</em> their hashes are close. Typical libraries collapse to a few thousand groups.</p>
+          </div>
+          <div class="cost">≈ 3 minutes · thumbnail decode only</div>
+        </div>
+        <div class="stage">
+          <span class="num"></span>
+          <div>
+            <h3>Feature-print inside groups only</h3>
+            <p>Vision feature prints on a 360px thumbnail, then pairwise distance within each bucket to split a “sunset” bucket from a “sunset with the dog in it” bucket. Running this across the whole library would need roughly 400 MB of resident float vectors; running it inside buckets needs a few tens of megabytes, and the prints are discarded after clustering.</p>
+          </div>
+          <div class="cost">≈ 8 minutes · the memory trick that makes this shippable</div>
+        </div>
+        <div class="stage">
+          <span class="num"></span>
+          <div>
+            <h3>Score only the survivors</h3>
+            <p>Sharpness, exposure, aesthetics, face detection, capture quality and text recognition run only on frames that landed in a group of two or more, plus the blur candidates. That is typically 15–20% of the library rather than all of it.</p>
+          </div>
+          <div class="cost">≈ 6 minutes · Neural Engine · Metal for the Laplacian</div>
+        </div>
+        <div class="stage">
+          <span class="num"></span>
+          <div>
+            <h3>Persist, then stay incremental forever</h3>
+            <p>Groups, scores and decisions go into a SwiftData store in the app container. A library change observer keeps it live: new photos are scored in minutes, not by a full rescan. On iOS the full pass runs as a background processing task while charging, so it costs no foreground time at all.</p>
+          </div>
+          <div class="cost">Full rescan available, never required</div>
+        </div>
+      </div>
+
+      <div class="features" style="margin-top:2.25rem;">
+        <article class="feature">
+          <h3>Shared core, thin shells</h3>
+          <p>A <strong>KeeperKit</strong> Swift package holds the models, pipeline and scoring engine; the three platform targets are SwiftUI on top of it. XcodeGen from a project manifest, SwiftFormat and SwiftLint as pre-build phases with warnings as errors, and no third-party runtime dependencies.</p>
+        </article>
+        <article class="feature">
+          <h3>Testable without a library</h3>
+          <p>The pipeline takes a photo-library protocol, so tests run against a synthetic fixture library with known duplicate groups and known correct keepers. Scoring gets a regression suite so a weighting change can’t silently start picking different frames.</p>
+        </article>
+        <article class="feature">
+          <h3>Sizes match System Settings</h3>
+          <p>Decimal GB, same as the Storage screen. Where iCloud optimisation means local bytes and library bytes differ, both are shown — a headline number you can’t verify against Settings is a bug report waiting to happen.</p>
+        </article>
+      </div>
+    </section>
+
+    <section id="privacy">
+      <div class="section-head">
+        <h2>Not “we don’t upload your photos” — the app cannot</h2>
+        <p>Every photo app makes the promise, and the promise is worth nothing because the user can’t check it. Keeper’s version is structural, and a curious person can verify it in about ninety seconds.</p>
+      </div>
+      <div class="features">
+        <article class="feature">
+          <h3>No outgoing network client</h3>
+          <p>The app ships without the network client entitlement. There is no socket to open. Settings prints the entitlement list verbatim, and the docs show the <em>codesign</em> command to confirm it against the shipped binary.</p>
+        </article>
+        <article class="feature">
+          <h3>Nothing third-party at runtime</h3>
+          <p>No analytics SDK, no crash reporter, no remote config, no A/B framework — the four things that quietly turn a private app into a telemetry pipe. Vision, Core ML, PhotoKit, Foundation.</p>
+        </article>
+        <article class="feature">
+          <h3>Models bundled and offline</h3>
+          <p>Feature prints, aesthetics scoring, face detection and text recognition all run through the Neural Engine on hardware the user owns. No model downloads, no server-side inference, no “improve the product” opt-out buried in onboarding.</p>
+        </article>
+        <article class="feature">
+          <h3>Derived data stays in the container</h3>
+          <p>Hashes, feature prints and thumbnails live in the app container under complete-unless-open data protection — readable only while the device is unlocked. Never a shared group container, never iCloud, never a temp directory. One button wipes and re-derives.</p>
+        </article>
+        <article class="feature">
+          <h3>Read-only until the button</h3>
+          <p>Keeper holds read access for its entire working life. Write access is exercised exactly once per session — the deletion you confirmed — through the system’s own dialog, which the app cannot suppress or auto-dismiss.</p>
+        </article>
+        <article class="feature">
+          <h3>Data Not Collected</h3>
+          <p>All fourteen App Store privacy categories answered “no”. Sold once, no subscription, no account, no sign-in — nothing to have an account with.</p>
+        </article>
+      </div>
+      <p class="note">
+        <strong>One honest asterisk.</strong> Keeper needs full library access to work; Limited Photos
+        Access can’t, because you cannot find duplicates among photos you aren’t allowed to see. The app
+        explains that in one sentence at the permission prompt instead of nagging past a partial grant.
+      </p>
+    </section>
+
+    <section id="safety">
+      <div class="section-head">
+        <h2>Five rules the app is not allowed to break</h2>
+      </div>
+      <ul class="rules">
+        <li><strong>Keeper never destroys</strong><span>Every removal goes through the system delete request, which routes to Recently Deleted and raises Apple’s own confirmation. The app cannot bypass that dialog and does not try.</span></li>
+        <li><strong>Nothing irreversible is pre-selected</strong><span>Emptying Recently Deleted, and deleting the last remaining copy of anything, always start unticked.</span></li>
+        <li><strong>Your signals are untouchable</strong><span>Favourited, edited, shared, filed in an album, a Memory key photo — never suggested for deletion, and when one is held back the UI says which reason held it.</span></li>
+        <li><strong>Every set keeps at least one frame</strong><span>Structurally enforced in the model layer, not the view. A set cannot reach the confirm sheet with zero keepers.</span></li>
+        <li><strong>Optional escrow</strong><span>Before a large session, Keeper can export full-resolution originals of everything about to go to a folder or external disk. Slower, entirely local, and the answer to “I want to clean up but I’m nervous”.</span></li>
+      </ul>
+    </section>
+
+    <section id="holes">
+      <div class="section-head">
+        <h2>What I’m not certain about</h2>
+        <p>Written down now rather than discovered in month three.</p>
+      </div>
+      <dl class="holes">
+        <div>
+          <dt>“Not opened in three years” is a promise the OS won’t let us keep</dt>
+          <dd>
+            PhotoKit exposes no view count, no last-opened date, no read timestamp. Nothing in the
+            framework knows you scrolled past a photo yesterday, and any app claiming otherwise is
+            guessing — usually with creation date wearing a costume. Keeper measures neglect instead: a
+            frame is <em>untouched</em> when it was never favourited, edited, filed, shared or used as a
+            Memory key photo, and has no recognised face. It words it that way in the UI too.
+          </dd>
+        </div>
+        <div>
+          <dt>Face clustering is the biggest technical risk</dt>
+          <dd>
+            Vision gives us face detection and capture quality publicly; it does not give us a public
+            face-identity embedding, and the system’s own People albums aren’t reachable through
+            PhotoKit. Clustering from feature prints on face crops works, but it is meaningfully worse
+            than Apple’s and it degrades across years and haircuts. This is why the people feature is
+            opt-in and why nothing in the main flow depends on it.
+          </dd>
+        </div>
+        <div>
+          <dt>“People you no longer photograph” is the one feature that can hurt someone</dt>
+          <dd>
+            “You haven’t photographed this person in four years — clear 3 GB?” is technically an
+            excellent space-saving feature and, some fraction of the time, the cruellest sentence a
+            phone will say. That gap is a former partner, an estranged parent, a friend who died. If it
+            ships, it ships as <strong>Chapters</strong>: off by default, never phrasing a cluster as
+            absence, never pre-selecting a person’s photos, offering only <em>thin this chapter</em> —
+            the ordinary duplicate cull scoped to those photos, deleting none of the singles. Every
+            cluster carries a permanent “never suggest anything here”. It is also the first thing I’d cut.
+          </dd>
+        </div>
+        <div>
+          <dt>The aesthetics score needs iOS 18 and macOS 15</dt>
+          <dd>
+            The image aesthetics request — which also carries the utility flag separating a receipt from
+            a photograph — is new API. Supporting iOS 17 means hand-rolling that classifier and shipping
+            a Core ML model, which adds bundle weight and a whole evaluation problem. Recommendation:
+            require iOS 18 and take the free, Apple-tuned score.
+          </dd>
+        </div>
+        <div>
+          <dt>Battery and thermals during the first index</dt>
+          <dd>
+            Fifteen-plus minutes of sustained Neural Engine work will warm a phone and drain it.
+            Mitigation is to default the full pass to charging-and-idle, make a foreground scan
+            explicitly opt-in with the tradeoff stated, and always let partial results be reviewed. It
+            still needs measuring on an older device before we believe any of it.
+          </dd>
+        </div>
+        <div>
+          <dt>Video is where the bytes are and where the tooling is thinnest</dt>
+          <dd>
+            Similarity detection across videos means decoding keyframes and is roughly an order of
+            magnitude more expensive than stills. V1 treats video by metadata only — subtype, duration,
+            size, your signals — which already reclaims 41 GB in the model library. Near-duplicate video
+            is a v2 problem.
+          </dd>
+        </div>
+        <div>
+          <dt>“Best” is subjective and the app will be wrong sometimes</dt>
+          <dd>
+            There is no way around this, only a way to survive it. Every disagreement is one tap, the
+            reasoning is always visible, and the app tracks how often you override it. If you overrule
+            the sharpness weighting fifty times, that is a signal worth learning from locally — a
+            candidate v2 feature, kept on device like everything else.
+          </dd>
+        </div>
+      </dl>
+    </section>
+
+    <section id="roadmap">
+      <div class="section-head">
+        <h2>What to build, and in what order</h2>
+        <p>Ordered so each phase ships something useful on its own. If we stop after phase two, there is still a real app on the store.</p>
+      </div>
+      <ul class="phases">
+        <li class="phase">
+          <span class="phase-when">Phase 1 · spike</span>
+          <div>
+            <strong>Prove the funnel on a real library</strong>
+            <p>A command-line tool over KeeperKit: enumerate, bucket, feature-print, cluster, print groups and timings. No UI. The only question it answers is whether stages 2 and 3 hold up at 48,000 assets on phone-class silicon — and if they don’t, everything downstream changes.</p>
+          </div>
+        </li>
+        <li class="phase">
+          <span class="phase-when">Phase 2 · v1.0</span>
+          <div>
+            <strong>The certain categories, both platforms</strong>
+            <p>Home, near-duplicate sets, screen recordings, screenshots, exact duplicates, Recently Deleted. The confirm sheet, the receipt, undo, the session log. macOS three-pane with full keyboard culling. This is the shippable product and it accounts for roughly 100 of the 131 GB.</p>
+          </div>
+        </li>
+        <li class="phase">
+          <span class="phase-when">Phase 3 · v1.1</span>
+          <div>
+            <strong>Judgement calls</strong>
+            <p>Blurred and dark frames, long-tail video, forwarded media, motionless Live Photos, the escrow export, iPad Pencil gestures.</p>
+          </div>
+        </li>
+        <li class="phase">
+          <span class="phase-when">Phase 4 · v2</span>
+          <div>
+            <strong>The risky and the personal</strong>
+            <p>Chapters behind its switch, near-duplicate video, and local learning from overrides. Each gated on the phase before it being stable — none is worth destabilising a working app for.</p>
+          </div>
+        </li>
+      </ul>
+    </section>
+
+    <section id="decisions">
+      <div class="section-head">
+        <h2>Five calls to make before writing code</h2>
+      </div>
+      <ol class="decisions">
+        <li><strong>The name.</strong> <em>Keeper</em> frames the app around what survives rather than what dies. <em>Negative Space</em> is the alternative — a photography term that also means exactly what the app does.</li>
+        <li><strong>iOS 18 floor?</strong> It buys the aesthetics score and the utility flag for free and cuts real work. It also cuts off iPhone XR and older.</li>
+        <li><strong>Ship Chapters at all?</strong> Designed defensively, but it’s the one feature that can hurt someone, and the app is complete without it.</li>
+        <li><strong>Mac first or iPhone first?</strong> Mac is faster to build and better at the actual culling; iPhone is where the storage pain is felt and where the app gets bought.</li>
+        <li><strong>Paid up front?</strong> No account and no subscription is the only pricing consistent with a no-network app, and it’s worth saying so on the store page rather than doing it quietly.</li>
+      </ol>
+      <p class="note">
+        Phase one is self-contained and needs no UI. It either validates the funnel timings in an
+        afternoon, or tells us the whole approach needs rethinking before a single screen gets built.
+      </p>
+    </section>
+
+    <section id="next">
+      <div class="callout">
+        <div>
+          <h2>The principles behind the drawings</h2>
+          <p>Designing a cleanup app for something irreplaceable forced a handful of rules that generalise well beyond photos. They’re written up separately.</p>
+        </div>
+        <a class="btn btn-primary" href="design-principles.html">Read the design principles</a>
+      </div>
+    </section>
+
+    <footer>
+      <span>© 2026 Muddassir Iqbal</span>
+      <span>Figures modelled on a 48,116-asset, 214 GB library</span>
+    </footer>
+  </main>
+
+  <script>
+    const themeToggle = document.getElementById('themeToggle');
+    const body = document.body;
+    const saved = localStorage.getItem('hub-theme');
+    if (saved === 'dark-mode') body.classList.add('dark');
+    if (saved === 'light-mode') body.classList.add('light');
+
+    themeToggle.addEventListener('click', () => {
+      const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+      if (body.classList.contains('dark')) {
+        body.classList.remove('dark');
+        body.classList.add('light');
+        localStorage.setItem('hub-theme', 'light-mode');
+      } else if (body.classList.contains('light')) {
+        body.classList.remove('light');
+        body.classList.add('dark');
+        localStorage.setItem('hub-theme', 'dark-mode');
+      } else if (prefersDark) {
+        body.classList.add('light');
+        localStorage.setItem('hub-theme', 'light-mode');
+      } else {
+        body.classList.add('dark');
+        localStorage.setItem('hub-theme', 'dark-mode');
+      }
+    });
+  </script>
+</body>
+</html>
