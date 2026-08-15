@@ -4,12 +4,17 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Keeper — Clear the duplicates, keep the best shot</title>
-  <meta name="description" content="Keeper finds near-identical photos, screen recordings and dead screenshots in your library, argues for the best frame, and hands back the gigabytes. Everything on device. Coming soon to iPhone, iPad and Mac." />
+  <meta name="description" content="Keeper finds near-identical photos, screen recordings and dead screenshots in your library, argues for the best frame, and hands back the gigabytes. Everything on device, on iPhone, iPad and Mac." />
   <meta name="theme-color" content="#e5e9e6" />
 
   <meta property="og:title" content="Keeper — Clear the duplicates, keep the best shot" />
   <meta property="og:description" content="Forty photos of the same sunset, one worth keeping. Keeper finds the group, picks the frame, and frees the space — without a single pixel leaving your device." />
   <meta property="og:type" content="website" />
+
+  <link rel="icon" href="assets/favicon.ico" sizes="any" />
+  <link rel="icon" type="image/png" sizes="32x32" href="assets/favicon-32.png" />
+  <link rel="icon" type="image/png" sizes="16x16" href="assets/favicon-16.png" />
+  <link rel="apple-touch-icon" href="assets/apple-touch-icon.png" />
 
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -272,86 +277,44 @@
     .pill-item.good { color: var(--good); }
     .pill-item.good::before { background: currentColor; }
 
-    /* ---- contact sheet: the product explained without a screenshot ---- */
+    /* ---- real screenshots: Mac Home next to iPhone Home ---- */
     .hero-visual { animation: floatIn 0.9s ease 0.12s both; }
 
-    .sheet {
-      width: min(100%, 440px);
+    .shots {
+      display: flex;
+      align-items: stretch;
+      gap: 0.9rem;
+      width: min(100%, 460px);
       margin-left: auto;
-      padding: 0.85rem 0.85rem 0.55rem;
+    }
+
+    .shot-frame {
+      overflow: hidden;
       background: var(--surface);
       border: 1.5px solid var(--line);
       box-shadow: var(--shot-shadow);
     }
 
-    .sheet-grid {
-      display: grid;
-      grid-template-columns: repeat(4, minmax(0, 1fr));
-      gap: 0.35rem;
+    .shot-frame img {
+      display: block;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: top;
     }
 
-    .frame {
-      position: relative;
-      aspect-ratio: 4 / 3;
-      overflow: hidden;
-      background: #6f7a80;
-    }
+    .shot-mac { flex: 1.4; aspect-ratio: 1800 / 1520; align-self: center; }
+    .shot-ios { flex: 0.85; aspect-ratio: 1206 / 1420; align-self: center; }
 
-    .frame.out { opacity: 0.34; filter: grayscale(0.5); }
-
-    .frame.out::before,
-    .frame.out::after {
-      content: "";
-      position: absolute;
-      top: 50%;
-      left: 8%;
-      right: 8%;
-      border-top: 2.5px solid var(--accent);
-      transform-origin: center;
-    }
-
-    .frame.out::before { transform: rotate(21deg); }
-    .frame.out::after { transform: rotate(-21deg); }
-
-    .frame.pick { outline: 2.5px solid var(--accent); outline-offset: -2.5px; }
-
-    .pick-tag {
-      position: absolute;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      padding: 0.1rem 0;
-      background: var(--accent);
-      color: #fff;
-      font-size: 0.52rem;
+    .shot-caption {
+      margin: 0.65rem 0 0;
+      text-align: right;
+      font-size: 0.72rem;
       font-weight: 600;
-      letter-spacing: 0.14em;
-      text-align: center;
-    }
-
-    .rebate {
-      display: flex;
-      justify-content: space-between;
-      gap: 0.75rem;
-      padding-top: 0.55rem;
-      font-size: 0.6rem;
-      font-weight: 500;
-      letter-spacing: 0.1em;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
       color: var(--muted);
     }
-
-    .p1 { background: linear-gradient(160deg, #7c93a6, #3e5566); }
-    .p2 { background: linear-gradient(150deg, #c3a98a, #7a6247); }
-    .p3 { background: linear-gradient(200deg, #8fa98c, #435a45); }
-    .p4 { background: linear-gradient(140deg, #b08c93, #6b4a55); }
-    .p5 { background: linear-gradient(175deg, #9ea7b8, #4b5468); }
-    .p6 { background: linear-gradient(130deg, #d0b99b, #8a6e52); }
-    .p7 { background: linear-gradient(190deg, #7fa3a8, #3b5f66); }
-    .p8 { background: linear-gradient(155deg, #a8968f, #5c4c48); }
-    .p9 { background: linear-gradient(165deg, #6e7f94, #2f3e4e); }
-    .p10 { background: linear-gradient(145deg, #bdb295, #79704f); }
-    .p11 { background: linear-gradient(185deg, #93a0ac, #4a5760); }
-    .p12 { background: linear-gradient(170deg, #a9838b, #5f3e48); }
 
     section {
       padding: 3.5rem 0;
@@ -554,7 +517,7 @@
         align-items: start;
       }
 
-      .sheet { margin: 0 auto; }
+      .shots { margin: 0 auto; }
 
       .features,
       .targets,
@@ -607,14 +570,15 @@
 
     <header class="hero">
       <div>
-        <p class="coming-badge"><span class="dot" aria-hidden="true"></span> Coming soon · in design</p>
+        <p class="coming-badge"><span class="dot" aria-hidden="true"></span> Built and working · not yet on the App Store</p>
         <p class="brand-name">Keeper</p>
         <h1>Forty shots of the same sunset. Keep one, get the storage back.</h1>
         <p class="hero-copy">
           “iPhone Storage Full” is never the screenshots you meant to keep — it’s the sixteen-frame
-          burst you never culled, the screen recording from two years ago, and 4,000 receipts. Keeper
-          finds all of it, picks the best frame out of every pile, and shows you exactly what it’s
-          about to free before it frees anything.
+          burst you never culled, the screen recording from two years ago, and the duplicate files
+          sitting in Desktop, Documents and Downloads. Keeper finds all of it, picks the best frame
+          out of every pile, and shows you exactly what it’s about to free before it frees anything.
+          These are real screens from the running app, on both platforms.
         </p>
         <div class="cta-row">
           <a class="btn btn-primary" href="proposal.html">Read the full proposal</a>
@@ -627,30 +591,15 @@
         </div>
       </div>
       <div class="hero-visual">
-        <div class="sheet" role="img" aria-label="A contact sheet of sixteen near-identical frames. Fifteen are struck through in red; one is outlined and labelled KEEP.">
-          <div class="sheet-grid">
-            <div class="frame p1 out"></div>
-            <div class="frame p2 out"></div>
-            <div class="frame p3 out"></div>
-            <div class="frame p4 out"></div>
-            <div class="frame p5 out"></div>
-            <div class="frame p6 pick"><span class="pick-tag">KEEP</span></div>
-            <div class="frame p7 out"></div>
-            <div class="frame p8 out"></div>
-            <div class="frame p9 out"></div>
-            <div class="frame p10 out"></div>
-            <div class="frame p11 out"></div>
-            <div class="frame p12 out"></div>
-            <div class="frame p5 out"></div>
-            <div class="frame p3 out"></div>
-            <div class="frame p1 out"></div>
-            <div class="frame p8 out"></div>
+        <div class="shots">
+          <div class="shot-frame shot-mac">
+            <img src="assets/keeper-mac-home.png" alt="Keeper on Mac: a capacity header reading 2.05 GB recoverable, above a list of categories — duplicates in Downloads, screen recordings, long videos, similar sets, exact duplicates, old screenshots — each with its own reclaimable size." loading="lazy" />
           </div>
-          <div class="rebate">
-            <span>SET 041 · BURST</span>
-            <span>16 FRAMES · 1 SELECT · 198 MB</span>
+          <div class="shot-frame shot-ios">
+            <img src="assets/keeper-ios-home.png" alt="Keeper on iPhone: the same home screen, scoped to Similar Photos and Long Videos with their reclaimable sizes." loading="lazy" />
           </div>
         </div>
+        <p class="shot-caption">Mac and iPhone, same build, same numbers</p>
       </div>
     </header>
 
@@ -658,22 +607,22 @@
       <div class="section-head">
         <div>
           <h2>Where the gigabytes hide</h2>
-          <p>Biggest win first, always. These are the numbers from a real six-year phone history — 48,000 photos, 214 GB, nothing unusual about it.</p>
+          <p>Biggest win first, always. These five categories are shipped. The numbers below are from a real six-year, 48,000-photo, 214 GB library — nothing unusual about it.</p>
         </div>
       </div>
       <ul class="targets">
         <li><strong>Similar sets</strong><span>Bursts, retries, “one more with everyone looking”</span><em>61 GB</em></li>
         <li><strong>Screen recordings</strong><span>The worst bytes-per-item in any library</span><em>23 GB</em></li>
         <li><strong>Long-tail video</strong><span>Never favourited, never edited, never replayed</span><em>18 GB</em></li>
-        <li><strong>Expired screenshots</strong><span>Receipts, codes, maps, boarding passes</span><em>9 GB</em></li>
-        <li><strong>Failed frames</strong><span>Pocket shots, motion blur, lens-cap black</span><em>6 GB</em></li>
-        <li><strong>Recently Deleted</strong><span>Already “deleted”, still on the disk for 30 days</span><em>5 GB</em></li>
-        <li><strong>Forwarded media</strong><span>Memes and forwards saved out of chat apps</span><em>4 GB</em></li>
+        <li><strong>Expired screenshots</strong><span>Older than a month, still sitting there</span><em>9 GB</em></li>
         <li><strong>Exact duplicates</strong><span>Re-downloads, AirDrop round-trips, re-saves</span><em>3 GB</em></li>
       </ul>
       <p class="note">
         Nothing is double-counted. A blurred frame inside a burst is claimed by one pile only, so the
         total at the top is a number you can actually reach — not a sum of overlapping estimates.
+        Blurred and dark frames, forwarded media, and a few other categories are designed but not
+        built yet — the <a href="proposal.html">full proposal</a> has the complete list and the order
+        they’re landing in.
       </p>
     </section>
 
@@ -681,65 +630,45 @@
       <div class="section-head">
         <div>
           <h2>What makes one frame the keeper</h2>
-          <p>Spotting the near-identical pile is the easy half. Keeper picks the frame you would have picked — and tells you why in four words, not a score out of a hundred.</p>
+          <p>Shipped today: a short, deliberately simple tie-break — the more sophisticated scoring model in the proposal hasn’t been built yet.</p>
         </div>
       </div>
       <div class="features">
         <article class="feature">
-          <span class="tier">First · your signals</span>
-          <h3>What you already told Photos</h3>
-          <p>Favourited, edited, cropped, filed in an album, shared. These outrank every algorithm in the app. If you touched a frame, it wins its group — and Keeper says that’s why.</p>
+          <span class="tier">First</span>
+          <h3>Your signals win outright</h3>
+          <p>Favourited, edited, or filed in an album beats every other rule. If you touched a frame, it’s the keeper — no exceptions, no scoring.</p>
         </article>
         <article class="feature">
-          <span class="tier">Then · the photograph</span>
-          <h3>Whether it’s any good</h3>
-          <p>Sharpness on the subject rather than the whole frame. Blown highlights and crushed shadows. Resolution and format. Faces in focus, eyes open, expression readable.</p>
+          <span class="tier">Otherwise</span>
+          <h3>The larger file wins</h3>
+          <p>Among untouched frames, Keeper keeps the one with the larger byte size, then the higher pixel count as the tiebreaker — a cheap, honest proxy for “more information” with nothing to get subtly wrong.</p>
         </article>
         <article class="feature">
-          <span class="tier">Last · the set</span>
-          <h3>Whether it’s the best of these</h3>
-          <p>Most people present, because the shot with everyone in it is usually why the burst exists. Widest framing when the rest are crops. Latest in the burst — the one you waited for.</p>
+          <span class="tier">Not yet built</span>
+          <h3>Sharpness, faces, framing</h3>
+          <p>Per-frame quality scoring — blur, exposure, face detection — is designed and written up in the proposal, not implemented. Today’s tie-break is intentionally simpler than that vision.</p>
         </article>
       </div>
       <p class="note">
-        When it’s a close call, Keeper says so. Two frames neck and neck means neither gets pre-ticked
-        and you get the final word — a confident wrong answer costs more than an honest shrug.
+        Every set still keeps at least one frame — that part’s enforced in the model, not just the
+        screen, so a set can’t reach zero keepers no matter what you tap.
       </p>
     </section>
 
     <section id="privacy">
       <div class="section-head">
         <div>
-          <h2>Not “we don’t upload your photos” — it can’t</h2>
-          <p>Every photo app promises this and you have no way to check any of them. Keeper’s version is built into the app, not written in a policy — and you can verify it yourself in about ninety seconds.</p>
+          <h2>Not “we don’t upload your photos” — it doesn’t</h2>
+          <p>The similarity, hashing and clustering all run against Apple’s on-device frameworks — PhotoKit and Vision — with zero third-party dependencies in the shipped app. No sign-in, no sync, no subscription, nothing to have an account with.</p>
         </div>
       </div>
-      <div class="features">
-        <article class="feature">
-          <h3>No network entitlement</h3>
-          <p>The app ships without permission to open an outgoing connection. There is no socket. The entitlement list is printed in Settings so you can check it against the shipped binary yourself.</p>
-        </article>
-        <article class="feature">
-          <h3>Nothing third-party inside</h3>
-          <p>No analytics SDK, no crash reporter, no remote config, no A/B framework — the four things that quietly turn a private app into a telemetry pipe.</p>
-        </article>
-        <article class="feature">
-          <h3>Every comparison on your chip</h3>
-          <p>Similarity, quality scoring, face detection and text recognition all run on the Neural Engine in your hand. No model downloads, no server-side inference.</p>
-        </article>
-        <article class="feature">
-          <h3>The index stays in the sandbox</h3>
-          <p>Hashes and thumbnails live in the app’s own container, readable only while the device is unlocked. Never in iCloud, never in a shared folder. One button wipes it.</p>
-        </article>
-        <article class="feature">
-          <h3>Read-only until you press the button</h3>
-          <p>Keeper holds read access for its whole working life. Write access is used exactly once per session — the deletion you confirmed, through the system’s own dialog.</p>
-        </article>
-        <article class="feature">
-          <h3>Nothing to have an account with</h3>
-          <p>No sign-in, no sync, no subscription. All fourteen App Store privacy categories answered “Data Not Collected”, because there is nothing to collect it with.</p>
-        </article>
-      </div>
+      <p class="note">
+        The fuller privacy design — verifiable entitlements, sandboxed storage, an escrow export
+        before a big clear-out — is written up in the <a href="proposal.html">proposal</a>. Some of
+        it is already true of the shipped app; some is still on the roadmap, and the proposal says
+        which is which.
+      </p>
     </section>
 
     <section id="safety">
@@ -750,85 +679,15 @@
         </div>
       </div>
       <ul class="targets">
-        <li><strong>Never destroys</strong><span>Everything routes to Recently Deleted, through the system’s own confirmation</span></li>
-        <li><strong>Never pre-ticks the final step</strong><span>Emptying Recently Deleted always starts unticked</span></li>
-        <li><strong>Your signals are untouchable</strong><span>Favourited, edited, shared or filed is never suggested — and it says which</span></li>
+        <li><strong>Never destroys</strong><span>Photos route to Recently Deleted through Photos’ own delete request; files move to the Trash, not straight to disk</span></li>
+        <li><strong>Everything is restorable</strong><span>Trashed files can be put back with one tap, straight from Keeper, until you empty the Trash yourself</span></li>
+        <li><strong>Your signals are untouchable</strong><span>Favourited, edited or filed in an album is never offered for deletion — and it says which</span></li>
         <li><strong>Every set keeps a frame</strong><span>Enforced in the model, not the screen. A set can’t reach zero keepers</span></li>
-        <li><strong>Optional escrow</strong><span>Export full-resolution originals to a disk before a big clear-out</span></li>
-        <li><strong>One receipt, one undo</strong><span>Every session is itemised and reversible in a single tap</span></li>
       </ul>
-    </section>
-
-    <section id="honest">
-      <div class="section-head">
-        <div>
-          <h2>Two things it won’t pretend to know</h2>
-          <p>Two things people always ask a cleanup app for. Neither one can be done honestly as asked — so here’s what Keeper does instead of guessing.</p>
-        </div>
-      </div>
-      <dl class="honest">
-        <div>
-          <dt>“Photos you haven’t opened in three years”</dt>
-          <dd>
-            iOS keeps no record of you looking at a photo — no view count, no last-opened date. Any app
-            claiming otherwise is guessing. Keeper measures something real instead: never favourited,
-            never edited, never filed, never shared. It calls that <em>untouched</em>, and words it that
-            way on screen rather than telling you what you did or didn’t look at.
-          </dd>
-        </div>
-        <div>
-          <dt>“People you haven’t photographed in months”</dt>
-          <dd>
-            That gap is sometimes a friend you’ve drifted from and sometimes a person who died. A
-            cleanup app has no way to know which, and no business guessing. If this ships at all it
-            ships switched off, it never phrases a person as an absence, and its only action is to thin
-            duplicates — fewer copies of the same memory, never fewer memories.
-          </dd>
-        </div>
-      </dl>
-    </section>
-
-    <section id="status">
-      <div class="section-head">
-        <div>
-          <h2>Where it is now</h2>
-          <p>In design, being built in the open. Each stage stands on its own, so there’s a real app in your hands at the end of the second one.</p>
-        </div>
-      </div>
-      <ul class="phases">
-        <li class="phase">
-          <span class="phase-when">Phase 1</span>
-          <div>
-            <strong>Prove the engine</strong>
-            <p>A command-line spike over a real library: group the duplicates, time every stage, check it holds up at 48,000 photos on phone-class silicon.</p>
-          </div>
-          <span class="phase-state">In design</span>
-        </li>
-        <li class="phase">
-          <span class="phase-when">Phase 2</span>
-          <div>
-            <strong>Version 1.0</strong>
-            <p>Similar sets, screen recordings, screenshots, exact duplicates, Recently Deleted. The confirm sheet, the receipt, undo. Mac with full keyboard culling.</p>
-          </div>
-          <span class="phase-state">Planned</span>
-        </li>
-        <li class="phase">
-          <span class="phase-when">Phase 3</span>
-          <div>
-            <strong>Judgement calls</strong>
-            <p>Blurred and dark frames, long-tail video, forwarded media, the escrow export, and Apple Pencil strike-through on iPad.</p>
-          </div>
-          <span class="phase-state">Planned</span>
-        </li>
-        <li class="phase">
-          <span class="phase-when">Phase 4</span>
-          <div>
-            <strong>The risky ones</strong>
-            <p>Near-duplicate video, and learning from the times you overruled the pick — kept on device like everything else.</p>
-          </div>
-          <span class="phase-state">Exploring</span>
-        </li>
-      </ul>
+      <p class="note">
+        Not built yet: a per-session receipt and an escrow export before a big clear-out. Both are
+        in the <a href="proposal.html">proposal</a>.
+      </p>
     </section>
 
     <section id="deeper">
@@ -871,8 +730,8 @@
         <span>SwiftUI</span>
         <span>PhotoKit</span>
         <span>Vision</span>
-        <span>Core ML</span>
-        <span>SwiftData</span>
+        <span>AVFoundation</span>
+        <span>CryptoKit</span>
         <span>iOS 18+ · iPadOS 18+ · macOS 15+</span>
         <span>No runtime dependencies</span>
       </div>
@@ -880,7 +739,7 @@
 
     <footer>
       <span>© 2026 Muddassir Iqbal</span>
-      <span>Keeper — coming soon to iPhone, iPad and Mac</span>
+      <span>Keeper — built for iPhone, iPad and Mac, not yet on the App Store</span>
     </footer>
   </main>
 
