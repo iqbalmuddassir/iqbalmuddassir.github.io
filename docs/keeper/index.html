@@ -614,7 +614,7 @@
         <li><strong>Similar sets</strong><span>Bursts, retries, “one more with everyone looking”</span><em>61 GB</em></li>
         <li><strong>Screen recordings</strong><span>The worst bytes-per-item in any library</span><em>23 GB</em></li>
         <li><strong>Long-tail video</strong><span>Never favourited, never edited, never replayed</span><em>18 GB</em></li>
-        <li><strong>Expired screenshots</strong><span>Older than a month, still sitting there</span><em>9 GB</em></li>
+        <li><strong>Expired screenshots</strong><span>Sorted by the text in them before review</span><em>9 GB</em></li>
         <li><strong>Exact duplicates</strong><span>Re-downloads, AirDrop round-trips, re-saves</span><em>3 GB</em></li>
       </ul>
       <p class="note">
@@ -656,6 +656,19 @@
       </p>
     </section>
 
+    <section id="compress">
+      <div class="section-head">
+        <div>
+          <h2>Or don’t delete it — shrink it</h2>
+          <p>Long videos and large images over a size you set can be re-encoded in place instead of removed — picked one at a time or as a batch, queued and tracked from a compression tray, on both platforms.</p>
+        </div>
+      </div>
+      <p class="note">
+        Camera, date and location metadata survive compression exactly — nothing gets stripped
+        to save the space.
+      </p>
+    </section>
+
     <section id="privacy">
       <div class="section-head">
         <div>
@@ -667,7 +680,7 @@
         The fuller privacy design — verifiable entitlements, sandboxed storage, an escrow export
         before a big clear-out — is written up in the <a href="proposal.html">proposal</a>. Some of
         it is already true of the shipped app; some is still on the roadmap, and the proposal says
-        which is which.
+        which is which. The short version, as a standalone policy, is <a href="privacy-policy.html">here</a>.
       </p>
     </section>
 
@@ -685,8 +698,8 @@
         <li><strong>Every set keeps a frame</strong><span>Enforced in the model, not the screen. A set can’t reach zero keepers</span></li>
       </ul>
       <p class="note">
-        Not built yet: a per-session receipt and an escrow export before a big clear-out. Both are
-        in the <a href="proposal.html">proposal</a>.
+        A receipt screen after every clear-out is shipped. Not built yet: an escrow export
+        before a big one — that's in the <a href="proposal.html">proposal</a>.
       </p>
     </section>
 
@@ -732,7 +745,7 @@
         <span>Vision</span>
         <span>AVFoundation</span>
         <span>CryptoKit</span>
-        <span>iOS 18+ · iPadOS 18+ · macOS 15+</span>
+        <span>iOS 26+ · iPadOS 26+ · macOS 26+</span>
         <span>No runtime dependencies</span>
       </div>
     </section>
