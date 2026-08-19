@@ -38,6 +38,7 @@ All deliverables live under `docs/`:
 - `docs/keeper/index.html` — Keeper coming-soon product page (on-device photo culling for iOS/iPadOS/macOS); CSS-only contact-sheet visual, no image assets
 - `docs/keeper/proposal.html` — Full Keeper product proposal: clutter categories, scoring model, CSS device mockups of ten screens, pipeline, risks, roadmap
 - `docs/keeper/design-principles.html` — Twelve design principles from designing Keeper; cross-linked with the proposal
+- `docs/keeper/privacy-policy.html` — Keeper's App Store privacy policy: on-device only, no network access, no data collection, reversible deletions
 
 **Internal** (deployed, but hub cards use `card-private` and only show when the hub is opened with `?mode=private`)
 
