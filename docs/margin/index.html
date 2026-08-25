@@ -4,11 +4,11 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Margin — Clear the duplicates, keep the best shot</title>
-  <meta name="description" content="Margin finds near-identical photos, screen recordings and dead screenshots in your library, argues for the best frame, and hands back the gigabytes. Everything on device, on iPhone, iPad and Mac." />
+  <meta name="description" content="Margin finds near-identical photos, screen recordings and dead screenshots in your library, picks the best frame, and hands back the gigabytes — entirely on-device. Available now on the App Store for iPhone and iPad." />
   <meta name="theme-color" content="#e5e9e6" />
 
   <meta property="og:title" content="Margin — Clear the duplicates, keep the best shot" />
-  <meta property="og:description" content="Forty photos of the same sunset, one worth keeping. Margin finds the group, picks the frame, and frees the space — without a single pixel leaving your device." />
+  <meta property="og:description" content="Forty photos of the same sunset, one worth keeping. Margin finds the group, picks the frame, and frees the space — without a single pixel leaving your device. Available now on the App Store." />
   <meta property="og:type" content="website" />
 
   <link rel="icon" href="assets/favicon.ico" sizes="any" />
@@ -521,6 +521,141 @@
       color: var(--muted);
     }
 
+    /* ---- App Store button ---- */
+    .store-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.6rem;
+      padding: 0.8rem 1.25rem;
+      border: 1.5px solid var(--ink);
+      background: var(--ink);
+      color: var(--bg);
+      font-weight: 600;
+      font-size: 0.95rem;
+      letter-spacing: -0.02em;
+      text-decoration: none;
+      transition: background 0.2s ease, color 0.2s ease, transform 0.2s ease;
+    }
+
+    .store-btn:hover {
+      text-decoration: none;
+      background: var(--accent);
+      border-color: var(--accent);
+      color: #fff;
+      transform: translateY(-1px);
+    }
+
+    .store-btn svg { width: 1.25rem; height: 1.25rem; flex: none; }
+
+    .store-btn .store-btn-text {
+      display: flex;
+      flex-direction: column;
+      line-height: 1.1;
+    }
+
+    .store-btn .store-btn-text small {
+      font-size: 0.66rem;
+      font-weight: 500;
+      letter-spacing: 0.02em;
+      opacity: 0.75;
+    }
+
+    .store-btn .store-btn-text strong {
+      font-size: 1rem;
+      letter-spacing: -0.01em;
+    }
+
+    /* ---- screens gallery ---- */
+    .screens {
+      display: grid;
+      grid-auto-flow: column;
+      grid-auto-columns: minmax(11.5rem, 1fr);
+      gap: 1rem;
+      overflow-x: auto;
+      padding-bottom: 0.5rem;
+      scroll-snap-type: x proximity;
+    }
+
+    .screen-card {
+      scroll-snap-align: start;
+    }
+
+    .screen-card img {
+      display: block;
+      width: 100%;
+      border: 1.5px solid var(--line);
+      box-shadow: var(--shot-shadow);
+    }
+
+    .screen-card p {
+      margin: 0.65rem 0 0;
+      color: var(--muted);
+      font-size: 0.85rem;
+    }
+
+    .dark-note {
+      display: flex;
+      align-items: center;
+      gap: 0.9rem;
+      margin-top: 1.75rem;
+      padding-top: 1.75rem;
+      border-top: 1.5px solid var(--line);
+    }
+
+    .dark-note img {
+      width: 4.5rem;
+      border: 1.5px solid var(--line);
+      flex: none;
+    }
+
+    .dark-note p { margin: 0; color: var(--muted); font-size: 0.95rem; max-width: 48ch; }
+    .dark-note strong { color: var(--ink); }
+
+    /* ---- video showcase ---- */
+    .showcase {
+      display: grid;
+      grid-template-columns: minmax(0, 0.62fr) minmax(0, 1fr);
+      gap: clamp(2rem, 5vw, 3.5rem);
+      align-items: center;
+    }
+
+    .showcase-video {
+      overflow: hidden;
+      background: #0b0d0c;
+      border: 1.5px solid var(--line);
+      box-shadow: var(--shot-shadow);
+      aspect-ratio: 886 / 1920;
+      max-width: 280px;
+      margin: 0 auto;
+    }
+
+    .showcase-video video {
+      display: block;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    /* ---- download callout ---- */
+    .download-callout {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1.5rem;
+      padding: 2rem;
+      border: 1.5px solid var(--line);
+      background: var(--panel-2);
+    }
+
+    .download-callout h2 {
+      margin: 0 0 0.4rem;
+      font-size: clamp(1.3rem, 2.4vw, 1.7rem);
+      letter-spacing: -0.035em;
+    }
+
+    .download-callout p { margin: 0; color: var(--muted); max-width: 46ch; }
+
     footer {
       display: flex;
       flex-wrap: wrap;
@@ -557,6 +692,9 @@
       }
 
       .targets li { grid-template-columns: 9rem 1fr auto; }
+
+      .showcase { grid-template-columns: 1fr; }
+      .showcase-video { order: -1; }
     }
 
     @media (max-width: 640px) {
@@ -596,12 +734,12 @@
   <main class="page">
     <div class="top">
       <a class="hub-link" href="../index.html">← Bridge to Purpose</a>
-      <span class="platform">iPhone · iPad · Mac</span>
+      <span class="platform">iPhone · iPad — Mac to follow</span>
     </div>
 
     <header class="hero">
       <div>
-        <p class="coming-badge"><span class="dot" aria-hidden="true"></span> Built and working · not yet on the App Store</p>
+        <p class="coming-badge"><span class="dot" aria-hidden="true"></span> Available now on the App Store</p>
         <p class="brand-name">Margin</p>
         <h1>Forty shots of the same sunset. Keep one, get the storage back.</h1>
         <p class="hero-copy">
@@ -609,11 +747,14 @@
           burst you never culled, the screen recording from two years ago, and the duplicate files
           sitting in Desktop, Documents and Downloads. Margin finds all of it, picks the best frame
           out of every pile, and shows you exactly what it’s about to free before it frees anything.
-          These are real screens from the running app, on both platforms.
+          These are real screens from the shipping app.
         </p>
         <div class="cta-row">
-          <a class="btn btn-primary" href="proposal.html">Read the full proposal</a>
-          <a class="btn btn-ghost" href="design-principles.html">Design principles →</a>
+          <a class="store-btn" href="https://apps.apple.com/in/app/margin-reclaim-your-space/id6803565585" target="_blank" rel="noopener">
+            <svg viewBox="0 0 384 512" fill="currentColor" aria-hidden="true"><path d="M318.7 268.7c-.2-36.7 16.4-64.4 50-84.8-18.8-26.9-47.2-41.7-84.7-44.6-35.5-2.8-74.3 20.7-88.5 20.7-15 0-49.4-19.7-76.4-19.7C63.3 141 8 184.8 8 273.5c0 25.9 4.7 52.6 14.2 80.2 12.6 36.7 58.1 126.7 105.6 125.2 24.9-.6 42.5-17.7 74.9-17.7 31.5 0 47.8 17.7 75.6 17.7 47.9-.7 89-82.5 101-119.3-64.3-30.3-60.6-88.8-60.6-90.9zm-56.6-164.2c26.9-32 24.5-61.2 23.7-71.6-23.8 1.4-51.3 16.4-67 34.9-17.3 19.8-27.5 44.4-25.3 71.9 25.8 2 49.4-11.1 68.6-35.2z"/></svg>
+            <span class="store-btn-text"><small>Download on the</small><strong>App Store</strong></span>
+          </a>
+          <a class="btn btn-ghost" href="#demo">Watch it in action ↓</a>
         </div>
         <div class="pill-strip">
           <span class="pill-item good">Nothing leaves your device</span>
@@ -623,17 +764,71 @@
       </div>
       <div class="hero-visual">
         <div class="shots">
-          <div class="shot-frame shot-mac">
-            <img src="assets/margin-mac-home.png" alt="Margin on Mac: a capacity header reading 2.05 GB recoverable, above a list of categories — duplicates in Downloads, screen recordings, long videos, similar sets, exact duplicates, old screenshots — each with its own reclaimable size." loading="lazy" />
+          <div class="phone-frame">
+            <div class="phone-island" aria-hidden="true"></div>
+            <img src="assets/screen-1_Home.jpg" alt="Margin on iPhone, light mode: the home screen showing recoverable storage and review categories." loading="lazy" />
           </div>
           <div class="phone-frame">
             <div class="phone-island" aria-hidden="true"></div>
-            <img src="assets/margin-ios-home.png" alt="Margin on iPhone: the same home screen, scoped to Similar Photos and Long Videos with their reclaimable sizes." loading="lazy" />
+            <img src="assets/screen-dark-Home.jpg" alt="Margin on iPhone, dark mode: the same home screen." loading="lazy" />
           </div>
         </div>
-        <p class="shot-caption">Mac and iPhone, same build, same numbers</p>
+        <p class="shot-caption">Light and dark, straight from the App Store listing</p>
       </div>
     </header>
+
+    <section id="screens">
+      <div class="section-head">
+        <div>
+          <h2>See it before you free it</h2>
+          <p>Real screens from the App Store listing — the same review-before-delete flow, the same numbers, no staged data.</p>
+        </div>
+      </div>
+      <div class="screens">
+        <figure class="screen-card">
+          <img src="assets/screen-1_Home.jpg" alt="Home screen: recoverable storage total, with Similar Sets, Exact Duplicates, Screen Recordings and Compress categories below it." loading="lazy" />
+          <p>See what's eating your storage</p>
+        </figure>
+        <figure class="screen-card">
+          <img src="assets/screen-2_CompressGrid.jpg" alt="Compress Images grid: several large photos selected for compression, with Compress All as the primary action." loading="lazy" />
+          <p>Compress instead of delete</p>
+        </figure>
+        <figure class="screen-card">
+          <img src="assets/screen-4_CompressDetail.jpg" alt="Compress Image detail: original 1.9 MB versus compressed 613 KB, saving 66%, with Keep Original or Keep Compressed." loading="lazy" />
+          <p>Nothing lost, massive savings</p>
+        </figure>
+        <figure class="screen-card">
+          <img src="assets/screen-5_CompressBulkReview.jpg" alt="Bulk Review: six compressed images with their savings, approved together with one Keep Compressed action." loading="lazy" />
+          <p>Review before you commit</p>
+        </figure>
+      </div>
+      <div class="dark-note">
+        <img src="assets/screen-dark-Home.jpg" alt="Margin's home screen in dark mode." loading="lazy" />
+        <p><strong>Dark mode, matched screen for screen.</strong> Every review flow — Similar Sets, Exact Duplicates, Compress — looks native in both appearances, not just re-tinted.</p>
+      </div>
+    </section>
+
+    <section id="demo">
+      <div class="showcase">
+        <div class="showcase-video">
+          <video src="assets/margin-preview.mp4" poster="assets/screen-dark-Home.jpg" autoplay muted loop playsinline></video>
+        </div>
+        <div>
+          <div class="section-head" style="margin-bottom: 1rem;">
+            <div>
+              <h2>Watch Margin work</h2>
+              <p>The full App Store preview — onboarding, the home screen, compression review, and the bulk-approve flow, back to back.</p>
+            </div>
+          </div>
+          <p class="note" style="margin-top: 0;">
+            No narration needed: every screen in this clip is the actual UI, doing the actual thing
+            its label says. If you'd rather try it yourself first, the
+            <a href="https://apps.apple.com/in/app/margin-reclaim-your-space/id6803565585" target="_blank" rel="noopener">App Store listing</a>
+            has the same clip plus the full screenshot set.
+          </p>
+        </div>
+      </div>
+    </section>
 
     <section id="clutter">
       <div class="section-head">
@@ -653,7 +848,7 @@
         Nothing is double-counted. A blurred frame inside a burst is claimed by one pile only, so the
         total at the top is a number you can actually reach — not a sum of overlapping estimates.
         Blurred and dark frames, forwarded media, and a few other categories are designed but not
-        built yet — the <a href="proposal.html">full proposal</a> has the complete list and the order
+        built yet — the <a href="proposal.html">technical design spec</a> has the complete list and the order
         they’re landing in.
       </p>
     </section>
@@ -662,7 +857,7 @@
       <div class="section-head">
         <div>
           <h2>What makes one frame the winner</h2>
-          <p>Shipped today: a short, deliberately simple tie-break — the more sophisticated scoring model in the proposal hasn’t been built yet.</p>
+          <p>A short, deliberately simple tie-break — no black-box score to second-guess.</p>
         </div>
       </div>
       <div class="features">
@@ -677,14 +872,15 @@
           <p>Among untouched frames, Margin keeps the one with the larger byte size, then the higher pixel count as the tiebreaker — a cheap, honest proxy for “more information” with nothing to get subtly wrong.</p>
         </article>
         <article class="feature">
-          <span class="tier">Not yet built</span>
-          <h3>Sharpness, faces, framing</h3>
-          <p>Per-frame quality scoring — blur, exposure, face detection — is designed and written up in the proposal, not implemented. Today’s tie-break is intentionally simpler than that vision.</p>
+          <span class="tier">Your call, always</span>
+          <h3>Review before anything moves</h3>
+          <p>The suggested winner is a starting point, not a decision — every set is a full contact sheet you can override before a single photo is touched.</p>
         </article>
       </div>
       <p class="note">
         Every set still keeps at least one frame — that part’s enforced in the model, not just the
-        screen, so a set can’t reach zero winners no matter what you tap.
+        screen, so a set can’t reach zero winners no matter what you tap. The full scoring model
+        and where it's headed next is in the <a href="proposal.html">technical design spec</a>.
       </p>
     </section>
 
@@ -692,7 +888,7 @@
       <div class="section-head">
         <div>
           <h2>Or don’t delete it — shrink it</h2>
-          <p>Long videos and large images over a size you set can be re-encoded in place instead of removed — picked one at a time or as a batch, queued and tracked from a compression tray, on both platforms.</p>
+          <p>Long videos and large images over a size you set can be re-encoded in place instead of removed — picked one at a time or as a batch, queued and tracked from a compression tray.</p>
         </div>
       </div>
       <p class="note">
@@ -710,8 +906,8 @@
       </div>
       <p class="note">
         The fuller privacy design — verifiable entitlements, sandboxed storage, an escrow export
-        before a big clear-out — is written up in the <a href="proposal.html">proposal</a>. Some of
-        it is already true of the shipped app; some is still on the roadmap, and the proposal says
+        before a big clear-out — is written up in the <a href="proposal.html">technical design spec</a>.
+        Some of it is already true of the shipped app; some is still on the roadmap, and the spec says
         which is which. The short version, as a standalone policy, is <a href="privacy-policy.html">here</a>.
       </p>
     </section>
@@ -731,7 +927,7 @@
       </ul>
       <p class="note">
         A receipt screen after every clear-out is shipped. Not built yet: an escrow export
-        before a big one — that's in the <a href="proposal.html">proposal</a>.
+        before a big one — that's in the <a href="proposal.html">technical design spec</a>.
       </p>
     </section>
 
@@ -741,50 +937,36 @@
           <h2>The whole thing, written down</h2>
           <p>
             Every category, every screen, the scoring model, the on-device pipeline, and an honest list
-            of what might not work. Plus the design principles that came out of drawing it.
+            of what might not work is in the technical design spec. The reasoning behind the screens
+            themselves — why deletion looks the way it does — is in the design principles.
           </p>
         </div>
         <div class="cta-row" style="margin: 0;">
-          <a class="btn btn-primary" href="proposal.html">Read the proposal</a>
+          <a class="btn btn-primary" href="proposal.html">Technical design spec</a>
           <a class="btn btn-ghost" href="design-principles.html">Design principles</a>
         </div>
       </div>
     </section>
 
-    <section id="notify">
-      <div class="section-head">
+    <section id="download">
+      <div class="download-callout">
         <div>
-          <h2>No mailing list. Sorry.</h2>
+          <h2>Get it now</h2>
           <p>
-            Asking for your email would be a strange way to open a page about not collecting your data.
-            Margin turns up here and on the App Store when it’s ready — that’s the whole plan.
+            Free, no account, no subscription. Available today for iPhone and iPad — the Mac app,
+            sharing the same engine, is next.
           </p>
         </div>
-      </div>
-    </section>
-
-    <section id="stack">
-      <div class="section-head">
-        <div>
-          <h2>Native, offline, and quiet about it</h2>
-          <p>One Swift core shared across the three platforms, with the whole photo pipeline running on Apple’s own on-device frameworks.</p>
-        </div>
-      </div>
-      <div class="stack">
-        <span>Swift</span>
-        <span>SwiftUI</span>
-        <span>PhotoKit</span>
-        <span>Vision</span>
-        <span>AVFoundation</span>
-        <span>CryptoKit</span>
-        <span>iOS 26+ · iPadOS 26+ · macOS 26+</span>
-        <span>No runtime dependencies</span>
+        <a class="store-btn" href="https://apps.apple.com/in/app/margin-reclaim-your-space/id6803565585" target="_blank" rel="noopener">
+          <svg viewBox="0 0 384 512" fill="currentColor" aria-hidden="true"><path d="M318.7 268.7c-.2-36.7 16.4-64.4 50-84.8-18.8-26.9-47.2-41.7-84.7-44.6-35.5-2.8-74.3 20.7-88.5 20.7-15 0-49.4-19.7-76.4-19.7C63.3 141 8 184.8 8 273.5c0 25.9 4.7 52.6 14.2 80.2 12.6 36.7 58.1 126.7 105.6 125.2 24.9-.6 42.5-17.7 74.9-17.7 31.5 0 47.8 17.7 75.6 17.7 47.9-.7 89-82.5 101-119.3-64.3-30.3-60.6-88.8-60.6-90.9zm-56.6-164.2c26.9-32 24.5-61.2 23.7-71.6-23.8 1.4-51.3 16.4-67 34.9-17.3 19.8-27.5 44.4-25.3 71.9 25.8 2 49.4-11.1 68.6-35.2z"/></svg>
+          <span class="store-btn-text"><small>Download on the</small><strong>App Store</strong></span>
+        </a>
       </div>
     </section>
 
     <footer>
       <span>© 2026 Muddassir Iqbal</span>
-      <span>Margin — built for iPhone, iPad and Mac, not yet on the App Store</span>
+      <span>Margin — on the App Store for iPhone and iPad. Mac to follow.</span>
     </footer>
   </main>
 
