@@ -39,6 +39,8 @@ All deliverables live under `docs/`:
 - `docs/margin/proposal.html` — Full Margin product proposal: clutter categories, scoring model, CSS device mockups of ten screens, pipeline, risks, roadmap
 - `docs/margin/design-principles.html` — Twelve design principles from designing Margin; cross-linked with the proposal
 - `docs/margin/privacy-policy.html` — Margin's App Store privacy policy: on-device only, no network access, no data collection, reversible deletions
+- `docs/linklab/index.html` — LinkLab product page: deep link launcher for iPhone/iPad — open/test any URL or custom scheme, file without launching, generate & share QR codes, offline-only
+- `docs/linklab/privacy-policy.html` — LinkLab's App Store privacy policy: no network access, clipboard read only on Paste, Photos access is add-only
 
 **Internal** (deployed, but hub cards use `card-private` and only show when the hub is opened with `?mode=private`)
 
