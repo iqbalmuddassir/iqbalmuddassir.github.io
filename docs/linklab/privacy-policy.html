@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>LinkLab — Privacy Policy</title>
+  <meta name="description" content="LinkLab's privacy policy: what it accesses, what it never collects, and why nothing you type or save ever leaves your device." />
+  <meta name="theme-color" content="#eef6f7" />
+
+  <meta property="og:title" content="LinkLab — Privacy Policy" />
+  <meta property="og:description" content="LinkLab has no network access. This page explains exactly what it reads on your device and what it never collects." />
+  <meta property="og:type" content="website" />
+
+  <link rel="icon" href="assets/favicon.ico" sizes="any" />
+  <link rel="icon" type="image/png" sizes="32x32" href="assets/favicon-32.png" />
+  <link rel="icon" type="image/png" sizes="16x16" href="assets/favicon-16.png" />
+  <link rel="apple-touch-icon" href="assets/apple-touch-icon.png" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet" />
+
+  <style>
+    :root {
+      --bg: #eef6f7;
+      --bg-deep: #dbe9ea;
+      --ink: #0d1f21;
+      --muted: #4f6668;
+      --line: #0d1f21;
+      --line-soft: color-mix(in srgb, var(--ink) 22%, transparent);
+      --accent: #0d789e;
+      --surface: #f6fbfb;
+      --panel-2: color-mix(in srgb, var(--ink) 4%, transparent);
+      --good: #147a5d;
+      --warn: #8a5a12;
+      --toggle-bg: #f6fbfb;
+      --max: 780px;
+    }
+
+    body.dark {
+      --bg: #0b1416;
+      --bg-deep: #10191c;
+      --ink: #e7f3f4;
+      --muted: #93aaad;
+      --line: #e7f3f4;
+      --accent: #38ebd6;
+      --surface: #10191c;
+      --panel-2: color-mix(in srgb, var(--ink) 6%, transparent);
+      --good: #6fd7b8;
+      --warn: #d4a574;
+      --toggle-bg: #10191c;
+    }
+
+    @media (prefers-color-scheme: dark) {
+      body:not(.light) {
+        --bg: #0b1416;
+        --bg-deep: #10191c;
+        --ink: #e7f3f4;
+        --muted: #93aaad;
+        --line: #e7f3f4;
+        --accent: #38ebd6;
+        --surface: #10191c;
+        --panel-2: color-mix(in srgb, var(--ink) 6%, transparent);
+        --good: #6fd7b8;
+        --warn: #d4a574;
+        --toggle-bg: #10191c;
+      }
+    }
+
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+
+    body {
+      margin: 0;
+      font-family: "Space Grotesk", sans-serif;
+      color: var(--ink);
+      background: var(--bg);
+      line-height: 1.6;
+      transition: background 0.3s ease, color 0.3s ease;
+    }
+
+    a { color: var(--accent); text-decoration: none; }
+    a:hover { text-decoration: underline; text-underline-offset: 3px; }
+    a:focus-visible, button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+    #themeToggle {
+      position: fixed;
+      top: 1.25rem;
+      right: 1.25rem;
+      z-index: 2000;
+      width: 2.5rem;
+      height: 2.5rem;
+      border: 1.5px solid var(--ink);
+      border-radius: 0;
+      background: var(--toggle-bg);
+      color: var(--ink);
+      cursor: pointer;
+      display: grid;
+      place-items: center;
+      transition: background 0.2s ease, color 0.2s ease;
+    }
+
+    #themeToggle:hover { background: var(--ink); color: var(--bg); }
+    #themeToggle svg { width: 1rem; height: 1rem; }
+    #themeToggle .icon-moon { display: none; }
+    body.dark #themeToggle .icon-sun { display: none; }
+    body.dark #themeToggle .icon-moon { display: block; }
+
+    @media (prefers-color-scheme: dark) {
+      body:not(.light) #themeToggle .icon-sun { display: none; }
+      body:not(.light) #themeToggle .icon-moon { display: block; }
+      body.light #themeToggle .icon-sun { display: block; }
+      body.light #themeToggle .icon-moon { display: none; }
+    }
+
+    .page {
+      width: min(var(--max), calc(100% - 3rem));
+      margin: 0 auto;
+      padding: 1.5rem 0 4rem;
+    }
+
+    .top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      padding: 0.25rem 0 1.5rem;
+    }
+
+    .hub-link {
+      color: var(--ink);
+      font-weight: 600;
+      font-size: 0.92rem;
+      letter-spacing: -0.02em;
+    }
+
+    .hub-link:hover { color: var(--accent); text-decoration: none; }
+
+    .platform {
+      font-size: 0.78rem;
+      font-weight: 600;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+
+    header.doc-head {
+      padding: 1rem 0 2.5rem;
+      border-bottom: 1.5px solid var(--line);
+      margin-bottom: 2.5rem;
+    }
+
+    .doc-label {
+      display: inline-block;
+      margin: 0 0 0.85rem;
+      font-size: 0.74rem;
+      font-weight: 600;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--accent);
+    }
+
+    h1 {
+      margin: 0 0 0.75rem;
+      font-size: clamp(2rem, 4.5vw, 2.75rem);
+      font-weight: 700;
+      letter-spacing: -0.04em;
+      line-height: 1.08;
+    }
+
+    .effective-date {
+      margin: 0 0 1.25rem;
+      font-size: 0.85rem;
+      color: var(--muted);
+      font-variant-numeric: tabular-nums;
+    }
+
+    .lede {
+      margin: 0;
+      max-width: 56ch;
+      color: var(--muted);
+      font-size: 1.08rem;
+    }
+
+    .stack {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      margin-top: 1.5rem;
+    }
+
+    .stack span {
+      padding: 0.4rem 0.65rem;
+      border: 1px solid var(--line-soft);
+      font-size: 0.82rem;
+      font-weight: 600;
+      letter-spacing: -0.01em;
+      color: var(--muted);
+    }
+
+    .stack span.good { color: var(--good); border-color: color-mix(in srgb, var(--good) 45%, transparent); }
+
+    section {
+      padding: 2.5rem 0;
+      border-bottom: 1.5px solid var(--line-soft);
+    }
+
+    section:last-of-type { border-bottom: none; }
+
+    .section-head h2 {
+      margin: 0 0 0.6rem;
+      font-size: clamp(1.35rem, 2.6vw, 1.65rem);
+      letter-spacing: -0.03em;
+    }
+
+    .section-head p {
+      margin: 0;
+      color: var(--muted);
+      max-width: 60ch;
+    }
+
+    .targets {
+      display: grid;
+      gap: 0;
+      margin: 1.5rem 0 0;
+      padding: 0;
+      list-style: none;
+    }
+
+    .targets li {
+      padding: 0.85rem 0;
+      border-bottom: 1px solid var(--line-soft);
+      font-size: 0.95rem;
+      color: var(--muted);
+    }
+
+    .targets li:first-child { border-top: 1px solid var(--line-soft); }
+    .targets strong { color: var(--ink); letter-spacing: -0.01em; }
+
+    .note {
+      margin: 1.5rem 0 0;
+      padding-left: 1rem;
+      border-left: 2px solid var(--accent);
+      color: var(--muted);
+      max-width: 62ch;
+      font-size: 0.95rem;
+    }
+
+    code {
+      font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+      font-size: 0.88em;
+      background: var(--panel-2);
+      padding: 0.1em 0.4em;
+      color: var(--accent);
+    }
+
+    footer {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      gap: 0.75rem;
+      padding-top: 2rem;
+      color: var(--muted);
+      font-size: 0.85rem;
+    }
+
+    footer a { color: var(--muted); }
+    footer a:hover { color: var(--accent); }
+
+    @media (max-width: 640px) {
+      .page { width: min(100% - 1.5rem, var(--max)); }
+      #themeToggle { top: 0.85rem; right: 0.85rem; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { animation: none !important; transition: none !important; }
+    }
+  </style>
+</head>
+<body>
+  <button id="themeToggle" aria-label="Toggle theme" type="button">
+    <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
+      <circle cx="12" cy="12" r="4"></circle>
+      <path d="M12 2v2.2M12 19.8V22M4.93 4.93l1.56 1.56M17.51 17.51l1.56 1.56M2 12h2.2M19.8 12H22M4.93 19.07l1.56-1.56M17.51 6.49l1.56-1.56"></path>
+    </svg>
+    <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
+      <path d="M20.5 14.3A8.2 8.2 0 1 1 9.7 3.5a6.6 6.6 0 1 0 10.8 10.8z"></path>
+    </svg>
+  </button>
+
+  <main class="page">
+    <div class="top">
+      <a class="hub-link" href="index.html">← LinkLab</a>
+      <span class="platform">iPhone · iPad</span>
+    </div>
+
+    <header class="doc-head">
+      <span class="doc-label">Legal</span>
+      <h1>Privacy Policy</h1>
+      <p class="effective-date">Effective August 29, 2026</p>
+      <p class="lede">
+        LinkLab opens, saves, and shares links, and turns them into QR codes. Everything it
+        does — launching a URL, filing it to your log, generating a code — happens on the
+        device you're using. This page explains exactly what that means.
+      </p>
+      <div class="stack">
+        <span class="good">0 network requests</span>
+        <span class="good">No data collected</span>
+        <span class="good">No third parties</span>
+      </div>
+    </header>
+
+    <section id="access">
+      <div class="section-head">
+        <h2>What LinkLab accesses</h2>
+        <p>With your permission, and only for the feature you're actively using.</p>
+      </div>
+      <ul class="targets">
+        <li><strong>Clipboard —</strong> read only when you tap the Paste button, to fill the link field. LinkLab never reads your clipboard automatically or in the background.</li>
+        <li><strong>Photos library (add-only) —</strong> requested only when you tap "Save Image" on a generated QR code. LinkLab can add a new image; it cannot read, list, or modify anything already in your library.</li>
+      </ul>
+      <p class="note">
+        LinkLab does not read message content, browsing history, contacts, or anything beyond
+        the link you type or paste and the single permission above.
+      </p>
+    </section>
+
+    <section id="never">
+      <div class="section-head">
+        <h2>What LinkLab never does</h2>
+        <p>No exceptions, because there's no code path that could do any of this.</p>
+      </div>
+      <ul class="targets">
+        <li><strong>No internet connection —</strong> LinkLab has no network code at all. There is nothing to send your links to.</li>
+        <li><strong>No analytics or crash reporting —</strong> no third-party SDKs of any kind.</li>
+        <li><strong>No account or login —</strong> nothing to sign in to, nothing stored about you server-side.</li>
+        <li><strong>No sharing —</strong> your links and lab log never leave the device unless you explicitly tap Share.</li>
+      </ul>
+    </section>
+
+    <section id="launching">
+      <div class="section-head">
+        <h2>Launching a link</h2>
+        <p>LinkLab hands links off — it doesn't render them itself.</p>
+      </div>
+      <p style="max-width: 62ch; color: var(--muted);">
+        When you launch a link, LinkLab uses the system's own URL-opening APIs to pass it to
+        whatever app on your device can handle it — Safari, Mail, Phone, or a third-party app
+        for a custom scheme. LinkLab has no built-in web browser and does not render any page
+        content itself.
+      </p>
+    </section>
+
+    <section id="local">
+      <div class="section-head">
+        <h2>Local storage</h2>
+        <p>Your lab log stays on your device, never anywhere else.</p>
+      </div>
+      <p style="max-width: 62ch; color: var(--muted);">
+        Links you launch or file — along with any label and generated QR code image — are
+        stored locally using Apple's SwiftData framework. This is removed automatically if you
+        delete the app.
+      </p>
+    </section>
+
+    <section id="changes">
+      <div class="section-head">
+        <h2>Changes to this policy</h2>
+        <p>If this policy changes, the effective date above changes with it.</p>
+      </div>
+      <p style="max-width: 62ch; color: var(--muted);">
+        Given LinkLab has no network access, any future update would still describe an app
+        that works entirely on-device — that design choice isn't expected to change.
+      </p>
+    </section>
+
+    <footer>
+      <span>© 2026 Muddassir Iqbal</span>
+      <span><a href="mailto:muddassir.iqbal.test@gmail.com">Questions about this policy</a></span>
+    </footer>
+  </main>
+
+  <script>
+    const themeToggle = document.getElementById('themeToggle');
+    const body = document.body;
+    const saved = localStorage.getItem('hub-theme');
+    if (saved === 'dark-mode') body.classList.add('dark');
+    if (saved === 'light-mode') body.classList.add('light');
+
+    themeToggle.addEventListener('click', () => {
+      const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+      if (body.classList.contains('dark')) {
+        body.classList.remove('dark');
+        body.classList.add('light');
+        localStorage.setItem('hub-theme', 'light-mode');
+      } else if (body.classList.contains('light')) {
+        body.classList.remove('light');
+        body.classList.add('dark');
+        localStorage.setItem('hub-theme', 'dark-mode');
+      } else if (prefersDark) {
+        body.classList.add('light');
+        localStorage.setItem('hub-theme', 'light-mode');
+      } else {
+        body.classList.add('dark');
+        localStorage.setItem('hub-theme', 'dark-mode');
+      }
+    });
+  </script>
+</body>
+</html>

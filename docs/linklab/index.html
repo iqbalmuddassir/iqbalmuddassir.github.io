@@ -1,0 +1,507 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>LinkLab — Save, Share & QR Any Link</title>
+  <meta name="description" content="LinkLab is a deep link launcher for iPhone and iPad. Open and test any URL or custom scheme, file links without launching them, and turn any link into a QR code — entirely on-device." />
+  <meta name="theme-color" content="#eef6f7" />
+
+  <meta property="og:title" content="LinkLab — Save, Share & QR Any Link" />
+  <meta property="og:description" content="Paste or type any URL — including custom deep-link schemes — launch it, file it, or turn it into a QR code. LinkLab runs entirely on your device." />
+  <meta property="og:type" content="website" />
+
+  <link rel="icon" href="assets/favicon.ico" sizes="any" />
+  <link rel="icon" type="image/png" sizes="32x32" href="assets/favicon-32.png" />
+  <link rel="icon" type="image/png" sizes="16x16" href="assets/favicon-16.png" />
+  <link rel="apple-touch-icon" href="assets/apple-touch-icon.png" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet" />
+
+  <style>
+    :root {
+      --bg: #eef6f7;
+      --bg-deep: #dbe9ea;
+      --ink: #0d1f21;
+      --muted: #4f6668;
+      --line: #0d1f21;
+      --line-soft: color-mix(in srgb, var(--ink) 22%, transparent);
+      --accent: #0d789e;
+      --surface: #f6fbfb;
+      --panel-2: color-mix(in srgb, var(--ink) 4%, transparent);
+      --good: #147a5d;
+      --toggle-bg: #f6fbfb;
+      --max: 1120px;
+      --shot-shadow: 0 28px 64px color-mix(in srgb, var(--ink) 18%, transparent);
+    }
+
+    body.dark {
+      --bg: #0b1416;
+      --bg-deep: #10191c;
+      --ink: #e7f3f4;
+      --muted: #93aaad;
+      --line: #e7f3f4;
+      --accent: #38ebd6;
+      --surface: #10191c;
+      --panel-2: color-mix(in srgb, var(--ink) 6%, transparent);
+      --good: #6fd7b8;
+      --toggle-bg: #10191c;
+      --shot-shadow: 0 28px 64px rgba(0, 0, 0, 0.5);
+    }
+
+    @media (prefers-color-scheme: dark) {
+      body:not(.light) {
+        --bg: #0b1416;
+        --bg-deep: #10191c;
+        --ink: #e7f3f4;
+        --muted: #93aaad;
+        --line: #e7f3f4;
+        --accent: #38ebd6;
+        --surface: #10191c;
+        --panel-2: color-mix(in srgb, var(--ink) 6%, transparent);
+        --good: #6fd7b8;
+        --toggle-bg: #10191c;
+        --shot-shadow: 0 28px 64px rgba(0, 0, 0, 0.5);
+      }
+    }
+
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+
+    body {
+      margin: 0;
+      font-family: "Space Grotesk", sans-serif;
+      color: var(--ink);
+      background: linear-gradient(105deg, var(--bg) 0%, var(--bg) 58%, var(--bg-deep) 58%, var(--bg-deep) 100%);
+      line-height: 1.55;
+      transition: background 0.3s ease, color 0.3s ease;
+    }
+
+    a { color: var(--accent); text-decoration: none; }
+    a:hover { text-decoration: underline; text-underline-offset: 3px; }
+    a:focus-visible, button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+    #themeToggle {
+      position: fixed;
+      top: 1.25rem;
+      right: 1.25rem;
+      z-index: 2000;
+      width: 2.5rem;
+      height: 2.5rem;
+      border: 1.5px solid var(--ink);
+      border-radius: 0;
+      background: var(--toggle-bg);
+      color: var(--ink);
+      cursor: pointer;
+      display: grid;
+      place-items: center;
+      transition: background 0.2s ease, color 0.2s ease;
+    }
+
+    #themeToggle:hover { background: var(--ink); color: var(--bg); }
+    #themeToggle svg { width: 1rem; height: 1rem; }
+    #themeToggle .icon-moon { display: none; }
+    body.dark #themeToggle .icon-sun { display: none; }
+    body.dark #themeToggle .icon-moon { display: block; }
+
+    @media (prefers-color-scheme: dark) {
+      body:not(.light) #themeToggle .icon-sun { display: none; }
+      body:not(.light) #themeToggle .icon-moon { display: block; }
+      body.light #themeToggle .icon-sun { display: block; }
+      body.light #themeToggle .icon-moon { display: none; }
+    }
+
+    .page {
+      width: min(var(--max), calc(100% - 3rem));
+      margin: 0 auto;
+      padding: 1.5rem 0 4rem;
+    }
+
+    .top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      padding: 0.25rem 0 1.5rem;
+    }
+
+    .hub-link {
+      color: var(--ink);
+      font-weight: 600;
+      font-size: 0.92rem;
+      letter-spacing: -0.02em;
+    }
+
+    .hub-link:hover { color: var(--accent); text-decoration: none; }
+
+    .platform {
+      font-size: 0.78rem;
+      font-weight: 600;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+
+    .hero {
+      display: grid;
+      grid-template-columns: minmax(0, 1.05fr) minmax(0, 0.95fr);
+      gap: clamp(2rem, 5vw, 3.5rem);
+      align-items: center;
+      min-height: min(70vh, 640px);
+      padding: 1rem 0 3.5rem;
+    }
+
+    .eyebrow {
+      display: inline-block;
+      margin: 0 0 0.85rem;
+      font-size: 0.74rem;
+      font-weight: 600;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--accent);
+    }
+
+    h1 {
+      margin: 0 0 1rem;
+      font-size: clamp(2.4rem, 5.2vw, 3.6rem);
+      font-weight: 700;
+      letter-spacing: -0.04em;
+      line-height: 1.04;
+    }
+
+    .lede {
+      margin: 0 0 1.75rem;
+      max-width: 46ch;
+      color: var(--muted);
+      font-size: 1.14rem;
+    }
+
+    .cta-row {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .badge-note {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.7rem 1.1rem;
+      border: 1.5px solid var(--line);
+      font-weight: 600;
+      font-size: 0.92rem;
+      letter-spacing: -0.01em;
+      color: var(--ink);
+    }
+
+    .cta-row a.support {
+      font-size: 0.88rem;
+      color: var(--muted);
+      font-weight: 600;
+    }
+
+    .stack {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      margin-top: 1.75rem;
+    }
+
+    .stack span {
+      padding: 0.4rem 0.65rem;
+      border: 1px solid var(--line-soft);
+      font-size: 0.82rem;
+      font-weight: 600;
+      letter-spacing: -0.01em;
+      color: var(--muted);
+    }
+
+    .stack span.good { color: var(--good); border-color: color-mix(in srgb, var(--good) 45%, transparent); }
+
+    .hero-shot {
+      display: flex;
+      justify-content: center;
+    }
+
+    .hero-shot img {
+      max-width: 100%;
+      height: auto;
+      max-height: 640px;
+      filter: drop-shadow(var(--shot-shadow));
+    }
+
+    img.dark-only { display: none; }
+    body.dark img.light-only { display: none; }
+    body.dark img.dark-only { display: block; }
+
+    @media (prefers-color-scheme: dark) {
+      body:not(.light) img.light-only { display: none; }
+      body:not(.light) img.dark-only { display: block; }
+      body.light img.light-only { display: block; }
+      body.light img.dark-only { display: none; }
+    }
+
+    section.feature {
+      padding: 3.5rem 0;
+      border-top: 1.5px solid var(--line-soft);
+      display: grid;
+      grid-template-columns: minmax(0, 0.85fr) minmax(0, 1.15fr);
+      gap: clamp(1.5rem, 4vw, 3rem);
+      align-items: start;
+    }
+
+    .feature .num {
+      font-size: 0.78rem;
+      font-weight: 600;
+      letter-spacing: 0.1em;
+      color: var(--accent);
+      margin-bottom: 0.6rem;
+    }
+
+    .feature h2 {
+      margin: 0 0 0.85rem;
+      font-size: clamp(1.5rem, 2.8vw, 1.9rem);
+      letter-spacing: -0.03em;
+      line-height: 1.15;
+    }
+
+    .feature p {
+      margin: 0;
+      color: var(--muted);
+      max-width: 58ch;
+      font-size: 1.02rem;
+    }
+
+    .feature ul {
+      margin: 1.1rem 0 0;
+      padding: 0;
+      list-style: none;
+      display: grid;
+      gap: 0.6rem;
+    }
+
+    .feature li {
+      padding-left: 1.3rem;
+      position: relative;
+      color: var(--ink);
+      font-size: 0.98rem;
+    }
+
+    .feature li::before {
+      content: "";
+      position: absolute;
+      left: 0;
+      top: 0.55em;
+      width: 6px;
+      height: 6px;
+      background: var(--accent);
+    }
+
+    .closing {
+      padding: 3.5rem 0 1rem;
+      border-top: 1.5px solid var(--line-soft);
+      text-align: center;
+    }
+
+    .closing h2 {
+      font-size: clamp(1.5rem, 3vw, 2rem);
+      letter-spacing: -0.03em;
+      margin: 0 0 0.75rem;
+    }
+
+    .closing p {
+      color: var(--muted);
+      max-width: 52ch;
+      margin: 0 auto 1.5rem;
+    }
+
+    footer {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      gap: 0.75rem;
+      padding-top: 2.5rem;
+      margin-top: 1rem;
+      border-top: 1.5px solid var(--line-soft);
+      color: var(--muted);
+      font-size: 0.85rem;
+    }
+
+    footer a { color: var(--muted); }
+    footer a:hover { color: var(--accent); }
+    footer .links { display: flex; gap: 1.25rem; }
+
+    @media (max-width: 900px) {
+      .hero { grid-template-columns: 1fr; min-height: auto; text-align: left; }
+      .hero-shot { order: -1; margin-bottom: 1rem; }
+      .hero-shot img { max-height: 420px; }
+      section.feature { grid-template-columns: 1fr; }
+    }
+
+    @media (max-width: 640px) {
+      .page { width: min(100% - 1.5rem, var(--max)); }
+      #themeToggle { top: 0.85rem; right: 0.85rem; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { animation: none !important; transition: none !important; }
+    }
+  </style>
+</head>
+<body>
+  <button id="themeToggle" aria-label="Toggle theme" type="button">
+    <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
+      <circle cx="12" cy="12" r="4"></circle>
+      <path d="M12 2v2.2M12 19.8V22M4.93 4.93l1.56 1.56M17.51 17.51l1.56 1.56M2 12h2.2M19.8 12H22M4.93 19.07l1.56-1.56M17.51 6.49l1.56-1.56"></path>
+    </svg>
+    <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
+      <path d="M20.5 14.3A8.2 8.2 0 1 1 9.7 3.5a6.6 6.6 0 1 0 10.8 10.8z"></path>
+    </svg>
+  </button>
+
+  <main class="page">
+    <div class="top">
+      <a class="hub-link" href="../index.html">← Bridge to Purpose</a>
+      <span class="platform">iPhone · iPad</span>
+    </div>
+
+    <section class="hero">
+      <div>
+        <span class="eyebrow">Deep link launcher</span>
+        <h1>Save, share, and QR any link.</h1>
+        <p class="lede">
+          LinkLab opens and tests any URL — including custom deep-link schemes most apps make
+          painful to try — then lets you file it, generate a QR code, or share it. All of it
+          stays on your device.
+        </p>
+        <div class="cta-row">
+          <span class="badge-note">Coming soon to the App Store</span>
+          <a class="support" href="privacy-policy.html">Privacy Policy →</a>
+        </div>
+        <div class="stack">
+          <span class="good">Works offline</span>
+          <span class="good">No account</span>
+          <span class="good">No tracking</span>
+        </div>
+      </div>
+      <div class="hero-shot">
+        <img class="light-only" src="assets/hero_home_light.png" alt="LinkLab's lab log showing saved links, ready to launch, copy, or share" />
+        <img class="dark-only" src="assets/hero_home_dark.png" alt="LinkLab's lab log showing saved links, ready to launch, copy, or share" />
+      </div>
+    </section>
+
+    <section class="feature">
+      <div>
+        <div class="num">01</div>
+        <h2>Open and test any link</h2>
+      </div>
+      <div>
+        <p>
+          Paste or type a link into the composer and launch it immediately — https, a custom
+          scheme like <code>myapp://</code>, mailto, tel, whatever you're working with. If
+          nothing on the device can open it, LinkLab tells you plainly instead of failing
+          silently.
+        </p>
+        <ul>
+          <li>Scheme, host, and parameter count shown at a glance before you launch</li>
+          <li>Custom schemes are first-class — built for links Safari won't even open</li>
+        </ul>
+      </div>
+    </section>
+
+    <section class="feature">
+      <div>
+        <div class="num">02</div>
+        <h2>File a link without launching it</h2>
+      </div>
+      <div>
+        <p>
+          Save a link to your lab log with an optional label, without opening it. Useful for
+          cataloguing test links, deep links you want to hand off, or anything you want to keep
+          around without triggering it yet.
+        </p>
+      </div>
+    </section>
+
+    <section class="feature">
+      <div>
+        <div class="num">03</div>
+        <h2>Turn any link into a QR code</h2>
+      </div>
+      <div>
+        <p>
+          Generate a QR code for a saved or in-progress link with one tap. Share it as a PNG,
+          or save a branded copy straight to Photos — hand it to someone else's device without
+          them typing a single character.
+        </p>
+      </div>
+      <div style="grid-column: 1 / -1; display: flex; justify-content: center; margin-top: 1rem;">
+        <img class="light-only" src="assets/hero_qr_light.png" alt="A generated QR code ready to share or save to Photos" style="max-width: 320px; width: 100%; filter: drop-shadow(var(--shot-shadow));" />
+        <img class="dark-only" src="assets/hero_qr_dark.png" alt="A generated QR code ready to share or save to Photos" style="max-width: 320px; width: 100%; filter: drop-shadow(var(--shot-shadow));" />
+      </div>
+    </section>
+
+    <section class="feature">
+      <div>
+        <div class="num">04</div>
+        <h2>A local log, searchable</h2>
+      </div>
+      <div>
+        <p>
+          Every link you launch or file lands in one searchable log, newest first. Re-launching
+          or re-saving the same link updates its entry instead of duplicating it, so your
+          history stays clean no matter how many times you're testing the same deep link.
+        </p>
+      </div>
+    </section>
+
+    <section class="closing">
+      <h2>Runs entirely on your device</h2>
+      <p>
+        LinkLab has no network code — no server, no account, no analytics, no third-party SDK.
+        QR codes are generated on-device, and Photos access is add-only, requested only the
+        moment you choose to save an image.
+      </p>
+      <a href="privacy-policy.html" class="hub-link">Read the full privacy policy →</a>
+    </section>
+
+    <footer>
+      <span>© 2026 Muddassir Iqbal</span>
+      <span class="links">
+        <a href="privacy-policy.html">Privacy Policy</a>
+        <a href="mailto:muddassir.iqbal.test@gmail.com">Contact</a>
+      </span>
+    </footer>
+  </main>
+
+  <script>
+    const themeToggle = document.getElementById('themeToggle');
+    const body = document.body;
+    const saved = localStorage.getItem('hub-theme');
+    if (saved === 'dark-mode') body.classList.add('dark');
+    if (saved === 'light-mode') body.classList.add('light');
+
+    themeToggle.addEventListener('click', () => {
+      const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+      if (body.classList.contains('dark')) {
+        body.classList.remove('dark');
+        body.classList.add('light');
+        localStorage.setItem('hub-theme', 'light-mode');
+      } else if (body.classList.contains('light')) {
+        body.classList.remove('light');
+        body.classList.add('dark');
+        localStorage.setItem('hub-theme', 'dark-mode');
+      } else if (prefersDark) {
+        body.classList.add('light');
+        localStorage.setItem('hub-theme', 'light-mode');
+      } else {
+        body.classList.add('dark');
+        localStorage.setItem('hub-theme', 'dark-mode');
+      }
+    });
+  </script>
+</body>
+</html>
