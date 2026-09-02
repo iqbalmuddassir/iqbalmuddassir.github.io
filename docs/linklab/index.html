@@ -4,11 +4,11 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>LinkLab — Save, Share & QR Any Link</title>
-  <meta name="description" content="LinkLab is a deep link launcher for iPhone and iPad. Open and test any URL or custom scheme, file links without launching them, and turn any link into a QR code — entirely on-device." />
+  <meta name="description" content="LinkLab is a deep link launcher for iPhone and iPad, free on the App Store. Open and test any URL or custom scheme, file and pin links without launching them, and turn any link into a QR code — entirely on-device." />
   <meta name="theme-color" content="#eef6f7" />
 
   <meta property="og:title" content="LinkLab — Save, Share & QR Any Link" />
-  <meta property="og:description" content="Paste or type any URL — including custom deep-link schemes — launch it, file it, or turn it into a QR code. LinkLab runs entirely on your device." />
+  <meta property="og:description" content="Paste or type any URL — including custom deep-link schemes — launch it, file it, pin it, or turn it into a QR code. LinkLab runs entirely on your device. Free on the App Store." />
   <meta property="og:type" content="website" />
 
   <link rel="icon" href="assets/favicon.ico" sizes="any" />
@@ -154,7 +154,7 @@
     }
 
     .eyebrow {
-      display: inline-block;
+      display: block;
       margin: 0 0 0.85rem;
       font-size: 0.74rem;
       font-weight: 600;
@@ -185,16 +185,68 @@
       gap: 1rem;
     }
 
-    .badge-note {
+    .store-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.6rem;
+      padding: 0.8rem 1.25rem;
+      border: 1.5px solid var(--ink);
+      background: var(--ink);
+      color: var(--bg);
+      font-weight: 600;
+      font-size: 0.95rem;
+      letter-spacing: -0.02em;
+      text-decoration: none;
+      transition: background 0.2s ease, color 0.2s ease, transform 0.2s ease;
+    }
+
+    .store-btn:hover {
+      text-decoration: none;
+      background: var(--accent);
+      border-color: var(--accent);
+      color: #fff;
+      transform: translateY(-1px);
+    }
+
+    .store-btn svg { width: 1.25rem; height: 1.25rem; flex: none; }
+
+    .store-btn .store-btn-text {
+      display: flex;
+      flex-direction: column;
+      line-height: 1.1;
+    }
+
+    .store-btn .store-btn-text small {
+      font-size: 0.66rem;
+      font-weight: 500;
+      letter-spacing: 0.02em;
+      opacity: 0.75;
+    }
+
+    .store-btn .store-btn-text strong {
+      font-size: 1rem;
+      letter-spacing: -0.01em;
+    }
+
+    .live-badge {
       display: inline-flex;
       align-items: center;
       gap: 0.5rem;
-      padding: 0.7rem 1.1rem;
-      border: 1.5px solid var(--line);
+      margin: 0 0 1rem;
+      padding: 0.4rem 0.75rem;
+      border: 1.5px solid var(--accent);
+      color: var(--accent);
+      font-size: 0.74rem;
       font-weight: 600;
-      font-size: 0.92rem;
-      letter-spacing: -0.01em;
-      color: var(--ink);
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .live-badge .dot {
+      width: 0.45rem;
+      height: 0.45rem;
+      border-radius: 50%;
+      background: var(--accent);
     }
 
     .cta-row a.support {
@@ -371,6 +423,7 @@
     <section class="hero">
       <div>
         <span class="eyebrow">Deep link launcher</span>
+        <p class="live-badge"><span class="dot" aria-hidden="true"></span> Available now on the App Store</p>
         <h1>Save, share, and QR any link.</h1>
         <p class="lede">
           LinkLab opens and tests any URL — including custom deep-link schemes most apps make
@@ -378,7 +431,10 @@
           stays on your device.
         </p>
         <div class="cta-row">
-          <span class="badge-note">Coming soon to the App Store</span>
+          <a class="store-btn" href="https://apps.apple.com/in/app/linklab-save-share-qr-code/id6806553994" target="_blank" rel="noopener">
+            <svg viewBox="0 0 384 512" fill="currentColor" aria-hidden="true"><path d="M318.7 268.7c-.2-36.7 16.4-64.4 50-84.8-18.8-26.9-47.2-41.7-84.7-44.6-35.5-2.8-74.3 20.7-88.5 20.7-15 0-49.4-19.7-76.4-19.7C63.3 141 8 184.8 8 273.5c0 25.9 4.7 52.6 14.2 80.2 12.6 36.7 58.1 126.7 105.6 125.2 24.9-.6 42.5-17.7 74.9-17.7 31.5 0 47.8 17.7 75.6 17.7 47.9-.7 89-82.5 101-119.3-64.3-30.3-60.6-88.8-60.6-90.9zm-56.6-164.2c26.9-32 24.5-61.2 23.7-71.6-23.8 1.4-51.3 16.4-67 34.9-17.3 19.8-27.5 44.4-25.3 71.9 25.8 2 49.4-11.1 68.6-35.2z"/></svg>
+            <span class="store-btn-text"><small>Download on the</small><strong>App Store</strong></span>
+          </a>
           <a class="support" href="privacy-policy.html">Privacy Policy →</a>
         </div>
         <div class="stack">
@@ -447,7 +503,7 @@
     <section class="feature">
       <div>
         <div class="num">04</div>
-        <h2>A local log, searchable</h2>
+        <h2>A local log, searchable and pinnable</h2>
       </div>
       <div>
         <p>
@@ -455,6 +511,10 @@
           or re-saving the same link updates its entry instead of duplicating it, so your
           history stays clean no matter how many times you're testing the same deep link.
         </p>
+        <ul>
+          <li>Swipe or long-press any entry to pin it — pinned links stay at the top, above the newest-first order</li>
+          <li>Search by label or URL to find a link in a log of any size</li>
+        </ul>
       </div>
     </section>
 
@@ -466,11 +526,18 @@
         moment you choose to save an image.
       </p>
       <a href="privacy-policy.html" class="hub-link">Read the full privacy policy →</a>
+      <div class="cta-row" style="justify-content: center; margin-top: 2rem;">
+        <a class="store-btn" href="https://apps.apple.com/in/app/linklab-save-share-qr-code/id6806553994" target="_blank" rel="noopener">
+          <svg viewBox="0 0 384 512" fill="currentColor" aria-hidden="true"><path d="M318.7 268.7c-.2-36.7 16.4-64.4 50-84.8-18.8-26.9-47.2-41.7-84.7-44.6-35.5-2.8-74.3 20.7-88.5 20.7-15 0-49.4-19.7-76.4-19.7C63.3 141 8 184.8 8 273.5c0 25.9 4.7 52.6 14.2 80.2 12.6 36.7 58.1 126.7 105.6 125.2 24.9-.6 42.5-17.7 74.9-17.7 31.5 0 47.8 17.7 75.6 17.7 47.9-.7 89-82.5 101-119.3-64.3-30.3-60.6-88.8-60.6-90.9zm-56.6-164.2c26.9-32 24.5-61.2 23.7-71.6-23.8 1.4-51.3 16.4-67 34.9-17.3 19.8-27.5 44.4-25.3 71.9 25.8 2 49.4-11.1 68.6-35.2z"/></svg>
+          <span class="store-btn-text"><small>Download on the</small><strong>App Store</strong></span>
+        </a>
+      </div>
     </section>
 
     <footer>
       <span>© 2026 Muddassir Iqbal</span>
       <span class="links">
+        <a href="https://apps.apple.com/in/app/linklab-save-share-qr-code/id6806553994" target="_blank" rel="noopener">App Store</a>
         <a href="privacy-policy.html">Privacy Policy</a>
         <a href="mailto:cropper.2-runtime@icloud.com">Contact</a>
       </span>
