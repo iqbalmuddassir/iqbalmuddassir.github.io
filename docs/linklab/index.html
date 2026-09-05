@@ -68,7 +68,7 @@
     }
 
     * { box-sizing: border-box; }
-    html { scroll-behavior: smooth; }
+    html { scroll-behavior: smooth; overflow-x: clip; }
 
     body {
       margin: 0;
@@ -76,6 +76,7 @@
       color: var(--ink);
       background: linear-gradient(105deg, var(--bg) 0%, var(--bg) 58%, var(--bg-deep) 58%, var(--bg-deep) 100%);
       line-height: 1.55;
+      overflow-x: clip;
       transition: background 0.3s ease, color 0.3s ease;
     }
 
@@ -273,27 +274,83 @@
 
     .stack span.good { color: var(--good); border-color: color-mix(in srgb, var(--good) 45%, transparent); }
 
-    .hero-shot {
+    @keyframes riseIn {
+      from { opacity: 0; transform: translateY(24px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes phoneFloat {
+      0%, 100% { transform: translateY(0) rotate(-2deg); }
+      50% { transform: translateY(-12px) rotate(-1deg); }
+    }
+
+    .stage {
+      position: relative;
       display: flex;
       justify-content: center;
+      align-items: center;
+      min-height: 580px;
+      overflow: visible;
+      animation: riseIn 1s ease 0.2s both;
     }
 
-    .hero-shot img {
-      max-width: 100%;
-      height: auto;
-      max-height: 640px;
-      filter: drop-shadow(var(--shot-shadow));
+    .stage-glow {
+      position: absolute;
+      width: 320px;
+      height: 320px;
+      border-radius: 50%;
+      background: radial-gradient(circle, color-mix(in srgb, var(--accent) 32%, transparent), transparent 70%);
+      filter: blur(4px);
+      z-index: 0;
     }
 
-    img.dark-only { display: none; }
-    body.dark img.light-only { display: none; }
-    body.dark img.dark-only { display: block; }
+    .phone {
+      position: relative;
+      z-index: 1;
+      width: min(260px, 70vw);
+      padding: 4px;
+      border-radius: 48px;
+      overflow: hidden;
+      background: #111;
+      box-shadow:
+        0 40px 80px color-mix(in srgb, var(--ink) 28%, transparent),
+        inset 0 1px 0 rgba(255, 255, 255, 0.08);
+      animation: phoneFloat 6s ease-in-out infinite;
+    }
 
-    @media (prefers-color-scheme: dark) {
-      body:not(.light) img.light-only { display: none; }
-      body:not(.light) img.dark-only { display: block; }
-      body.light img.light-only { display: block; }
-      body.light img.dark-only { display: none; }
+    .phone img {
+      display: block;
+      width: 100%;
+      border-radius: 44px;
+      background: #000;
+    }
+
+    .phone-stack {
+      position: absolute;
+      width: min(200px, 48vw);
+      border-radius: 40px;
+      overflow: hidden;
+      box-shadow: 0 20px 48px color-mix(in srgb, var(--ink) 22%, transparent);
+      opacity: 0.55;
+      z-index: 0;
+    }
+
+    .phone-stack--left {
+      left: 4%;
+      top: 18%;
+      transform: rotate(-8deg);
+    }
+
+    .phone-stack--right {
+      right: 4%;
+      bottom: 14%;
+      transform: rotate(7deg);
+      opacity: 0.45;
+    }
+
+    .phone-stack img {
+      display: block;
+      width: 100%;
     }
 
     .tag-new {
@@ -450,7 +507,8 @@
       width: 100%;
       height: auto;
       display: block;
-      filter: drop-shadow(var(--shot-shadow));
+      border-radius: 36px;
+      box-shadow: var(--shot-shadow);
       transition: transform 0.35s ease;
     }
     .gallery figure:hover img { transform: translateY(-8px); }
@@ -471,8 +529,10 @@
 
     @media (max-width: 900px) {
       .hero { grid-template-columns: 1fr; min-height: auto; text-align: left; }
-      .hero-shot { order: -1; margin-bottom: 1rem; }
-      .hero-shot img { max-height: 420px; }
+      .stage { order: -1; min-height: 0; padding: 8px 0 16px; margin-bottom: 0.5rem; }
+      .phone-stack { display: none; }
+      .phone { width: min(220px, 58vw); }
+      .stage-glow { width: 240px; height: 240px; }
       section.feature { grid-template-columns: 1fr; }
       .gallery {
         display: flex;
@@ -495,6 +555,10 @@
     @media (max-width: 640px) {
       .page { width: min(100% - 1.5rem, var(--max)); }
       #themeToggle { top: 0.85rem; right: 0.85rem; }
+    }
+
+    @media (max-width: 380px) {
+      .phone { width: min(200px, 64vw); }
     }
 
     @media (prefers-reduced-motion: reduce) {
@@ -542,9 +606,17 @@
           <span class="good">No tracking</span>
         </div>
       </div>
-      <div class="hero-shot">
-        <img class="light-only" src="assets/hero_home_light.png" alt="LinkLab's saved links list, each entry showing its category, ready to open, copy, or share" />
-        <img class="dark-only" src="assets/hero_home_dark.png" alt="LinkLab's saved links list, each entry showing its category, ready to open, copy, or share" />
+      <div class="stage">
+        <div class="stage-glow" aria-hidden="true"></div>
+        <div class="phone-stack phone-stack--left" aria-hidden="true">
+          <img src="assets/hero_share_light.png" alt="" data-light="assets/hero_share_light.png" data-dark="assets/hero_share_dark.png" />
+        </div>
+        <div class="phone">
+          <img id="heroPhone" src="assets/hero_home_light.png" alt="LinkLab's saved links list, each entry showing its category, ready to open, copy, or share" data-light="assets/hero_home_light.png" data-dark="assets/hero_home_dark.png" />
+        </div>
+        <div class="phone-stack phone-stack--right" aria-hidden="true">
+          <img src="assets/hero_qr_light.png" alt="" data-light="assets/hero_qr_light.png" data-dark="assets/hero_qr_dark.png" />
+        </div>
       </div>
     </section>
 
@@ -723,6 +795,14 @@
     const saved = localStorage.getItem('hub-theme');
     if (saved === 'dark-mode') body.classList.add('dark');
     if (saved === 'light-mode') body.classList.add('light');
+
+    function isDarkTheme() {
+      if (body.classList.contains('dark')) return true;
+      if (body.classList.contains('light')) return false;
+      return window.matchMedia('(prefers-color-scheme: dark)').matches;
+    }
+
+    if (isDarkTheme()) setShotMode('dark');
 
     themeToggle.addEventListener('click', () => {
       const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
