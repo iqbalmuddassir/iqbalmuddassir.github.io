@@ -362,8 +362,9 @@
             position: relative;
             z-index: 1;
             width: min(260px, 70vw);
-            padding: 12px;
-            border-radius: 36px;
+            padding: 4px;
+            border-radius: 48px;
+            overflow: hidden;
             background: linear-gradient(145deg, #2a302c, var(--phone-frame));
             box-shadow:
                 0 40px 80px rgba(0, 0, 0, 0.28),
@@ -373,7 +374,7 @@
 
         .phone-hole {
             position: absolute;
-            top: 20px;
+            top: 12px;
             left: 50%;
             transform: translateX(-50%);
             width: 12px;
@@ -387,14 +388,14 @@
         .phone img {
             display: block;
             width: 100%;
-            border-radius: 26px;
+            border-radius: 44px;
             background: #000;
         }
 
         .phone-stack {
             position: absolute;
             width: min(200px, 48vw);
-            border-radius: 28px;
+            border-radius: 40px;
             overflow: hidden;
             box-shadow: 0 20px 48px rgba(0, 0, 0, 0.22);
             opacity: 0.55;
