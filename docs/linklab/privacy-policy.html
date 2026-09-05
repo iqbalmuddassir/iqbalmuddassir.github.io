@@ -297,10 +297,10 @@
     <header class="doc-head">
       <span class="doc-label">Legal</span>
       <h1>Privacy Policy</h1>
-      <p class="effective-date">Effective August 29, 2026</p>
+      <p class="effective-date">Effective September 5, 2026</p>
       <p class="lede">
-        LinkLab opens, saves, and shares links, and turns them into QR codes. Everything it
-        does — launching a URL, filing it to your log, generating a code — happens on the
+        LinkLab saves, organises, opens and shares links, and turns them into QR codes.
+        Everything it does — saving a link, opening a URL, generating a code — happens on the
         device you're using. This page explains exactly what that means.
       </p>
       <div class="stack">
@@ -334,7 +334,7 @@
         <li><strong>No internet connection —</strong> LinkLab has no network code at all. There is nothing to send your links to.</li>
         <li><strong>No analytics or crash reporting —</strong> no third-party SDKs of any kind.</li>
         <li><strong>No account or login —</strong> nothing to sign in to, nothing stored about you server-side.</li>
-        <li><strong>No sharing —</strong> your links and lab log never leave the device unless you explicitly tap Share.</li>
+        <li><strong>No sharing —</strong> your saved links never leave the device unless you explicitly tap Share.</li>
       </ul>
     </section>
 
@@ -354,12 +354,19 @@
     <section id="local">
       <div class="section-head">
         <h2>Local storage</h2>
-        <p>Your lab log stays on your device, never anywhere else.</p>
+        <p>Your saved links stay on your device, never anywhere else.</p>
       </div>
       <p style="max-width: 62ch; color: var(--muted);">
-        Links you launch or file — along with any label and generated QR code image — are
-        stored locally using Apple's SwiftData framework. This is removed automatically if you
-        delete the app.
+        Links you save or open — along with any label, category, and generated QR code image —
+        are stored locally using Apple's SwiftData framework. This is removed automatically if
+        you delete the app.
+      </p>
+      <p style="max-width: 62ch; color: var(--muted);">
+        LinkLab's share extension, which lets you save a link from another app's share sheet,
+        writes to that same local store. The app and the extension reach it through an iOS app
+        group — a shared container on your own device, not a server. A link shared into LinkLab
+        is read, saved, and nothing else; the extension makes no network requests and requests
+        no permissions.
       </p>
     </section>
 
