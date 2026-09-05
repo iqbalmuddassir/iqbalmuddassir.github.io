@@ -296,18 +296,6 @@
       body.light img.dark-only { display: none; }
     }
 
-    .feature-shot {
-      grid-column: 1 / -1;
-      display: flex;
-      justify-content: center;
-      margin-top: 1.5rem;
-    }
-    .feature-shot img {
-      max-width: 100%;
-      height: auto;
-      max-height: 520px;
-      filter: drop-shadow(var(--shot-shadow));
-    }
     .tag-new {
       display: inline-block;
       margin-left: 0.5rem;
@@ -410,12 +398,98 @@
     footer a:hover { color: var(--accent); }
     footer .links { display: flex; gap: 1.25rem; }
 
+    section.gallery-section {
+      padding: 3.5rem 0;
+      border-top: 1.5px solid var(--line-soft);
+    }
+    .gallery-head { margin-bottom: 1.75rem; }
+    .gallery-head h2 { margin: 0 0 0.5rem; }
+    .gallery-head p { margin: 0; color: var(--muted); max-width: 62ch; }
+
+    .mode-toggle {
+      display: flex;
+      gap: 0.5rem;
+      margin: 1.5rem 0 2rem;
+    }
+    .mode-toggle button {
+      font-family: inherit;
+      font-size: 0.74rem;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      padding: 0.5rem 1rem;
+      border: 1.5px solid var(--line-soft);
+      border-radius: 0;
+      background: transparent;
+      color: var(--muted);
+      cursor: pointer;
+      transition: background 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+    }
+    .mode-toggle button:hover { border-color: var(--accent); color: var(--accent); }
+    .mode-toggle button[aria-pressed="true"] {
+      background: var(--accent);
+      border-color: var(--accent);
+      color: var(--bg);
+    }
+
+    .gallery {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 1.25rem;
+    }
+    .gallery figure {
+      margin: 0;
+      min-width: 0;
+      animation: fadeSlide 0.7s ease both;
+    }
+    .gallery figure:nth-child(2) { animation-delay: 0.06s; }
+    .gallery figure:nth-child(3) { animation-delay: 0.12s; }
+    .gallery figure:nth-child(4) { animation-delay: 0.18s; }
+    .gallery figure:nth-child(5) { animation-delay: 0.24s; }
+    .gallery img {
+      width: 100%;
+      height: auto;
+      display: block;
+      filter: drop-shadow(var(--shot-shadow));
+      transition: transform 0.35s ease;
+    }
+    .gallery figure:hover img { transform: translateY(-8px); }
+    .gallery figcaption {
+      margin-top: 0.85rem;
+      font-size: 0.72rem;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--muted);
+      text-align: center;
+    }
+
+    @keyframes fadeSlide {
+      from { opacity: 0; transform: translateY(14px); }
+      to { opacity: 1; transform: none; }
+    }
+
     @media (max-width: 900px) {
       .hero { grid-template-columns: 1fr; min-height: auto; text-align: left; }
       .hero-shot { order: -1; margin-bottom: 1rem; }
       .hero-shot img { max-height: 420px; }
-      .feature-shot img { max-height: 400px; }
       section.feature { grid-template-columns: 1fr; }
+      .gallery {
+        display: flex;
+        overflow-x: auto;
+        gap: 1rem;
+        padding-bottom: 0.5rem;
+        scrollbar-width: none;
+        -webkit-overflow-scrolling: touch;
+        scroll-snap-type: x mandatory;
+        overscroll-behavior-x: contain;
+      }
+      .gallery::-webkit-scrollbar { display: none; }
+      .gallery figure {
+        flex: 0 0 min(46vw, 190px);
+        width: min(46vw, 190px);
+        scroll-snap-align: start;
+      }
     }
 
     @media (max-width: 640px) {
@@ -474,6 +548,47 @@
       </div>
     </section>
 
+    <section class="gallery-section" aria-labelledby="gallery-heading">
+      <div class="gallery-head">
+        <span class="eyebrow">Look &amp; feel</span>
+        <h2 id="gallery-heading">Five screens, light and dark</h2>
+        <p>Every screen you'll actually use, in both appearances. Rounded, quiet, and out of the way of your links.</p>
+      </div>
+
+      <div class="mode-toggle" role="group" aria-label="Screenshot appearance">
+        <button type="button" id="modeLight" aria-pressed="true">Light</button>
+        <button type="button" id="modeDark" aria-pressed="false">Dark</button>
+      </div>
+
+      <div class="gallery" id="gallery">
+        <figure>
+          <img src="assets/hero_home_light.png" alt="LinkLab's saved links list, each entry showing its category" loading="lazy" decoding="async"
+               data-light="assets/hero_home_light.png" data-dark="assets/hero_home_dark.png" />
+          <figcaption>Saved links</figcaption>
+        </figure>
+        <figure>
+          <img src="assets/hero_share_light.png" alt="Sharing a link from Safari into LinkLab using the iOS share sheet" loading="lazy" decoding="async"
+               data-light="assets/hero_share_light.png" data-dark="assets/hero_share_dark.png" />
+          <figcaption>Share sheet</figcaption>
+        </figure>
+        <figure>
+          <img src="assets/hero_save_light.png" alt="LinkLab's save sheet, with fields for the link, a label, and a category" loading="lazy" decoding="async"
+               data-light="assets/hero_save_light.png" data-dark="assets/hero_save_dark.png" />
+          <figcaption>Save sheet</figcaption>
+        </figure>
+        <figure>
+          <img src="assets/hero_categories_light.png" alt="LinkLab's category menu, filtering saved links down to one category" loading="lazy" decoding="async"
+               data-light="assets/hero_categories_light.png" data-dark="assets/hero_categories_dark.png" />
+          <figcaption>Categories</figcaption>
+        </figure>
+        <figure>
+          <img src="assets/hero_qr_light.png" alt="A generated QR code ready to share or save to Photos" loading="lazy" decoding="async"
+               data-light="assets/hero_qr_light.png" data-dark="assets/hero_qr_dark.png" />
+          <figcaption>QR code</figcaption>
+        </figure>
+      </div>
+    </section>
+
     <section class="feature">
       <div>
         <div class="num">01</div>
@@ -489,10 +604,6 @@
           <li>Works from any app that offers a link to the iOS share sheet</li>
           <li>The link is waiting in your list the next time you open LinkLab</li>
         </ul>
-      </div>
-      <div class="feature-shot">
-        <img class="light-only" loading="lazy" decoding="async" src="assets/hero_share_light.png" alt="Sharing a link from Safari into LinkLab using the iOS share sheet" />
-        <img class="dark-only" loading="lazy" decoding="async" src="assets/hero_share_dark.png" alt="Sharing a link from Safari into LinkLab using the iOS share sheet" />
       </div>
     </section>
 
@@ -512,10 +623,6 @@
           <li>Every saved link shows its category on the card, so you can see what's what</li>
         </ul>
       </div>
-      <div class="feature-shot">
-        <img class="light-only" loading="lazy" decoding="async" src="assets/hero_save_light.png" alt="LinkLab's save sheet, with fields for the link, a label, and a category" />
-        <img class="dark-only" loading="lazy" decoding="async" src="assets/hero_save_dark.png" alt="LinkLab's save sheet, with fields for the link, a label, and a category" />
-      </div>
     </section>
 
     <section class="feature">
@@ -534,10 +641,6 @@
           <li>Search sits behind a toolbar button, so your links get the whole screen</li>
         </ul>
       </div>
-      <div class="feature-shot">
-        <img class="light-only" loading="lazy" decoding="async" src="assets/hero_categories_light.png" alt="LinkLab's category menu, filtering saved links down to one category" />
-        <img class="dark-only" loading="lazy" decoding="async" src="assets/hero_categories_dark.png" alt="LinkLab's category menu, filtering saved links down to one category" />
-      </div>
     </section>
 
     <section class="feature">
@@ -551,10 +654,6 @@
           Photos. It's the quickest way to get a link onto someone else's phone — the check-in
           page, the shared album, the menu — without them typing a single character.
         </p>
-      </div>
-      <div class="feature-shot">
-        <img class="light-only" loading="lazy" decoding="async" src="assets/hero_qr_light.png" alt="A generated QR code ready to share or save to Photos" style="max-width: 320px;" />
-        <img class="dark-only" loading="lazy" decoding="async" src="assets/hero_qr_dark.png" alt="A generated QR code ready to share or save to Photos" style="max-width: 320px;" />
       </div>
     </section>
 
@@ -604,6 +703,21 @@
   </main>
 
   <script>
+    const modeLight = document.getElementById('modeLight');
+    const modeDark = document.getElementById('modeDark');
+
+    function setShotMode(mode) {
+      const useDark = mode === 'dark';
+      document.querySelectorAll('[data-light][data-dark]').forEach((img) => {
+        img.src = useDark ? img.dataset.dark : img.dataset.light;
+      });
+      modeLight.setAttribute('aria-pressed', String(!useDark));
+      modeDark.setAttribute('aria-pressed', String(useDark));
+    }
+
+    modeLight.addEventListener('click', () => setShotMode('light'));
+    modeDark.addEventListener('click', () => setShotMode('dark'));
+
     const themeToggle = document.getElementById('themeToggle');
     const body = document.body;
     const saved = localStorage.getItem('hub-theme');
