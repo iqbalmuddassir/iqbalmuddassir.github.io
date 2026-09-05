@@ -3,12 +3,12 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>LinkLab — Save, Share & QR Any Link</title>
-  <meta name="description" content="LinkLab is a deep link launcher for iPhone and iPad, free on the App Store. Open and test any URL or custom scheme, file and pin links without launching them, and turn any link into a QR code — entirely on-device." />
+  <title>LinkLab — All your links in one place</title>
+  <meta name="description" content="LinkLab keeps the links scattered across your apps in one place on iPhone and iPad, free on the App Store. Save a link from any app's share sheet, label it, sort it into your own categories, and turn it into a QR code — entirely on-device." />
   <meta name="theme-color" content="#eef6f7" />
 
-  <meta property="og:title" content="LinkLab — Save, Share & QR Any Link" />
-  <meta property="og:description" content="Paste or type any URL — including custom deep-link schemes — launch it, file it, pin it, or turn it into a QR code. LinkLab runs entirely on your device. Free on the App Store." />
+  <meta property="og:title" content="LinkLab — All your links in one place" />
+  <meta property="og:description" content="A page in your browser, a booking in an email, a recipe in a group chat. Share them into LinkLab, label them, and find them again in seconds. Runs entirely on your device. Free on the App Store." />
   <meta property="og:type" content="website" />
 
   <link rel="icon" href="assets/favicon.ico" sizes="any" />
@@ -296,6 +296,30 @@
       body.light img.dark-only { display: none; }
     }
 
+    .feature-shot {
+      grid-column: 1 / -1;
+      display: flex;
+      justify-content: center;
+      margin-top: 1.5rem;
+    }
+    .feature-shot img {
+      max-width: 100%;
+      height: auto;
+      max-height: 520px;
+      filter: drop-shadow(var(--shot-shadow));
+    }
+    .tag-new {
+      display: inline-block;
+      margin-left: 0.5rem;
+      padding: 0.15rem 0.45rem;
+      border: 1.5px solid var(--accent);
+      color: var(--accent);
+      font-size: 0.62rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      vertical-align: middle;
+    }
     section.feature {
       padding: 3.5rem 0;
       border-top: 1.5px solid var(--line-soft);
@@ -390,6 +414,7 @@
       .hero { grid-template-columns: 1fr; min-height: auto; text-align: left; }
       .hero-shot { order: -1; margin-bottom: 1rem; }
       .hero-shot img { max-height: 420px; }
+      .feature-shot img { max-height: 400px; }
       section.feature { grid-template-columns: 1fr; }
     }
 
@@ -422,13 +447,13 @@
 
     <section class="hero">
       <div>
-        <span class="eyebrow">Deep link launcher</span>
-        <p class="live-badge"><span class="dot" aria-hidden="true"></span> Available now on the App Store</p>
-        <h1>Save, share, and QR any link.</h1>
+        <span class="eyebrow">Link organiser</span>
+        <p class="live-badge"><span class="dot" aria-hidden="true"></span> Version 1.1 available on the App Store</p>
+        <h1>All your links, in one place.</h1>
         <p class="lede">
-          LinkLab opens and tests any URL — including custom deep-link schemes most apps make
-          painful to try — then lets you file it, generate a QR code, or share it. All of it
-          stays on your device.
+          Links pile up everywhere — a page you meant to read, a booking buried in an email, a
+          recipe someone sent in a group chat. Share them into LinkLab, give each one a name
+          you'll recognise, and find them again in seconds. All of it stays on your device.
         </p>
         <div class="cta-row">
           <a class="store-btn" href="https://apps.apple.com/in/app/linklab-save-share-qr-code/id6806553994" target="_blank" rel="noopener">
@@ -444,76 +469,109 @@
         </div>
       </div>
       <div class="hero-shot">
-        <img class="light-only" src="assets/hero_home_light.png" alt="LinkLab's lab log showing saved links, ready to launch, copy, or share" />
-        <img class="dark-only" src="assets/hero_home_dark.png" alt="LinkLab's lab log showing saved links, ready to launch, copy, or share" />
+        <img class="light-only" src="assets/hero_home_light.png" alt="LinkLab's saved links list, each entry showing its category, ready to open, copy, or share" />
+        <img class="dark-only" src="assets/hero_home_dark.png" alt="LinkLab's saved links list, each entry showing its category, ready to open, copy, or share" />
       </div>
     </section>
 
     <section class="feature">
       <div>
         <div class="num">01</div>
-        <h2>Open and test any link</h2>
+        <h2>Save a link from any app<span class="tag-new">New in 1.1</span></h2>
       </div>
       <div>
         <p>
-          Paste or type a link into the composer and launch it immediately — https, a custom
-          scheme like <code>myapp://</code>, mailto, tel, whatever you're working with. If
-          nothing on the device can open it, LinkLab tells you plainly instead of failing
-          silently.
+          Hit Share in Safari, Mail, Messages, or anywhere else a link turns up, pick LinkLab,
+          and the save sheet opens right there. Add a label, drop it in a category, done — no
+          app switching, no pasting a URL into a note you'll lose.
         </p>
         <ul>
-          <li>Scheme, host, and parameter count shown at a glance before you launch</li>
-          <li>Custom schemes are first-class — built for links Safari won't even open</li>
+          <li>Works from any app that offers a link to the iOS share sheet</li>
+          <li>The link is waiting in your list the next time you open LinkLab</li>
         </ul>
+      </div>
+      <div class="feature-shot">
+        <img class="light-only" loading="lazy" decoding="async" src="assets/hero_share_light.png" alt="Sharing a link from Safari into LinkLab using the iOS share sheet" />
+        <img class="dark-only" loading="lazy" decoding="async" src="assets/hero_share_dark.png" alt="Sharing a link from Safari into LinkLab using the iOS share sheet" />
       </div>
     </section>
 
     <section class="feature">
       <div>
         <div class="num">02</div>
-        <h2>File a link without launching it</h2>
+        <h2>Give it a label and a home</h2>
       </div>
       <div>
         <p>
-          Save a link to your lab log with an optional label, without opening it. Useful for
-          cataloguing test links, deep links you want to hand off, or anything you want to keep
-          around without triggering it yet.
+          A URL is a terrible name for anything. Save a link with a label you'll actually
+          recognise later, and file it under a category you named yourself — Recipes, Work, To
+          Read, Bills, whatever fits the way you think.
         </p>
+        <ul>
+          <li>Save a link without opening it, from inside the app or from the share sheet</li>
+          <li>Every saved link shows its category on the card, so you can see what's what</li>
+        </ul>
+      </div>
+      <div class="feature-shot">
+        <img class="light-only" loading="lazy" decoding="async" src="assets/hero_save_light.png" alt="LinkLab's save sheet, with fields for the link, a label, and a category" />
+        <img class="dark-only" loading="lazy" decoding="async" src="assets/hero_save_dark.png" alt="LinkLab's save sheet, with fields for the link, a label, and a category" />
       </div>
     </section>
 
     <section class="feature">
       <div>
         <div class="num">03</div>
-        <h2>Turn any link into a QR code</h2>
+        <h2>Find it again in seconds</h2>
       </div>
       <div>
         <p>
-          Generate a QR code for a saved or in-progress link with one tap. Share it as a PNG,
-          or save a branded copy straight to Photos — hand it to someone else's device without
-          them typing a single character.
+          Everything you save lands in one list, newest first. Filter it down to a single
+          category with a tap, or search by label or URL. Save the same link twice and LinkLab
+          updates the entry you already have instead of piling up duplicates.
         </p>
+        <ul>
+          <li>Pin the links you reach for most — they stay at the top of the list</li>
+          <li>Search sits behind a toolbar button, so your links get the whole screen</li>
+        </ul>
       </div>
-      <div style="grid-column: 1 / -1; display: flex; justify-content: center; margin-top: 1rem;">
-        <img class="light-only" src="assets/hero_qr_light.png" alt="A generated QR code ready to share or save to Photos" style="max-width: 320px; width: 100%; filter: drop-shadow(var(--shot-shadow));" />
-        <img class="dark-only" src="assets/hero_qr_dark.png" alt="A generated QR code ready to share or save to Photos" style="max-width: 320px; width: 100%; filter: drop-shadow(var(--shot-shadow));" />
+      <div class="feature-shot">
+        <img class="light-only" loading="lazy" decoding="async" src="assets/hero_categories_light.png" alt="LinkLab's category menu, filtering saved links down to one category" />
+        <img class="dark-only" loading="lazy" decoding="async" src="assets/hero_categories_dark.png" alt="LinkLab's category menu, filtering saved links down to one category" />
       </div>
     </section>
 
     <section class="feature">
       <div>
         <div class="num">04</div>
-        <h2>A local log, searchable and pinnable</h2>
+        <h2>Turn any link into a QR code</h2>
       </div>
       <div>
         <p>
-          Every link you launch or file lands in one searchable log, newest first. Re-launching
-          or re-saving the same link updates its entry instead of duplicating it, so your
-          history stays clean no matter how many times you're testing the same deep link.
+          Generate a QR code for any saved link with one tap. Share it, or save it straight to
+          Photos. It's the quickest way to get a link onto someone else's phone — the check-in
+          page, the shared album, the menu — without them typing a single character.
+        </p>
+      </div>
+      <div class="feature-shot">
+        <img class="light-only" loading="lazy" decoding="async" src="assets/hero_qr_light.png" alt="A generated QR code ready to share or save to Photos" style="max-width: 320px;" />
+        <img class="dark-only" loading="lazy" decoding="async" src="assets/hero_qr_dark.png" alt="A generated QR code ready to share or save to Photos" style="max-width: 320px;" />
+      </div>
+    </section>
+
+    <section class="feature">
+      <div>
+        <div class="num">05</div>
+        <h2>Opens anything, not just web pages</h2>
+      </div>
+      <div>
+        <p>
+          Tap a saved link and LinkLab hands it to whatever app on your device can open it — a
+          web page to your browser, an address to Maps, an email to Mail. If nothing on the
+          device can open it, LinkLab says so plainly instead of doing nothing.
         </p>
         <ul>
-          <li>Swipe or long-press any entry to pin it — pinned links stay at the top, above the newest-first order</li>
-          <li>Search by label or URL to find a link in a log of any size</li>
+          <li>Custom app links work too — the <code>myapp://</code> kind Safari won't touch</li>
+          <li>Which makes it a genuinely useful scratchpad if you build or test apps for a living</li>
         </ul>
       </div>
     </section>
@@ -521,9 +579,10 @@
     <section class="closing">
       <h2>Runs entirely on your device</h2>
       <p>
-        LinkLab has no network code — no server, no account, no analytics, no third-party SDK.
-        QR codes are generated on-device, and Photos access is add-only, requested only the
-        moment you choose to save an image.
+        LinkLab has no network code at all — no server, no account, no sign-up, no analytics, no
+        third-party SDK. There is nowhere for your links to be sent. QR codes are generated on
+        your device, and Photos access is add-only, requested only the moment you choose to save
+        an image.
       </p>
       <a href="privacy-policy.html" class="hub-link">Read the full privacy policy →</a>
       <div class="cta-row" style="justify-content: center; margin-top: 2rem;">
