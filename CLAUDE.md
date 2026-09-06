@@ -28,10 +28,11 @@ All deliverables live under `docs/`:
 
 - `docs/index.html` — Portfolio landing page (hub linking to all projects)
 - `docs/digital-marketing-ai/index.html` — 3-month freelancer roadmap for AI-assisted digital marketing
-- `docs/quran-education-app/index.html` — Al-Quran Education app documentation (recitations, translations, AI Halal checking, prayer tools)
-- `docs/quran-education-app/terms_and_conditions.html` — Legal terms for the Quran app
-- `docs/quran-education-app/android/index.html` — Android / Google Play marketing page
-- `docs/quran-education-app/ios/index.html` — iOS coming-soon page; `ios/islamic-swiftui-redesign.html` redesign gallery
+- `docs/quran-kit-app/index.html` — Quran Kit app documentation (recitations, translations, AI Halal checking, prayer tools)
+- `docs/quran-kit-app/terms_and_conditions.html` — Legal terms for Quran Kit
+- `docs/quran-kit-app/android/index.html` — Android / Google Play marketing page
+- `docs/quran-kit-app/ios/index.html` — iOS coming-soon page; `ios/islamic-swiftui-redesign.html` redesign gallery
+- `docs/quran-education-app/` — Client-side redirects to the matching `quran-kit-app/` pages
 - `docs/local-lead-gen-agency/index.html` — 14-module self-study course: building a local lead gen agency in India (GBP, Meta Ads, automation, sales scripts)
 - `docs/spacebar/index.html` — SpaceBar macOS menu bar disk cleaner product page (hi-res panel/layout/browser/settings screenshots)
 - `docs/spacebar/design-principles.html` — Design principles drawn from the SpaceBar panel redesign; linked from the SpaceBar page
@@ -54,7 +55,7 @@ All deliverables live under `docs/`:
 
 **Theming** — Pages implement a dark/light mode toggle via CSS custom properties (`--bg`, `--ink` / `--text`, etc.). Preference is persisted in `localStorage` (hub key: `hub-theme`). The hub also respects `prefers-color-scheme` as a default.
 
-**Typography** — Hub and most studio pages use **Space Grotesk** (Google Fonts). Al-Quran Education uses **Outfit** + **Cormorant Garamond**. Font loading is via `<link>` in `<head>`.
+**Typography** — Hub and most studio pages use **Space Grotesk** (Google Fonts). Quran Kit uses **Outfit** + **Cormorant Garamond**. Font loading is via `<link>` in `<head>`.
 
 **Styling approach** — Styles are written inline in `<style>` blocks within each HTML file (no external `.css` files). CSS variables drive the colour palette; `clamp()` is used for fluid typography and spacing. Prefer matching the existing studio visual language (split background, square theme toggle, Space Grotesk) when editing studio pages.
 

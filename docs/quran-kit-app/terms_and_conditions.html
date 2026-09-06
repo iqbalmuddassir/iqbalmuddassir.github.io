@@ -1,0 +1,548 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <title>Terms &amp; Conditions | Quran Kit</title>
+    <meta name="description" content="Terms of use, AI disclaimer, privacy, license, and data source credits for Quran Kit." />
+    <link rel="icon" href="assets/favicon.ico" sizes="any" />
+    <link rel="icon" type="image/png" sizes="32x32" href="assets/favicon-32.png" />
+    <link rel="icon" type="image/png" sizes="16x16" href="assets/favicon-16.png" />
+    <link rel="apple-touch-icon" href="assets/apple-touch-icon.png" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,500&family=Outfit:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <style>
+        :root {
+            --sage: #1b3a2f;
+            --sage-soft: #2d5a48;
+            --brass: #b08d57;
+            --brass-bright: #c9a56a;
+            --mist: #f0f4f1;
+            --canvas: #e8efe9;
+            --ink: #121816;
+            --stone: #5c6560;
+            --surface: rgba(255, 255, 255, 0.72);
+            --line: rgba(27, 58, 47, 0.12);
+            --shadow: 0 24px 64px rgba(27, 58, 47, 0.12);
+            --radius: 20px;
+            --code-bg: #121816;
+            --code-ink: #e8efe9;
+        }
+
+        body.dark-mode {
+            --sage: #8cc7a6;
+            --sage-soft: #a8d9bc;
+            --brass: #e6c67a;
+            --brass-bright: #f0d78a;
+            --mist: #121614;
+            --canvas: #0c0f0d;
+            --ink: #eef2ef;
+            --stone: #a8b2aa;
+            --surface: rgba(28, 34, 30, 0.85);
+            --line: rgba(140, 199, 166, 0.16);
+            --shadow: 0 24px 64px rgba(0, 0, 0, 0.45);
+            --code-bg: #0a0d0b;
+            --code-ink: #dce6df;
+        }
+
+        @media (prefers-color-scheme: dark) {
+            body:not(.light-mode) {
+                --sage: #8cc7a6;
+                --sage-soft: #a8d9bc;
+                --brass: #e6c67a;
+                --brass-bright: #f0d78a;
+                --mist: #121614;
+                --canvas: #0c0f0d;
+                --ink: #eef2ef;
+                --stone: #a8b2aa;
+                --surface: rgba(28, 34, 30, 0.85);
+                --line: rgba(140, 199, 166, 0.16);
+                --shadow: 0 24px 64px rgba(0, 0, 0, 0.45);
+                --code-bg: #0a0d0b;
+                --code-ink: #dce6df;
+            }
+        }
+
+        * { box-sizing: border-box; }
+
+        html {
+            scroll-behavior: smooth;
+            overflow-x: clip;
+        }
+
+        body {
+            margin: 0;
+            font-family: 'Outfit', system-ui, sans-serif;
+            color: var(--ink);
+            background: var(--canvas);
+            line-height: 1.7;
+            transition: background-color 0.35s ease, color 0.35s ease;
+            overflow-x: clip;
+        }
+
+        .atmosphere {
+            position: fixed;
+            inset: 0;
+            z-index: -1;
+            pointer-events: none;
+            background:
+                radial-gradient(ellipse 90% 55% at 50% -10%, rgba(27, 58, 47, 0.18), transparent 55%),
+                radial-gradient(ellipse 50% 40% at 100% 30%, rgba(176, 141, 87, 0.14), transparent 50%),
+                radial-gradient(ellipse 45% 35% at 0% 80%, rgba(45, 90, 72, 0.12), transparent 45%),
+                var(--canvas);
+            animation: atmosphereShift 18s ease-in-out infinite alternate;
+        }
+
+        body.dark-mode .atmosphere {
+            background:
+                radial-gradient(ellipse 90% 55% at 50% -10%, rgba(140, 199, 166, 0.12), transparent 55%),
+                radial-gradient(ellipse 50% 40% at 100% 30%, rgba(230, 198, 122, 0.08), transparent 50%),
+                radial-gradient(ellipse 45% 35% at 0% 80%, rgba(27, 58, 47, 0.35), transparent 45%),
+                var(--canvas);
+        }
+
+        @media (prefers-color-scheme: dark) {
+            body:not(.light-mode) .atmosphere {
+                background:
+                    radial-gradient(ellipse 90% 55% at 50% -10%, rgba(140, 199, 166, 0.12), transparent 55%),
+                    radial-gradient(ellipse 50% 40% at 100% 30%, rgba(230, 198, 122, 0.08), transparent 50%),
+                    radial-gradient(ellipse 45% 35% at 0% 80%, rgba(27, 58, 47, 0.35), transparent 45%),
+                    var(--canvas);
+            }
+        }
+
+        @keyframes atmosphereShift {
+            from { filter: hue-rotate(0deg) saturate(1); }
+            to { filter: hue-rotate(8deg) saturate(1.08); }
+        }
+
+        @keyframes riseIn {
+            from { opacity: 0; transform: translateY(28px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes pulseSoft {
+            0%, 100% { opacity: 0.55; transform: translateX(-50%) scale(1); }
+            50% { opacity: 0.9; transform: translateX(-50%) scale(1.04); }
+        }
+
+        .container {
+            max-width: 760px;
+            margin: 0 auto;
+            padding: 0 24px;
+            padding-left: max(24px, env(safe-area-inset-left, 0px));
+            padding-right: max(24px, env(safe-area-inset-right, 0px));
+        }
+
+        #themeToggle {
+            position: fixed;
+            top: max(16px, env(safe-area-inset-top, 0px));
+            right: max(16px, env(safe-area-inset-right, 0px));
+            z-index: 1000;
+            width: 44px;
+            height: 44px;
+            -webkit-tap-highlight-color: transparent;
+            border-radius: 50%;
+            background: var(--surface);
+            backdrop-filter: blur(12px);
+            border: 1px solid var(--line);
+            color: var(--ink);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: var(--shadow);
+            transition: transform 0.25s ease;
+        }
+        #themeToggle:hover { transform: scale(1.08); }
+        #themeToggle svg { width: 20px; height: 20px; display: none; }
+        body.dark-mode #themeToggle .icon-sun,
+        body.light-mode #themeToggle .icon-moon { display: block; }
+        @media (prefers-color-scheme: dark) {
+            body:not(.light-mode):not(.dark-mode) #themeToggle .icon-sun { display: block; }
+        }
+        @media (prefers-color-scheme: light) {
+            body:not(.light-mode):not(.dark-mode) #themeToggle .icon-moon { display: block; }
+        }
+
+        .page-hero {
+            position: relative;
+            padding: 72px 0 40px;
+            padding-top: max(72px, calc(env(safe-area-inset-top, 0px) + 56px));
+            text-align: center;
+            overflow: hidden;
+        }
+
+        .hero-glow {
+            position: absolute;
+            width: min(420px, 75vw);
+            height: min(420px, 75vw);
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(176, 141, 87, 0.2), transparent 68%);
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            animation: pulseSoft 7s ease-in-out infinite;
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        .page-hero > *:not(.hero-glow) { position: relative; z-index: 1; }
+
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--stone);
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.92rem;
+            margin-bottom: 28px;
+            transition: color 0.2s ease;
+            animation: riseIn 0.7s ease both;
+        }
+
+        .back-link:hover { color: var(--sage); }
+
+        .brand-mark {
+            width: 64px;
+            height: auto;
+            display: block;
+            margin: 0 auto 16px;
+            filter: drop-shadow(0 10px 22px rgba(27, 58, 47, 0.2));
+            animation: riseIn 0.8s ease 0.04s both;
+        }
+
+        .brand {
+            font-family: 'Cormorant Garamond', Georgia, serif;
+            font-size: clamp(1.85rem, 5vw, 2.4rem);
+            font-weight: 600;
+            color: var(--sage);
+            margin: 0 0 8px;
+            letter-spacing: -0.02em;
+            line-height: 1.1;
+            animation: riseIn 0.85s ease 0.08s both;
+        }
+
+        .brand em {
+            font-style: italic;
+            color: var(--brass);
+            font-weight: 500;
+        }
+
+        .page-title {
+            font-family: 'Cormorant Garamond', Georgia, serif;
+            font-size: clamp(2.4rem, 7vw, 3.5rem);
+            font-weight: 600;
+            color: var(--ink);
+            margin: 0 0 14px;
+            letter-spacing: -0.02em;
+            line-height: 1.1;
+            animation: riseIn 0.9s ease 0.14s both;
+        }
+
+        .page-lede {
+            color: var(--stone);
+            font-size: 1.05rem;
+            max-width: 34em;
+            margin: 0 auto;
+            animation: riseIn 0.9s ease 0.22s both;
+        }
+
+        .toc {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 8px 28px;
+            margin: 36px 0 48px;
+            padding: 0 0 28px;
+            border-bottom: 1px solid var(--line);
+            animation: riseIn 0.9s ease 0.28s both;
+        }
+
+        .toc a {
+            color: var(--sage);
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.92rem;
+            transition: color 0.2s ease;
+        }
+
+        .toc a:hover { color: var(--brass); }
+
+        .legal-block {
+            padding: 8px 0 40px;
+            border-top: 2px solid var(--brass);
+            margin-bottom: 8px;
+            animation: riseIn 0.85s ease both;
+        }
+
+        .legal-block:nth-of-type(1) { animation-delay: 0.05s; }
+        .legal-block:nth-of-type(2) { animation-delay: 0.1s; }
+        .legal-block:nth-of-type(3) { animation-delay: 0.15s; }
+        .legal-block:nth-of-type(4) { animation-delay: 0.2s; }
+        .legal-block:nth-of-type(5) { animation-delay: 0.25s; }
+
+        .legal-block h2 {
+            font-family: 'Cormorant Garamond', Georgia, serif;
+            font-size: clamp(1.75rem, 4vw, 2.15rem);
+            font-weight: 600;
+            color: var(--ink);
+            margin: 20px 0 14px;
+            line-height: 1.15;
+        }
+
+        .legal-block p {
+            margin: 0 0 14px;
+            color: var(--stone);
+            font-size: 1.02rem;
+        }
+
+        .legal-block p:last-child { margin-bottom: 0; }
+
+        .license-box {
+            margin-top: 20px;
+            padding: 22px 24px;
+            border-radius: var(--radius);
+            background: var(--code-bg);
+            color: var(--code-ink);
+            font-size: 0.88rem;
+            line-height: 1.65;
+            overflow-x: auto;
+            border: 1px solid rgba(176, 141, 87, 0.25);
+            white-space: pre-wrap;
+            font-family: ui-monospace, 'SF Mono', Menlo, Consolas, monospace;
+        }
+
+        .sources {
+            display: grid;
+            gap: 0;
+            margin-top: 8px;
+        }
+
+        .source {
+            padding: 22px 0;
+            border-bottom: 1px solid var(--line);
+        }
+
+        .source:last-child { border-bottom: none; padding-bottom: 0; }
+
+        .source h3 {
+            font-family: 'Cormorant Garamond', Georgia, serif;
+            font-size: 1.45rem;
+            font-weight: 600;
+            color: var(--ink);
+            margin: 0 0 6px;
+        }
+
+        .source p {
+            margin: 0 0 8px;
+            color: var(--stone);
+            font-size: 0.98rem;
+        }
+
+        .source a {
+            color: var(--sage);
+            font-weight: 600;
+            text-decoration: none;
+            font-size: 0.9rem;
+            word-break: break-all;
+        }
+
+        .source a:hover { color: var(--brass); }
+
+        footer {
+            text-align: center;
+            padding: 48px 0 72px;
+            border-top: 1px solid var(--line);
+            color: var(--stone);
+            font-size: 0.9rem;
+            margin-top: 40px;
+        }
+
+        .footer-links {
+            margin-top: 16px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px 24px;
+            justify-content: center;
+        }
+
+        .footer-links a {
+            color: var(--sage);
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .footer-links a:hover { color: var(--brass); }
+
+        @media (max-width: 768px) {
+            .container {
+                padding-left: max(16px, env(safe-area-inset-left, 0px));
+                padding-right: max(16px, env(safe-area-inset-right, 0px));
+            }
+
+            .page-hero {
+                padding: 56px 0 32px;
+                padding-top: max(56px, calc(env(safe-area-inset-top, 0px) + 48px));
+            }
+
+            .brand-mark { width: 56px; }
+            .toc { gap: 10px 20px; margin-bottom: 36px; }
+            .legal-block { padding-bottom: 32px; }
+            .license-box { padding: 18px 16px; font-size: 0.82rem; }
+
+            footer {
+                padding: 36px 0 max(56px, env(safe-area-inset-bottom, 0px));
+            }
+
+            #themeToggle {
+                top: max(12px, env(safe-area-inset-top, 0px));
+                right: max(12px, env(safe-area-inset-right, 0px));
+            }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+            }
+        }
+    </style>
+</head>
+<body>
+<div class="atmosphere" aria-hidden="true"></div>
+<button id="themeToggle" aria-label="Toggle theme" type="button">
+    <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
+        <circle cx="12" cy="12" r="4"/>
+        <path d="M12 3v2M12 19v2M4.2 4.2l1.4 1.4M18.4 18.4l1.4 1.4M3 12h2M19 12h2M4.2 19.8l1.4-1.4M18.4 5.6l1.4-1.4"/>
+    </svg>
+    <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
+        <path d="M21 14.5A8.5 8.5 0 0 1 9.5 3 7 7 0 1 0 21 14.5z"/>
+    </svg>
+</button>
+
+<div class="container">
+    <header class="page-hero">
+        <div class="hero-glow" aria-hidden="true"></div>
+        <a href="index.html" class="back-link">← Back to Quran Kit</a>
+        <img class="brand-mark" src="assets/logo.svg" width="64" height="64" alt="" />
+        <p class="brand">Quran <em>Kit</em></p>
+        <h1 class="page-title">Terms &amp; Conditions</h1>
+        <p class="page-lede">By using Quran Kit (formerly Al-Quran Education), you agree to these terms. Please read them carefully before relying on any feature of the app.</p>
+    </header>
+
+    <nav class="toc" aria-label="On this page">
+        <a href="#usage">Usage Policy</a>
+        <a href="#ai">AI Disclaimer</a>
+        <a href="#privacy">Privacy</a>
+        <a href="#license">License</a>
+        <a href="#sources">Data Sources</a>
+    </nav>
+
+    <section class="legal-block" id="usage">
+        <h2>Usage Policy</h2>
+        <p>The content provided in Quran Kit, including Quranic text, audio, and AI-generated responses, is for educational and personal use only. Unauthorized commercial redistribution is prohibited.</p>
+    </section>
+
+    <section class="legal-block" id="ai">
+        <h2>AI Disclaimer</h2>
+        <p>Our E-code search and Chat features utilize Gemini AI. While we strive for accuracy, AI-generated content may contain errors or hallucinated facts. Always verify critical information with qualified scholars or official certification bodies.</p>
+    </section>
+
+    <section class="legal-block" id="privacy">
+        <h2>Privacy &amp; Data</h2>
+        <p>We value your privacy. Your location data is used exclusively on your device to calculate prayer times and Qibla direction. We do not store or transmit this data to our servers.</p>
+        <p>Full details are in our <a href="privacy-policy.html">Privacy Policy</a>.</p>
+    </section>
+
+    <section class="legal-block" id="license">
+        <h2>App License</h2>
+        <p>Quran Kit is an open-initiative project licensed under the MIT License.</p>
+        <pre class="license-box">&copy; 2024–<span class="curr-year"></span> Quran Kit · Designed &amp; Developed by Muddassir Iqbal
+
+Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the “Software”), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.</pre>
+    </section>
+
+    <section class="legal-block" id="sources">
+        <h2>Data Sources &amp; Credits</h2>
+        <p>We gratefully acknowledge the following organizations and platforms for their data:</p>
+        <div class="sources">
+            <div class="source">
+                <h3>Halal E-Codes</h3>
+                <p>Sourced from the Islamic Religious Council of Singapore (MUIS).</p>
+                <a href="https://www.muis.gov.sg/Halal/Religious-Guidelines/Food-Additives-Listing" rel="noopener noreferrer" target="_blank">muis.gov.sg</a>
+            </div>
+            <div class="source">
+                <h3>English Recitation</h3>
+                <p>Reciter: Mishary Bin Rashid Alafasy. Sourced from Allah's Word.</p>
+                <a href="https://www.allahsword.com/quran_with_english.html" rel="noopener noreferrer" target="_blank">allahsword.com</a>
+            </div>
+            <div class="source">
+                <h3>Urdu Recitation</h3>
+                <p>Reciter: Saad Al Ghamdi. Translator: Syed Maududi.</p>
+                <a href="https://www.quranurdu.com" rel="noopener noreferrer" target="_blank">quranurdu.com</a>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <p>&copy; 2024–<span class="curr-year"></span> Quran Kit · Designed &amp; developed by Muddassir Iqbal</p>
+        <div class="footer-links">
+            <a href="index.html">App home</a>
+            <a href="privacy-policy.html">Privacy Policy</a>
+            <a href="mailto:cropper.2-runtime@icloud.com">Get support</a>
+            <a href="../index.html">Project hub</a>
+        </div>
+    </footer>
+</div>
+
+<script>
+    const themeToggle = document.getElementById('themeToggle');
+    const body = document.body;
+    const savedTheme = localStorage.getItem('quran-app-theme');
+    if (savedTheme) body.classList.add(savedTheme);
+
+    function isDarkTheme() {
+        if (body.classList.contains('dark-mode')) return true;
+        if (body.classList.contains('light-mode')) return false;
+        return window.matchMedia('(prefers-color-scheme: dark)').matches;
+    }
+
+    function syncThemeToggle() {
+        const dark = isDarkTheme();
+        themeToggle.setAttribute('aria-label', dark ? 'Switch to light mode' : 'Switch to dark mode');
+        themeToggle.title = dark ? 'Light mode' : 'Dark mode';
+    }
+
+    syncThemeToggle();
+
+    themeToggle.addEventListener('click', () => {
+        if (body.classList.contains('dark-mode')) {
+            body.classList.remove('dark-mode');
+            body.classList.add('light-mode');
+            localStorage.setItem('quran-app-theme', 'light-mode');
+        } else if (body.classList.contains('light-mode')) {
+            body.classList.remove('light-mode');
+            body.classList.add('dark-mode');
+            localStorage.setItem('quran-app-theme', 'dark-mode');
+        } else {
+            const next = isDarkTheme() ? 'light-mode' : 'dark-mode';
+            body.classList.add(next);
+            localStorage.setItem('quran-app-theme', next);
+        }
+        syncThemeToggle();
+    });
+
+    document.querySelectorAll('.curr-year').forEach(el => {
+        el.textContent = new Date().getFullYear();
+    });
+</script>
+</body>
+</html>
