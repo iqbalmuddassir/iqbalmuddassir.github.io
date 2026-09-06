@@ -6,7 +6,7 @@ Guidance for coding agents working in this repository.
 
 Static portfolio/documentation site ("Bridge to Purpose") for GitHub Pages. All content lives under `docs/`. There is no build system, package manager, or test framework — pages are self-contained HTML, CSS, and JavaScript.
 
-Public hub projects: Digital Marketing AI, Al-Quran Education (plus Android/iOS subpages), Local Lead Gen Agency, SpaceBar, Margin (coming soon, with proposal and design-principles subpages).
+Public hub projects: Digital Marketing AI, Quran Kit at `quran-kit-app/` (plus Android/iOS subpages; `quran-education-app/` redirects there), Local Lead Gen Agency, SpaceBar, Margin (coming soon, with proposal and design-principles subpages).
 
 Internal pages (Minimal Family House, Amanah India, Grab SEM Portfolio) are deployed under `docs/` but only listed on the hub when opened with `?mode=private`.
 
@@ -16,7 +16,7 @@ Internal pages (Minimal Family House, Amanah India, Grab SEM Portfolio) are depl
 - Preview the site with `python3 -m http.server 8000 --directory docs` (also started automatically via the `docs-server` terminal). Visit `http://localhost:8000`. Use `http://localhost:8000/?mode=private` for internal hub cards.
 - Deployable content is only under `docs/`. Edits outside that folder do not affect the live GitHub Pages site.
 - Theme toggles and other shared UI are duplicated per HTML file; update each page individually when changing shared patterns.
-- Hub/studio pages generally use Space Grotesk; Al-Quran Education uses Outfit + Cormorant Garamond.
+- Hub/studio pages generally use Space Grotesk; Quran Kit uses Outfit + Cormorant Garamond.
 - Pushes to `main` deploy `docs/` via `.github/workflows/digi-mar-ai-workflow.yml`.
 
 ## Git: linear history (strict)
