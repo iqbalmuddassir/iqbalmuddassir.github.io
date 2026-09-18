@@ -31,7 +31,7 @@ All deliverables live under `docs/`:
 - `docs/quran-kit-app/index.html` — Quran Kit app documentation (recitations, translations, AI Halal checking, prayer tools)
 - `docs/quran-kit-app/terms_and_conditions.html` — Legal terms for Quran Kit
 - `docs/quran-kit-app/android/index.html` — Android / Google Play marketing page
-- `docs/quran-kit-app/ios/index.html` — iOS coming-soon page; `ios/islamic-swiftui-redesign.html` redesign gallery
+- `docs/quran-kit-app/ios/index.html` — iOS App Store marketing page (app is live); `ios/islamic-swiftui-redesign.html` redesign gallery
 - `docs/quran-education-app/` — Client-side redirects to the matching `quran-kit-app/` pages
 - `docs/local-lead-gen-agency/index.html` — 14-module self-study course: building a local lead gen agency in India (GBP, Meta Ads, automation, sales scripts)
 - `docs/spacebar/index.html` — SpaceBar macOS menu bar disk cleaner product page (hi-res panel/layout/browser/settings screenshots)
