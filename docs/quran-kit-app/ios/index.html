@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-    <title>Quran Kit for iPhone — Coming Soon</title>
-    <meta name="description" content="Quran Kit for iOS: native SwiftUI companion with Quran audio in English &amp; Urdu, prayer times, next-prayer widget, and Halal E-codes. Version 1.0 coming soon." />
+    <title>Quran Kit for iPhone — Now on the App Store</title>
+    <meta name="description" content="Quran Kit for iOS is live on the App Store: a native SwiftUI companion with Quran audio in English &amp; Urdu, prayer times, next-prayer widget, and Halal E-codes." />
     <link rel="icon" href="../assets/favicon.ico" sizes="any" />
     <link rel="icon" type="image/png" sizes="32x32" href="../assets/favicon-32.png" />
     <link rel="icon" type="image/png" sizes="16x16" href="../assets/favicon-16.png" />
@@ -25,6 +25,8 @@
             --line: rgba(27, 58, 47, 0.12);
             --shadow: 0 24px 64px rgba(27, 58, 47, 0.12);
             --phone-frame: #1a1f1c;
+            --live-glow: rgba(45, 90, 72, 0.45);
+            --live-glow-out: rgba(45, 90, 72, 0);
         }
 
         body.dark-mode {
@@ -39,6 +41,8 @@
             --line: rgba(140, 199, 166, 0.16);
             --shadow: 0 24px 64px rgba(0, 0, 0, 0.45);
             --phone-frame: #0a0c0b;
+            --live-glow: rgba(140, 199, 166, 0.45);
+            --live-glow-out: rgba(140, 199, 166, 0);
         }
 
         @media (prefers-color-scheme: dark) {
@@ -54,6 +58,8 @@
                 --line: rgba(140, 199, 166, 0.16);
                 --shadow: 0 24px 64px rgba(0, 0, 0, 0.45);
                 --phone-frame: #0a0c0b;
+            --live-glow: rgba(140, 199, 166, 0.45);
+            --live-glow-out: rgba(140, 199, 166, 0);
             }
         }
 
@@ -189,7 +195,7 @@
             }
         }
 
-        .coming-badge {
+        .live-badge {
             display: inline-flex;
             align-items: center;
             gap: 10px;
@@ -197,14 +203,29 @@
             font-weight: 700;
             letter-spacing: 0.1em;
             text-transform: uppercase;
-            color: var(--brass);
+            color: var(--sage);
             margin: 0 0 18px;
             animation: riseIn 0.8s ease both;
         }
 
-        .coming-badge svg {
+        .live-badge svg {
             width: 18px;
             height: 18px;
+        }
+
+        .live-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            flex-shrink: 0;
+            background: var(--sage);
+            animation: livePulse 2s ease-out infinite;
+        }
+
+        @keyframes livePulse {
+            0% { box-shadow: 0 0 0 0 var(--live-glow); }
+            70% { box-shadow: 0 0 0 10px var(--live-glow-out); }
+            100% { box-shadow: 0 0 0 0 var(--live-glow-out); }
         }
 
         .brand-mark {
@@ -491,7 +512,7 @@
 
         @media (max-width: 380px) {
             .brand { font-size: 2.2rem; }
-            .coming-badge { font-size: 0.7rem; letter-spacing: 0.08em; }
+            .live-badge { font-size: 0.7rem; letter-spacing: 0.08em; }
             .phone { width: min(200px, 64vw); }
         }
 
@@ -766,16 +787,18 @@
     <header class="hero">
         <div>
             <img class="brand-mark" src="../assets/logo.svg" width="104" height="104" alt="Quran Kit logo" />
-            <p class="coming-badge">
+            <p class="live-badge">
+                <span class="live-dot" aria-hidden="true"></span>
                 <svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M18.7 12.7c0-2.3 1.9-3.4 2-3.5-1.1-1.6-2.8-1.8-3.4-1.8-1.4-.2-2.8.9-3.5.9s-1.8-.8-3-.8c-1.5 0-2.9.9-3.7 2.3-1.6 2.7-.4 6.8 1.1 9 .8 1.1 1.7 2.3 2.9 2.2 1.1 0 1.6-.7 3-.7s1.8.7 3 .7 2-1.1 2.8-2.2c.9-1.3 1.2-2.5 1.3-2.6-.1 0-2.4-.9-2.5-3.5zm-2.3-6.8c.6-.8 1.1-1.8.9-2.9-1 .1-2.1.6-2.8 1.4-.6.7-1.2 1.8-1 2.8 1.1.1 2.2-.5 2.9-1.3z"/></svg>
-                Coming soon to the App Store
+                Live on the App Store
             </p>
             <h1 class="brand">Quran <em>Kit</em></h1>
-            <p class="version-tag">Version 1.0 for iPhone</p>
+            <p class="version-tag">Now available for iPhone</p>
             <p class="lede">A calm native companion for tilawat, prayer times, and Halal E-codes — built in SwiftUI with a quiet mosque-courtyard feel. No accounts. No tracking. Just the tools you need every day.</p>
             <div class="cta-row">
-                <a class="btn btn-primary" href="mailto:cropper.2-runtime@icloud.com?subject=Notify%20me%20when%20Quran%20Kit%20iOS%20launches">
-                    Notify me at launch
+                <a class="btn btn-primary" href="https://apps.apple.com/us/app/quran-kit-audio-prayer/id6809153418" rel="noopener noreferrer" target="_blank">
+                    <svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M18.7 12.7c0-2.3 1.9-3.4 2-3.5-1.1-1.6-2.8-1.8-3.4-1.8-1.4-.2-2.8.9-3.5.9s-1.8-.8-3-.8c-1.5 0-2.9.9-3.7 2.3-1.6 2.7-.4 6.8 1.1 9 .8 1.1 1.7 2.3 2.9 2.2 1.1 0 1.6-.7 3-.7s1.8.7 3 .7 2-1.1 2.8-2.2c.9-1.3 1.2-2.5 1.3-2.6-.1 0-2.4-.9-2.5-3.5zm-2.3-6.8c.6-.8 1.1-1.8.9-2.9-1 .1-2.1.6-2.8 1.4-.6.7-1.2 1.8-1 2.8 1.1.1 2.2-.5 2.9-1.3z"/></svg>
+                    Download on the App Store
                 </a>
                 <a class="btn btn-ghost" href="../android/index.html">
                     <svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M17.5 8.5h-.8l-.4-1.1A4.5 4.5 0 0 0 12 4.5c-1.9 0-3.5 1.1-4.3 2.9l-.4 1.1h-.8C4.7 8.5 3.5 9.7 3.5 11.2v6.3c0 .8.7 1.5 1.5 1.5h1v2.5a1.5 1.5 0 0 0 3 0V19h6v2.5a1.5 1.5 0 0 0 3 0V19h1c.8 0 1.5-.7 1.5-1.5v-6.3c0-1.5-1.2-2.7-2.5-2.7zM9 6.8A2.5 2.5 0 0 1 12 5.5c1 0 1.9.6 2.3 1.5L14 8H10l-.3-.7c-.1-.2-.2-.3-.3-.5H9zm-1.5 5.2a1 1 0 1 1 0-2 1 1 0 0 1 0 2zm9 0a1 1 0 1 1 0-2 1 1 0 0 1 0 2z"/></svg>
@@ -801,9 +824,9 @@
     </header>
 
     <section class="section">
-        <p class="section-label">Inside version 1.0</p>
+        <p class="section-label">Inside the app</p>
         <h2 class="section-title">Everything for a mindful day</h2>
-        <p class="section-lede">The first release brings a focused home hub and three self-contained tools — the same spirit as Android, designed natively for Apple.</p>
+        <p class="section-lede">The release brings a focused home hub and three self-contained tools — the same spirit as Android, designed natively for Apple.</p>
 
         <div class="feature-grid">
             <div class="feature-item">
@@ -861,8 +884,8 @@
 
     <div class="v1-strip" aria-label="Version 1.0 details">
         <div class="v1-fact">
-            <strong>1.0.0</strong>
-            <span>First App Store release</span>
+            <strong>Live</strong>
+            <span>On the App Store</span>
         </div>
         <div class="v1-fact">
             <strong>SwiftUI</strong>
@@ -879,10 +902,13 @@
     </div>
 
     <section class="closing">
-        <h2>Be first when it lands</h2>
-        <p>Drop a note and we’ll let you know the moment Quran Kit is on the App Store. Meanwhile, explore the Android app — it’s live today.</p>
+        <h2>It’s on the App Store</h2>
+        <p>Quran Kit for iPhone is available now. Prefer Android? That app is live too.</p>
         <div class="cta-row" style="justify-content: center;">
-            <a class="btn btn-primary" href="mailto:cropper.2-runtime@icloud.com?subject=Notify%20me%20when%20Quran%20Kit%20iOS%20launches">Notify me at launch</a>
+            <a class="btn btn-primary" href="https://apps.apple.com/us/app/quran-kit-audio-prayer/id6809153418" rel="noopener noreferrer" target="_blank">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M18.7 12.7c0-2.3 1.9-3.4 2-3.5-1.1-1.6-2.8-1.8-3.4-1.8-1.4-.2-2.8.9-3.5.9s-1.8-.8-3-.8c-1.5 0-2.9.9-3.7 2.3-1.6 2.7-.4 6.8 1.1 9 .8 1.1 1.7 2.3 2.9 2.2 1.1 0 1.6-.7 3-.7s1.8.7 3 .7 2-1.1 2.8-2.2c.9-1.3 1.2-2.5 1.3-2.6-.1 0-2.4-.9-2.5-3.5zm-2.3-6.8c.6-.8 1.1-1.8.9-2.9-1 .1-2.1.6-2.8 1.4-.6.7-1.2 1.8-1 2.8 1.1.1 2.2-.5 2.9-1.3z"/></svg>
+                Download on the App Store
+            </a>
             <a class="btn btn-ghost" href="../android/index.html">Explore Android →</a>
         </div>
     </section>
@@ -893,6 +919,7 @@
             <a href="../terms_and_conditions.html">Terms &amp; Conditions</a>
             <a href="../privacy-policy.html">Privacy Policy</a>
             <a href="mailto:cropper.2-runtime@icloud.com">Support</a>
+            <a href="https://apps.apple.com/us/app/quran-kit-audio-prayer/id6809153418" rel="noopener noreferrer" target="_blank">App Store</a>
             <a href="../android/index.html">Android app</a>
         </div>
     </footer>
