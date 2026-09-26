@@ -14,7 +14,6 @@ Static portfolio and documentation site by [Muddassir Iqbal](https://github.com/
 | [Quran Kit](https://iqbalmuddassir.github.io/quran-kit-app/) | App documentation: recitations, translations, AI Halal checking, prayer tools (live on Google Play and the App Store) |
 | [Local Lead Gen Agency](https://iqbalmuddassir.github.io/local-lead-gen-agency/) | 14-module self-study course for building a local lead gen agency in India |
 | [Margin](https://iqbalmuddassir.github.io/margin/) | On-device photo culling for iPhone and iPad, live on the App Store |
-| [Engineering Leadership Portfolio](https://iqbalmuddassir.github.io/grab-sem-portfolio/) | Public career portfolio: mobile engineering and consumer maps leadership at Grab |
 
 ### Internal
 
@@ -24,6 +23,7 @@ These pages are deployed but hidden from the default hub.
 |---------|-------------|
 | [Minimal Family House](https://iqbalmuddassir.github.io/minimal-family-house/) | Trapezoid-plot concept plans — garden, patio, parking, rooftop BBQ, two-storey family home |
 | [Amanah India](https://iqbalmuddassir.github.io/amanah-india/) | Internal summary for an Islamic e-commerce marketplace |
+| [Engineering Leadership Portfolio](https://iqbalmuddassir.github.io/grab-sem-portfolio/) | Career portfolio: mobile engineering and consumer maps leadership at Grab |
 
 ## Repository structure
 
@@ -46,7 +46,7 @@ docs/
 │   ├── index.html
 │   └── assets/
 ├── amanah-india/index.html             # Internal
-└── grab-sem-portfolio/index.html       # Public career portfolio
+└── grab-sem-portfolio/index.html       # Internal (career portfolio)
 ```
 
 ## Local development

@@ -42,12 +42,12 @@ All deliverables live under `docs/`:
 - `docs/margin/privacy-policy.html` — Margin's App Store privacy policy: on-device only, no network access, no data collection, reversible deletions
 - `docs/linklab/index.html` — LinkLab product page: deep link launcher for iPhone/iPad — open/test any URL or custom scheme, file without launching, generate & share QR codes, offline-only
 - `docs/linklab/privacy-policy.html` — LinkLab's App Store privacy policy: no network access, clipboard read only on Paste, Photos access is add-only
-- `docs/grab-sem-portfolio/index.html` — Public engineering leadership portfolio. Keep it free of internal Grab data: no business metrics, internal codenames, repo names, promotion-case material, incident or security details, or named colleagues.
 
 **Internal** (deployed, but hub cards use `card-private` and only show when the hub is opened with `?mode=private`)
 
 - `docs/minimal-family-house/index.html` — Trapezoid-plot family house concept plans
 - `docs/amanah-india/index.html` — Islamic e-commerce marketplace project summary
+- `docs/grab-sem-portfolio/index.html` — Engineering leadership portfolio, written for the public but hidden for now (private card, `noindex`). Keep it free of internal Grab data: no business metrics, internal codenames, repo names, promotion-case material, incident or security details, or named colleagues.
 
 ## Architecture & Conventions
 
